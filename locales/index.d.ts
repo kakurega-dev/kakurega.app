@@ -9941,6 +9941,10 @@ export interface Locale extends ILocale {
     };
     "_notification": {
         /**
+         * 新しい通知があります
+         */
+        "youHaveNewNotification": string;
+        /**
          * ファイルがアップロードされました
          */
         "fileUploaded": string;

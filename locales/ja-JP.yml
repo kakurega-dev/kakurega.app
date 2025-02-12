@@ -2626,6 +2626,7 @@ _relayStatus:
   rejected: "拒否済み"
 
 _notification:
+  youHaveNewNotification: "新しい通知があります"
   fileUploaded: "ファイルがアップロードされました"
   youGotMention: "{name}からのメンション"
   youGotReply: "{name}からのリプライ"

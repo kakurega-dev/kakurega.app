@@ -35,7 +35,7 @@ export async function createNotification<K extends keyof PushNotificationDataMap
 		return globalThis.registration.showNotification(...n);
 	} else {
 		console.error('Could not compose notification', data);
-		return createEmptyNotification();
+		return createEmptyNotification(data.type);
 	}
 }
 
@@ -286,16 +286,16 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 	}
 }
 
-export async function createEmptyNotification(): Promise<void> {
+export async function createEmptyNotification(type?: string): Promise<void> {
 	return new Promise<void>(async res => {
 		const i18n = await (swLang.i18n ?? swLang.fetchLocale());
 
 		await globalThis.registration.showNotification(
 			(new URL(origin)).host,
 			{
-				body: `Misskey v${_VERSION_}`,
+				body: `${i18n.ts._notification.youHaveNewNotification} (${type != null ? `${type}/` : ''}v${_VERSION_})`,
 				silent: true,
-				badge: iconUrl('null'),
+				badge: iconUrl('bell'),
 				tag: 'read_notification',
 				actions: [
 					{
