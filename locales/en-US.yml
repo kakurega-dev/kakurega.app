@@ -2419,6 +2419,7 @@ _relayStatus:
   accepted: "Accepted"
   rejected: "Rejected"
 _notification:
+  youHaveNewNotification: "You have a new notification"
   fileUploaded: "File successfully uploaded"
   youGotMention: "{name} mentioned you"
   youGotReply: "{name} replied to you"
