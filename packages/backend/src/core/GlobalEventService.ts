@@ -215,7 +215,7 @@ type SerializedAll<T> = {
 type MapToRecord<T> = T extends Map<string, infer V> ? Record<string, V> : never;
 type UndefinedAsNullAll<T> = {
 	[K in keyof T]: T[K] extends undefined ? null : T[K];
-}
+};
 
 export interface InternalEventTypes {
 	userChangeSuspendedState: { id: MiUser['id']; isSuspended: MiUser['isSuspended']; };
