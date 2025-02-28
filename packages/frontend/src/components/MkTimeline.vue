@@ -21,14 +21,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, onUnmounted, provide, ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { BasicTimelineType } from '@/timelines.js';
-import MkNotes, { type Filter as NoteFilter } from '@/components/MkNotes.vue';
+import type { Paging } from '@/components/MkPagination.vue';
+import type { Filter as NoteFilter } from '@/components/MkNotes.vue';
+import MkNotes from '@/components/MkNotes.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
 import { defaultStore } from '@/store.js';
-import { Paging } from '@/components/MkPagination.vue';
 import { MisskeyEntity } from '@/types/date-separated-list.js';
 
 const props = withDefaults(defineProps<{
@@ -60,15 +61,15 @@ provide('tl_withSensitive', computed(() => props.withSensitive));
 provide('inChannel', computed(() => props.src === 'channel'));
 
 type TimelineQueryType = {
-  antennaId?: string,
-  withRenotes?: boolean,
-  withReplies?: boolean,
-  withFiles?: boolean,
-  visibility?: string,
-  listId?: string,
-  channelId?: string,
-  roleId?: string
-}
+	antennaId?: string,
+	withRenotes?: boolean,
+	withReplies?: boolean,
+	withFiles?: boolean,
+	visibility?: string,
+	listId?: string,
+	channelId?: string,
+	roleId?: string
+};
 
 const prComponent = shallowRef<InstanceType<typeof MkPullToRefresh>>();
 const tlComponent = shallowRef<InstanceType<typeof MkNotes>>();

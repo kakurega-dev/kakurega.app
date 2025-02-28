@@ -5,36 +5,54 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkStickyContainer>
-	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header>
+		<XHeader :actions="headerActions" :tabs="headerTabs"/>
+	</template>
 	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
-			<MkFolder>
-				<template #label>DeepL Translation</template>
+			<div class="_gaps_m">
+				<MkFolder>
+					<template #label>Google Analytics<span class="_beta">{{ i18n.ts.beta }}</span></template>
 
-				<div class="_gaps_m">
-					<MkInput v-model="deeplAuthKey">
-						<template #prefix><i class="ti ti-key"></i></template>
-						<template #label>DeepL Auth Key</template>
-					</MkInput>
-					<MkSwitch v-model="deeplIsPro">
-						<template #label>Pro account</template>
-					</MkSwitch>
-				</div>
-			</MkFolder>
-			<MkFolder>
-				<template #label>Sentry logging</template>
+					<div class="_gaps_m">
+						<MkInput v-model="googleAnalyticsMeasurementId">
+							<template #prefix><i class="ti ti-key"></i></template>
+							<template #label>Measurement ID</template>
+						</MkInput>
+						<MkButton primary @click="save_googleAnalytics">Save</MkButton>
+					</div>
+				</MkFolder>
 
-				<div class="_gaps_m">
-					<MkSwitch v-model="enableSentryLogging">
-						<template #label>Enable sentry logging</template>
-					</MkSwitch>
-					<MkInput v-model="sentryDsn">
-						<template #prefix><i class="ti ti-key"></i></template>
-						<template #label>SentryDSN</template>
-					</MkInput>
-				</div>
-			</MkFolder>
-			<MkButton primary @click="save">Save</MkButton>
+				<MkFolder>
+					<template #label>DeepL Translation</template>
+
+					<div class="_gaps_m">
+						<MkInput v-model="deeplAuthKey">
+							<template #prefix><i class="ti ti-key"></i></template>
+							<template #label>DeepL Auth Key</template>
+						</MkInput>
+						<MkSwitch v-model="deeplIsPro">
+							<template #label>Pro account</template>
+						</MkSwitch>
+						<MkButton primary @click="save_deepl">Save</MkButton>
+					</div>
+				</MkFolder>
+
+				<MkFolder>
+					<template #label>Sentry logging</template>
+
+					<div class="_gaps_m">
+						<MkSwitch v-model="enableSentryLogging">
+							<template #label>Enable sentry logging</template>
+						</MkSwitch>
+						<MkInput v-model="sentryDsn">
+							<template #prefix><i class="ti ti-key"></i></template>
+							<template #label>SentryDSN</template>
+						</MkInput>
+						<MkButton primary @click="save_sentry">Save</MkButton>
+					</div>
+				</MkFolder>
+			</div>
 		</FormSuspense>
 	</MkSpacer>
 </MkStickyContainer>
@@ -59,20 +77,38 @@ const deeplIsPro = ref(false);
 const enableSentryLogging = ref(false);
 const sentryDsn = ref('');
 
+const googleAnalyticsMeasurementId = ref<string>('');
+
 async function init() {
 	const meta = await misskeyApi('admin/meta');
-	deeplAuthKey.value = meta.deeplAuthKey;
+	deeplAuthKey.value = meta.deeplAuthKey ?? '';
 	deeplIsPro.value = meta.deeplIsPro;
 	enableSentryLogging.value = meta.enableSentryLogging;
 	sentryDsn.value = meta.sentryDsn;
+	googleAnalyticsMeasurementId.value = meta.googleAnalyticsMeasurementId ?? '';
 }
 
-function save() {
+function save_deepl() {
 	os.apiWithDialog('admin/update-meta', {
 		deeplAuthKey: deeplAuthKey.value,
 		deeplIsPro: deeplIsPro.value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function save_sentry() {
+	os.apiWithDialog('admin/update-meta', {
 		enableSentryLogging: enableSentryLogging.value,
 		sentryDsn: sentryDsn.value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function save_googleAnalytics() {
+	os.apiWithDialog('admin/update-meta', {
+		googleAnalyticsMeasurementId: googleAnalyticsMeasurementId.value,
 	}).then(() => {
 		fetchInstance(true);
 	});
