@@ -79,6 +79,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</SearchMarker>
 
+				<SearchMarker :keywords="['font', 'custom', 'style']">
+					<MkSelect v-model="customFont">
+						<template #label><SearchLabel>{{ i18n.ts.customFont }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+						<option :value="null">{{ i18n.ts.default }}</option>
+						<option v-for="[name, font] of Object.entries(fontList)" :key="name" :value="name">{{ font.name }}</option>
+					</MkSelect>
+				</SearchMarker>
+
 				<SearchMarker :keywords="['font', 'size']">
 					<MkRadios v-model="fontSize">
 						<template #label><SearchLabel>{{ i18n.ts.fontSize }}</SearchLabel></template>
@@ -127,6 +135,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
 							<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
 							<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
+						</MkSelect>
+					</SearchMarker>
+
+					<SearchMarker :keywords="['ticker', 'style']">
+						<MkSelect v-model="instanceTickerStyle">
+							<template #label><SearchLabel>{{ i18n.ts.instanceTickerStyle }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+							<option value="default">{{ i18n.ts._instanceTickerStyle.default }}</option>
+							<option value="minimal">{{ i18n.ts._instanceTickerStyle.minimal }}</option>
+							<option value="icon">{{ i18n.ts._instanceTickerStyle.icon }}</option>
 						</MkSelect>
 					</SearchMarker>
 
@@ -194,12 +211,14 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import { instance } from '@/instance.js';
+import { fontList } from '@/scripts/font.js';
 
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
 
 const showAvatarDecorations = computed(defaultStore.makeGetterSetter('showAvatarDecorations'));
 const emojiStyle = computed(defaultStore.makeGetterSetter('emojiStyle'));
+const customFont = computed(defaultStore.makeGetterSetter('customFont'));
 const menuStyle = computed(defaultStore.makeGetterSetter('menuStyle'));
 const useBlurEffectForModal = computed(defaultStore.makeGetterSetter('useBlurEffectForModal'));
 const useBlurEffect = computed(defaultStore.makeGetterSetter('useBlurEffect'));
@@ -214,6 +233,7 @@ const notificationPosition = computed(defaultStore.makeGetterSetter('notificatio
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
+const instanceTickerStyle = computed(defaultStore.makeGetterSetter('instanceTickerStyle'));
 
 watch(fontSize, () => {
 	if (fontSize.value == null) {
@@ -241,10 +261,8 @@ watch([
 	mediaListWithOneImageAppearance,
 	reactionsDisplaySize,
 	limitWidthOfReaction,
-	mediaListWithOneImageAppearance,
-	reactionsDisplaySize,
-	limitWidthOfReaction,
 	instanceTicker,
+	instanceTickerStyle,
 ], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });

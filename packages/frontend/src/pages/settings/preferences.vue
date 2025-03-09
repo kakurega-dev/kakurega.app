@@ -8,7 +8,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps_m">
 		<SearchMarker :keywords="['language']">
 			<MkSelect v-model="lang">
-				<template #label><SearchLabel>{{ i18n.ts.uiLanguage }}</SearchLabel></template>
+				<template #label>
+					<SearchLabel>{{ i18n.ts.uiLanguage }}</SearchLabel>
+				</template>
 				<option v-for="x in langs" :key="x[0]" :value="x[0]">{{ x[1] }}</option>
 				<template #caption>
 					<I18n :src="i18n.ts.i18nInfo" tag="span">
@@ -22,7 +24,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['device', 'type', 'kind', 'smartphone', 'tablet', 'desktop']">
 			<MkRadios v-model="overridedDeviceKind">
-				<template #label><SearchLabel>{{ i18n.ts.overridedDeviceKind }}</SearchLabel></template>
+				<template #label>
+					<SearchLabel>{{ i18n.ts.overridedDeviceKind }}</SearchLabel>
+				</template>
 				<option :value="null">{{ i18n.ts.auto }}</option>
 				<option value="smartphone"><i class="ti ti-device-mobile"/> {{ i18n.ts.smartphone }}</option>
 				<option value="tablet"><i class="ti ti-device-tablet"/> {{ i18n.ts.tablet }}</option>
@@ -34,28 +38,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_s">
 				<SearchMarker :keywords="['post', 'form', 'timeline']">
 					<MkSwitch v-model="showFixedPostForm">
-						<template #label><SearchLabel>{{ i18n.ts.showFixedPostForm }}</SearchLabel></template>
+						<template #label>
+							<SearchLabel>{{ i18n.ts.showFixedPostForm }}</SearchLabel>
+						</template>
 					</MkSwitch>
 				</SearchMarker>
 
 				<SearchMarker :keywords="['post', 'form', 'timeline', 'channel']">
 					<MkSwitch v-model="showFixedPostFormInChannel">
-						<template #label><SearchLabel>{{ i18n.ts.showFixedPostFormInChannel }}</SearchLabel></template>
+						<template #label>
+							<SearchLabel>{{ i18n.ts.showFixedPostFormInChannel }}</SearchLabel>
+						</template>
 					</MkSwitch>
 				</SearchMarker>
 
+				<SearchMaker :keywords="['post', 'form']">
+					<FormLink to="/settings/post-form">{{ i18n.ts.postForm }}</FormLink>
+				</SearchMaker>
+
 				<SearchMarker :keywords="['pinned', 'list']">
 					<MkFolder>
-						<template #label><SearchLabel>{{ i18n.ts.pinnedList }}</SearchLabel></template>
+						<template #label>
+							<SearchLabel>{{ i18n.ts.pinnedList }}</SearchLabel>
+						</template>
 						<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
-						<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
-						<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+						<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length === 0" @click="setPinnedList()">
+							{{
+								i18n.ts.add }}
+						</MkButton>
+						<MkButton v-else danger @click="removePinnedList()">
+							<i class="ti ti-trash"></i> {{ i18n.ts.remove }}
+						</MkButton>
 					</MkFolder>
 				</SearchMarker>
 
 				<SearchMarker :keywords="['mfm', 'enable', 'show', 'advanced', 'picker', 'form', 'function', 'fn']">
 					<MkSwitch v-model="enableQuickAddMfmFunction">
-						<template #label><SearchLabel>{{ i18n.ts.enableQuickAddMfmFunction }}</SearchLabel></template>
+						<template #label>
+							<SearchLabel>{{ i18n.ts.enableQuickAddMfmFunction }}</SearchLabel>
+						</template>
 					</MkSwitch>
 				</SearchMarker>
 			</div>
@@ -63,44 +84,101 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['note']">
 			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.note }}</SearchLabel></template>
+				<template #label>
+					<SearchLabel>{{ i18n.ts.note }}</SearchLabel>
+				</template>
 
 				<div class="_gaps_m">
 					<div class="_gaps_s">
 						<SearchMarker :keywords="['renote']">
 							<MkSwitch v-model="collapseRenotes">
-								<template #label><SearchLabel>{{ i18n.ts.collapseRenotes }}</SearchLabel></template>
-								<template #caption><SearchKeyword>{{ i18n.ts.collapseRenotesDescription }}</SearchKeyword></template>
+								<template #label>
+									<SearchLabel>{{ i18n.ts.collapseRenotes }}</SearchLabel>
+								</template>
+								<template #caption>
+									<SearchKeyword>{{ i18n.ts.collapseRenotesDescription }}</SearchKeyword>
+								</template>
+							</MkSwitch>
+						</SearchMarker>
+
+						<MkDisableSection :disabled="!collapseRenotes">
+							<SearchMarker :keywords="['renote']">
+								<MkSelect v-model="collapseRenotesTrigger">
+									<template #label><SearchLabel>{{ i18n.ts.collapseRenotesTrigger }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span><span class="_beta">{{ i18n.ts.beta }}</span></template>
+									<option value="action">{{ i18n.ts._collapseRenotesTrigger.action }}</option>
+									<option value="see">{{ i18n.ts._collapseRenotesTrigger.see }}</option>
+									<option value="all">{{ i18n.ts._collapseRenotesTrigger.all }}</option>
+								</MkSelect>
+							</SearchMarker>
+						</MkDisableSection>
+
+						<MkDisableSection :disabled="!collapseRenotes">
+							<SearchMarker :keywords="['renote']">
+								<MkSwitch v-model="collapseSelfRenotes">
+									<template #caption><SearchKeyword>{{ i18n.ts.collapseSelfRenotesDescription }}</SearchKeyword></template>
+									<SearchLabel>{{ i18n.ts.collapseSelfRenotes }}</SearchLabel>
+									<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+								</MkSwitch>
+							</SearchMarker>
+						</MkDisableSection>
+
+						<SearchMarker :keywords="['reaction']">
+							<MkSelect v-model="hideReactionCount">
+								<template #label><SearchLabel>{{ i18n.ts.hideReactionCount }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+								<option value="none">{{ i18n.ts._hideReactionCount.none }}</option>
+								<option value="self">{{ i18n.ts._hideReactionCount.self }}</option>
+								<option value="others">{{ i18n.ts._hideReactionCount.others }}</option>
+								<option value="all">{{ i18n.ts._hideReactionCount.all }}</option>
+							</MkSelect>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['reaction']">
+							<MkSwitch v-model="hideReactionUsers">
+								<template #caption><SearchKeyword>{{ i18n.ts.hideReactionUsersDescription }}</SearchKeyword></template>
+								<SearchLabel>{{ i18n.ts.hideReactionUsers }}</SearchLabel>
+								<span class="_beta">{{ i18n.ts.originalFeature }}</span>
 							</MkSwitch>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['hover', 'show', 'footer', 'action']">
 							<MkSwitch v-model="showNoteActionsOnlyHover">
-								<template #label><SearchLabel>{{ i18n.ts.showNoteActionsOnlyHover }}</SearchLabel></template>
+								<template #label>
+									<SearchLabel>{{ i18n.ts.showNoteActionsOnlyHover }}</SearchLabel>
+								</template>
 							</MkSwitch>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['footer', 'action', 'clip', 'show']">
 							<MkSwitch v-model="showClipButtonInNoteFooter">
-								<template #label><SearchLabel>{{ i18n.ts.showClipButtonInNoteFooter }}</SearchLabel></template>
+								<template #label>
+									<SearchLabel>{{ i18n.ts.showClipButtonInNoteFooter }}</SearchLabel>
+								</template>
 							</MkSwitch>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['mfm', 'enable', 'show', 'advanced']">
 							<MkSwitch v-model="advancedMfm">
-								<template #label><SearchLabel>{{ i18n.ts.enableAdvancedMfm }}</SearchLabel></template>
+								<template #label>
+									<SearchLabel>{{ i18n.ts.enableAdvancedMfm }}</SearchLabel>
+								</template>
 							</MkSwitch>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['reaction', 'count', 'show']">
 							<MkSwitch v-model="showReactionsCount">
-								<template #label><SearchLabel>{{ i18n.ts.showReactionsCount }}</SearchLabel></template>
+								<template #label>
+									<SearchLabel>{{ i18n.ts.showReactionsCount }}</SearchLabel>
+								</template>
 							</MkSwitch>
 						</SearchMarker>
 
-						<SearchMarker :keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'quality', 'raw', 'attachment']">
+						<SearchMarker
+							:keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'quality', 'raw', 'attachment']"
+						>
 							<MkSwitch v-model="loadRawImages">
-								<template #label><SearchLabel>{{ i18n.ts.loadRawImages }}</SearchLabel></template>
+								<template #label>
+									<SearchLabel>{{ i18n.ts.loadRawImages }}</SearchLabel>
+								</template>
 							</MkSwitch>
 						</SearchMarker>
 					</div>
@@ -110,12 +188,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['notification']">
 			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.notifications }}</SearchLabel></template>
+				<template #label>
+					<SearchLabel>{{ i18n.ts.notifications }}</SearchLabel>
+				</template>
 
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['group']">
 						<MkSwitch v-model="useGroupedNotifications">
-							<template #label><SearchLabel>{{ i18n.ts.useGroupedNotifications }}</SearchLabel></template>
+							<template #label>
+								<SearchLabel>{{ i18n.ts.useGroupedNotifications }}</SearchLabel>
+							</template>
 						</MkSwitch>
 					</SearchMarker>
 				</div>
@@ -124,119 +206,177 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['behavior']">
 			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.behavior }}</SearchLabel></template>
+				<template #label>
+					<SearchLabel>{{ i18n.ts.behavior }}</SearchLabel>
+				</template>
 
 				<div class="_gaps_m">
 					<div class="_gaps_s">
 						<SearchMarker :keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab']">
 							<MkSwitch v-model="imageNewTab">
-								<template #label><SearchLabel>{{ i18n.ts.openImageInNewTab }}</SearchLabel></template>
+								<template #label>
+									<SearchLabel>{{ i18n.ts.openImageInNewTab }}</SearchLabel>
+								</template>
 							</MkSwitch>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['reaction', 'picker', 'contextmenu', 'open']">
 							<MkSwitch v-model="useReactionPickerForContextMenu">
-								<template #label><SearchLabel>{{ i18n.ts.useReactionPickerForContextMenu }}</SearchLabel></template>
+								<template #label>
+									<SearchLabel>{{ i18n.ts.useReactionPickerForContextMenu }}</SearchLabel>
+								</template>
 							</MkSwitch>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['load', 'auto', 'more']">
 							<MkSwitch v-model="enableInfiniteScroll">
-								<template #label><SearchLabel>{{ i18n.ts.enableInfiniteScroll }}</SearchLabel></template>
+								<template #label>
+									<SearchLabel>{{ i18n.ts.enableInfiniteScroll }}</SearchLabel>
+								</template>
 							</MkSwitch>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['disable', 'streaming', 'timeline']">
 							<MkSwitch v-model="disableStreamingTimeline">
-								<template #label><SearchLabel>{{ i18n.ts.disableStreamingTimeline }}</SearchLabel></template>
+								<template #label>
+									<SearchLabel>{{ i18n.ts.disableStreamingTimeline }}</SearchLabel>
+								</template>
 							</MkSwitch>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['follow', 'confirm', 'always']">
 							<MkSwitch v-model="alwaysConfirmFollow">
-								<template #label><SearchLabel>{{ i18n.ts.alwaysConfirmFollow }}</SearchLabel></template>
+								<template #label>
+									<SearchLabel>{{ i18n.ts.alwaysConfirmFollow }}</SearchLabel>
+								</template>
 							</MkSwitch>
 						</SearchMarker>
 
-						<SearchMarker :keywords="['sensitive', 'nsfw', 'media', 'image', 'photo', 'picture', 'attachment', 'confirm']">
+						<SearchMarker
+							:keywords="['sensitive', 'nsfw', 'media', 'image', 'photo', 'picture', 'attachment', 'confirm']"
+						>
 							<MkSwitch v-model="confirmWhenRevealingSensitiveMedia">
-								<template #label><SearchLabel>{{ i18n.ts.confirmWhenRevealingSensitiveMedia }}</SearchLabel></template>
+								<template #label>
+									<SearchLabel>{{ i18n.ts.confirmWhenRevealingSensitiveMedia }}</SearchLabel>
+								</template>
 							</MkSwitch>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['reaction', 'confirm']">
 							<MkSwitch v-model="confirmOnReact">
-								<template #label><SearchLabel>{{ i18n.ts.confirmOnReact }}</SearchLabel></template>
+								<template #label>
+									<SearchLabel>{{ i18n.ts.confirmOnReact }}</SearchLabel>
+								</template>
 							</MkSwitch>
 						</SearchMarker>
 					</div>
 
 					<SearchMarker :keywords="['server', 'disconnect', 'reconnect', 'reload', 'streaming']">
 						<MkSelect v-model="serverDisconnectedBehavior">
-							<template #label><SearchLabel>{{ i18n.ts.whenServerDisconnected }}</SearchLabel></template>
+							<template #label>
+								<SearchLabel>{{ i18n.ts.whenServerDisconnected }}</SearchLabel>
+							</template>
 							<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
 							<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
 							<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
+							<option value="none">{{ i18n.ts.doNothing }}</option>
 						</MkSelect>
 					</SearchMarker>
 
 					<SearchMarker :keywords="['cache', 'page']">
 						<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
-							<template #label><SearchLabel>{{ i18n.ts.numberOfPageCache }}</SearchLabel></template>
+							<template #label>
+								<SearchLabel>{{ i18n.ts.numberOfPageCache }}</SearchLabel>
+							</template>
 							<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
 						</MkRange>
 					</SearchMarker>
 
-					<SearchMarker :label="i18n.ts.dataSaver" :keywords="['datasaver']">
-						<MkFolder>
-							<template #label><SearchLabel>{{ i18n.ts.dataSaver }}</SearchLabel></template>
-
-							<div class="_gaps_m">
-								<MkInfo>{{ i18n.ts.reloadRequiredToApplySettings }}</MkInfo>
-
-								<div class="_buttons">
-									<MkButton inline @click="enableAllDataSaver">{{ i18n.ts.enableAll }}</MkButton>
-									<MkButton inline @click="disableAllDataSaver">{{ i18n.ts.disableAll }}</MkButton>
-								</div>
-								<div class="_gaps_m">
-									<MkSwitch v-model="dataSaver.media">
-										{{ i18n.ts._dataSaver._media.title }}
-										<template #caption>{{ i18n.ts._dataSaver._media.description }}</template>
-									</MkSwitch>
-									<MkSwitch v-model="dataSaver.avatar">
-										{{ i18n.ts._dataSaver._avatar.title }}
-										<template #caption>{{ i18n.ts._dataSaver._avatar.description }}</template>
-									</MkSwitch>
-									<MkSwitch v-model="dataSaver.urlPreview">
-										{{ i18n.ts._dataSaver._urlPreview.title }}
-										<template #caption>{{ i18n.ts._dataSaver._urlPreview.description }}</template>
-									</MkSwitch>
-									<MkSwitch v-model="dataSaver.code">
-										{{ i18n.ts._dataSaver._code.title }}
-										<template #caption>{{ i18n.ts._dataSaver._code.description }}</template>
-									</MkSwitch>
-								</div>
-							</div>
-						</MkFolder>
+					<SearchMarker :keywords="['cache', 'page']">
+						<MkSwitch v-model="enableOverrideTLDisplayLimit"><SearchLabel>{{ i18n.ts.enableOverrideTLDisplayLimit }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></MkSwitch>
 					</SearchMarker>
+
+					<MkDisableSection :disabled="!enableOverrideTLDisplayLimit">
+						<SearchMarker :keywords="['cache', 'page']">
+							<MkRange v-model="overrideTLDisplayLimit" :min="20" :max="200" :step="1" easing>
+								<template #label><SearchLabel>{{ i18n.ts.overrideTLDisplayLimit }}</SearchLabel></template>
+								<template #caption><SearchKeyword>{{ i18n.ts.overrideTLDisplayLimitDescription }}</SearchKeyword></template>
+							</MkRange>
+						</SearchMarker>
+					</MkDisableSection>
+
+					<SearchMarker :label="i18n.ts.dataSaver" :keywords="['datasaver']">
+						<MkSwitch v-model="enableDataSaverMode" :disabled="autoDataSaver">{{ i18n.ts.dataSaver }}</MkSwitch>
+					</SearchMarker>
+
+					<SearchMarker :keywords="['datasaver']">
+						<MkSwitch v-model="autoDataSaver" :disabled="!supportAutoDataSaver">
+							<template #caption><SearchKeyword>{{ i18n.ts.autoDataSaverDescription }}</SearchKeyword></template>
+							<SearchLabel>{{ i18n.ts.autoDataSaver }}</SearchLabel>
+							<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+						</MkSwitch>
+					</SearchMarker>
+
+					<MkDisableSection :disabled="!enableDataSaverMode">
+						<SearchMarker :label="i18n.ts.dataSaverAdvancedSettings" :keywords="['datasaver']">
+							<MkFolder>
+								<template #label>
+									<SearchLabel>{{ i18n.ts.dataSaverAdvancedSettings }}</SearchLabel>
+								</template>
+
+								<div class="_gaps_m">
+									<MkInfo>{{ i18n.ts.reloadRequiredToApplySettings }}</MkInfo>
+
+									<div class="_buttons">
+										<MkButton inline @click="enableAllDataSaver">{{ i18n.ts.enableAll }}</MkButton>
+										<MkButton inline @click="disableAllDataSaver">{{ i18n.ts.disableAll }}</MkButton>
+									</div>
+									<div class="_gaps_m">
+										<MkSwitch v-model="dataSaver.media">
+											{{ i18n.ts._dataSaver._media.title }}
+											<template #caption>{{ i18n.ts._dataSaver._media.description }}</template>
+										</MkSwitch>
+										<MkSwitch v-model="dataSaver.avatar">
+											{{ i18n.ts._dataSaver._avatar.title }}
+											<template #caption>{{ i18n.ts._dataSaver._avatar.description }}</template>
+										</MkSwitch>
+										<MkSwitch v-model="dataSaver.urlPreview">
+											{{ i18n.ts._dataSaver._urlPreview.title }}
+											<template #caption>{{ i18n.ts._dataSaver._urlPreview.description }}</template>
+										</MkSwitch>
+										<MkSwitch v-model="dataSaver.code">
+											{{ i18n.ts._dataSaver._code.title }}
+											<template #caption>{{ i18n.ts._dataSaver._code.description }}</template>
+										</MkSwitch>
+									</div>
+								</div>
+							</MkFolder>
+						</SearchMarker>
+					</MkDisableSection>
 				</div>
 			</FormSection>
 		</SearchMarker>
 
 		<SearchMarker>
 			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.other }}</SearchLabel></template>
+				<template #label>
+					<SearchLabel>{{ i18n.ts.other }}</SearchLabel>
+				</template>
 
 				<div class="_gaps">
 					<SearchMarker :keywords="['ad', 'show']">
 						<MkSwitch v-model="forceShowAds">
-							<template #label><SearchLabel>{{ i18n.ts.forceShowAds }}</SearchLabel></template>
+							<template #label>
+								<SearchLabel>{{ i18n.ts.forceShowAds }}</SearchLabel>
+							</template>
 						</MkSwitch>
 					</SearchMarker>
 
 					<SearchMarker>
 						<MkRadios v-model="hemisphere">
-							<template #label><SearchLabel>{{ i18n.ts.hemisphere }}</SearchLabel></template>
+							<template #label>
+								<SearchLabel>{{ i18n.ts.hemisphere }}</SearchLabel>
+							</template>
 							<option value="N">{{ i18n.ts._hemisphere.N }}</option>
 							<option value="S">{{ i18n.ts._hemisphere.S }}</option>
 							<template #caption>{{ i18n.ts._hemisphere.caption }}</template>
@@ -245,11 +385,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<SearchMarker :keywords="['emoji', 'dictionary', 'additional', 'extra']">
 						<MkFolder>
-							<template #label><SearchLabel>{{ i18n.ts.additionalEmojiDictionary }}</SearchLabel></template>
+							<template #label>
+								<SearchLabel>{{ i18n.ts.additionalEmojiDictionary }}</SearchLabel>
+							</template>
 							<div class="_buttons">
 								<template v-for="lang in emojiIndexLangs" :key="lang">
-									<MkButton v-if="defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang]" danger @click="removeEmojiIndex(lang)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }} ({{ getEmojiIndexLangName(lang) }})</MkButton>
-									<MkButton v-else @click="downloadEmojiIndex(lang)"><i class="ti ti-download"></i> {{ getEmojiIndexLangName(lang) }}{{ defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })` : '' }}</MkButton>
+									<MkButton
+										v-if="defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang]" danger
+										@click="removeEmojiIndex(lang)"
+									>
+										<i class="ti ti-trash"></i> {{ i18n.ts.remove }} ({{
+											getEmojiIndexLangName(lang) }})
+									</MkButton>
+									<MkButton v-else @click="downloadEmojiIndex(lang)">
+										<i class="ti ti-download"></i> {{
+											getEmojiIndexLangName(lang) }}{{
+											defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })`
+											: '' }}
+									</MkButton>
 								</template>
 							</div>
 						</MkFolder>
@@ -264,6 +417,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<FormSection>
 			<div class="_gaps">
 				<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
+				<FormLink to="/settings/zen">{{ i18n.ts.zenMode }}</FormLink>
 			</div>
 		</FormSection>
 	</div>
@@ -284,24 +438,31 @@ import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import MkDisableSection from '@/components/MkDisableSection.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
+import { isSupportNavigatorConnection } from '@/scripts/datasaver.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const dataSaver = ref(defaultStore.state.dataSaver);
+const supportAutoDataSaver = computed(() => isSupportNavigatorConnection());
 
 const hemisphere = computed(defaultStore.makeGetterSetter('hemisphere'));
 const overridedDeviceKind = computed(defaultStore.makeGetterSetter('overridedDeviceKind'));
 const serverDisconnectedBehavior = computed(defaultStore.makeGetterSetter('serverDisconnectedBehavior'));
 const showNoteActionsOnlyHover = computed(defaultStore.makeGetterSetter('showNoteActionsOnlyHover'));
 const showClipButtonInNoteFooter = computed(defaultStore.makeGetterSetter('showClipButtonInNoteFooter'));
+const hideReactionCount = computed(defaultStore.makeGetterSetter('hideReactionCount'));
+const hideReactionUsers = computed(defaultStore.makeGetterSetter('hideReactionUsers'));
 const collapseRenotes = computed(defaultStore.makeGetterSetter('collapseRenotes'));
+const collapseRenotesTrigger = computed(defaultStore.makeGetterSetter('collapseRenotesTrigger'));
+const collapseSelfRenotes = computed(defaultStore.makeGetterSetter('collapseSelfRenotes'));
 const advancedMfm = computed(defaultStore.makeGetterSetter('advancedMfm'));
 const showReactionsCount = computed(defaultStore.makeGetterSetter('showReactionsCount'));
 const enableQuickAddMfmFunction = computed(defaultStore.makeGetterSetter('enableQuickAddMfmFunction'));
@@ -319,6 +480,10 @@ const alwaysConfirmFollow = computed(defaultStore.makeGetterSetter('alwaysConfir
 const confirmWhenRevealingSensitiveMedia = computed(defaultStore.makeGetterSetter('confirmWhenRevealingSensitiveMedia'));
 const confirmOnReact = computed(defaultStore.makeGetterSetter('confirmOnReact'));
 const contextMenu = computed(defaultStore.makeGetterSetter('contextMenu'));
+const autoDataSaver = computed(defaultStore.makeGetterSetter('autoDataSaver'));
+const enableDataSaverMode = computed(defaultStore.makeGetterSetter('enableDataSaverMode'));
+const enableOverrideTLDisplayLimit = computed(defaultStore.makeGetterSetter('enableOverrideTLDisplayLimit'));
+const overrideTLDisplayLimit = computed(defaultStore.makeGetterSetter('overrideTLDisplayLimit'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -336,6 +501,7 @@ watch([
 	alwaysConfirmFollow,
 	confirmWhenRevealingSensitiveMedia,
 	contextMenu,
+	hideReactionCount,
 ], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });

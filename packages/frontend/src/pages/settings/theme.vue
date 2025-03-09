@@ -36,9 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<SearchMarker :keywords="['sync', 'time', 'dark', 'light', 'mode']">
 					<MkSwitch v-model="syncTimeDarkMode">
-						{{ i18n.ts.syncTimeDarkMode }}
-						<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-						<template #caption>{{ i18n.ts.disableSyncDeviceDarkMode }}</template>
+						<template #label><SearchLabel>{{ i18n.ts.syncTimeDarkMode }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+						<template #caption><SearchKeyword>{{ i18n.ts.disableSyncDeviceDarkMode }}</SearchKeyword></template>
 					</MkSwitch>
 				</SearchMarker>
 			</div>

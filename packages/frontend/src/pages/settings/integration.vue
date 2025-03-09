@@ -1,32 +1,39 @@
 <template>
+<SearchMarker path="/settings/integration" :label="i18n.ts.integration" :keywords="['integration']" icon="ti ti-share">
 	<div class="_gaps_m">
-		<FormSection v-if="instance.enablePatreonIntegration" :first="true">
-			<template #label>
-				<i class="ti ti-brand-patreon"></i>
-				Patreon
-				<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-			</template>
-			<p v-if="integrations.patreon">{{ i18n.ts.connectedTo }}: <a href="https://www.patreon.com/home" rel="nofollow noopener" target="_blank">{{ integrations.patreon.id }}</a></p>
-			<div v-if="integrations.patreon" class="_gaps_s">
-				<MkButton danger @click="disconnectPatreon">{{ i18n.ts.disconnectService }}</MkButton>
-				<MkButton primary @click="requestPatreonRefresh">{{ i18n.ts.requestRefresh }}</MkButton>
-			</div>
-			<MkButton v-else primary @click="connectPatreon">{{ i18n.ts.connectService }}</MkButton>
-		</FormSection>
-		<FormSection v-if="instance.enableFanboxIntegration" :first="!instance.enablePatreonIntegration">
-			<template #label>
-				<i class="ti ti-square-rounded-letter-p"></i>
-				PixivFANBOX
-				<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-			</template>
-			<p v-if="integrations.fanbox">{{ i18n.ts.connectedTo }}: <a :href="'https://www.pixiv.net/users/' + integrations.fanbox.id" rel="nofollow noopener" target="_blank">{{ integrations.fanbox.id }}</a></p>
-			<div v-if="integrations.fanbox" class="_gaps_s">
-				<MkButton danger @click="disconnectFanbox">{{ i18n.ts.disconnectService }}</MkButton>
-				<MkButton primary @click="requestFanboxRefresh">{{ i18n.ts.requestRefresh }}</MkButton>
-			</div>
-			<MkButton v-else primary @click="connectFanbox">{{ i18n.ts.connectService }}</MkButton>
-		</FormSection>
+		<SearchMarker :keywords="['integration', 'patreon']">
+			<FormSection v-if="instance.enablePatreonIntegration" :first="true">
+				<template #label>
+					<i class="ti ti-brand-patreon"></i>
+					<SearchLabel>Patreon</SearchLabel>
+					<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+				</template>
+				<p v-if="integrations.patreon">{{ i18n.ts.connectedTo }}: <a href="https://www.patreon.com/home" rel="nofollow noopener" target="_blank">{{ integrations.patreon.id }}</a></p>
+				<div v-if="integrations.patreon" class="_gaps_s">
+					<MkButton danger @click="disconnectPatreon">{{ i18n.ts.disconnectService }}</MkButton>
+					<MkButton primary @click="requestPatreonRefresh">{{ i18n.ts.requestRefresh }}</MkButton>
+				</div>
+				<MkButton v-else primary @click="connectPatreon">{{ i18n.ts.connectService }}</MkButton>
+			</FormSection>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['integration', 'fanbox']">
+			<FormSection v-if="instance.enableFanboxIntegration" :first="!instance.enablePatreonIntegration">
+				<template #label>
+					<i class="ti ti-square-rounded-letter-p"></i>
+					<SearchLabel>PixivFANBOX</SearchLabel>
+					<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+				</template>
+				<p v-if="integrations.fanbox">{{ i18n.ts.connectedTo }}: <a :href="'https://www.pixiv.net/users/' + integrations.fanbox.id" rel="nofollow noopener" target="_blank">{{ integrations.fanbox.id }}</a></p>
+				<div v-if="integrations.fanbox" class="_gaps_s">
+					<MkButton danger @click="disconnectFanbox">{{ i18n.ts.disconnectService }}</MkButton>
+					<MkButton primary @click="requestFanboxRefresh">{{ i18n.ts.requestRefresh }}</MkButton>
+				</div>
+				<MkButton v-else primary @click="connectFanbox">{{ i18n.ts.connectService }}</MkButton>
+			</FormSection>
+		</SearchMarker>
 	</div>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
@@ -82,7 +89,7 @@ async function connectFanbox() {
 	if (!isNaN(Number(result))) {
 		id = result;
 	} else {
-		const match = result.match(/www.pixiv.net\/users\/(\d+)/)?.[1];
+		const match = result?.match(/www.pixiv.net\/users\/(\d+)/)?.[1];
 
 		if (!isNaN(Number(match))) {
 			id = match as string;
@@ -113,7 +120,7 @@ async function connectFanbox() {
 }
 
 async function disconnectFanbox() {
-	await os.apiWithDialog('integrations/fanbox/disconnect');
+	await os.apiWithDialog('integrations/fanbox/disconnect', {});
 }
 
 async function requestFanboxRefresh() {
@@ -132,7 +139,7 @@ onMounted(() => {
 		(document.location.protocol.startsWith('https') ? ' secure' : '');
 
 	watch(integrations, () => {
-		if (integrations.value?.patreon) {
+		if (integrations.value.patreon) {
 			if (patreonForm.value) patreonForm.value.close();
 		}
 	});

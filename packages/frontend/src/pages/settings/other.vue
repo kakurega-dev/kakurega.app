@@ -96,7 +96,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 
 				<SearchMarker :keywords="['statistics', 'sentry']">
-					<MkSwitch v-if="instance.enableSentryLogging" v-model="reportError">{{ i18n.ts.optoutStatistics }}<template #caption>{{ i18n.tsx.optoutStatisticsDescription({ instance: instance.name || host }) }}</template></MkSwitch>
+					<MkSwitch v-if="instance.enableSentryLogging" v-model="reportError">
+						<SearchLabel>{{ i18n.ts.optoutStatistics }}</SearchLabel>
+						<template #caption>{{ i18n.tsx.optoutStatisticsDescription({ instance: instance.name || host }) }}</template>
+					</MkSwitch>
 				</SearchMarker>
 			</div>
 		</FormSection>

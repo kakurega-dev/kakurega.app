@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps_m">
 		<SearchMarker :keywords="['timeline']">
 			<MkSelect v-model="enableGTL" @update:modelValue="save(); reloadAsk()">
-				<template #label>{{ i18n.ts.enableGTL }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+				<template #label><SearchLabel>{{ i18n.ts.enableGTL }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
 				<option :value="null">{{ i18n.ts._enableGTL.default }}</option>
 				<option :value="true">{{ i18n.ts._enableGTL._true }}</option>
 				<option :value="false">{{ i18n.ts._enableGTL._false }}</option>
@@ -33,8 +33,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkDisableSection :disabled="!isLocked">
 			<SearchMarker :keywords="['follow', 'request', 'auto', 'reject']">
 				<MkSwitch v-model="autoRejectFollowRequest" @update:modelValue="save()">
-					{{ i18n.ts.autoRejectFollowRequest }}<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-					<template #caption>{{ i18n.ts.autoRejectFollowRequestDescription }}</template>
+					<SearchLabel>{{ i18n.ts.autoRejectFollowRequest }}</SearchLabel>
+					<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+					<template #caption><SearchKeyword>{{ i18n.ts.autoRejectFollowRequestDescription }}</SearchKeyword></template>
 				</MkSwitch>
 			</SearchMarker>
 		</MkDisableSection>
@@ -48,8 +49,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['activity', 'hide']">
 			<MkSwitch v-model="hideActivity" @update:modelValue="save()">
-				{{ i18n.ts.hideActivity }}<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-				<template #caption>{{ i18n.ts.hideActivityDescription }}</template>
+				<SearchLabel>{{ i18n.ts.hideActivity }}</SearchLabel>
+				<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+				<template #caption><SearchKeyword>{{ i18n.ts.hideActivityDescription }}</SearchKeyword></template>
 			</MkSwitch>
 		</SearchMarker>
 
@@ -80,8 +82,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['search', 'hide']">
 			<MkSwitch v-model="hideSearchResult" @update:modelValue="save()">
-				{{ i18n.ts.hideSearchResult }}<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-				<template #caption>{{ i18n.ts.hideSearchResultDescription }}</template>
+				<SearchLabel>{{ i18n.ts.hideSearchResult }}</SearchLabel>
+				<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+				<template #caption><SearchKeyword>{{ i18n.ts.hideSearchResultDescription }}</SearchKeyword></template>
 			</MkSwitch>
 		</SearchMarker>
 
@@ -108,8 +111,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['supporter', 'hide']">
 			<MkSwitch v-model="hideFromSupporterPage" @update:modelValue="save()">
-				<template #label>{{ i18n.ts.hideFromSupporterPage }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-				<template #caption>{{ i18n.ts.hideFromSupporterPageDescription }}</template>
+				<template #label><SearchLabel>{{ i18n.ts.hideFromSupporterPage }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+				<template #caption><SearchKeyword>{{ i18n.ts.hideFromSupporterPageDescription }}</SearchKeyword></template>
 			</MkSwitch>
 		</SearchMarker>
 
@@ -237,7 +240,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 
 				<SearchMarker :keywords="['remember', 'reaction', 'acceptance']">
-					<MkSwitch v-model="rememberReactionAcceptance" @update:modelValue="save()">{{ i18n.ts.rememberReactionAcceptance }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></MkSwitch>
+					<MkSwitch v-model="rememberReactionAcceptance" @update:modelValue="save()">
+						<SearchLabel>{{ i18n.ts.rememberReactionAcceptance }}</SearchLabel>
+						<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+					</MkSwitch>
 				</SearchMarker>
 			</div>
 		</FormSection>
