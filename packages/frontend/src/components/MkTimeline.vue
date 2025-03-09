@@ -23,6 +23,7 @@ import * as Misskey from 'misskey-js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { Paging } from '@/components/MkPagination.vue';
 import type { Filter as NoteFilter } from '@/components/MkNotes.vue';
+import type { MisskeyEntity } from '@/types/date-separated-list.js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { useStream } from '@/stream.js';
@@ -30,7 +31,6 @@ import * as sound from '@/scripts/sound.js';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
 import { defaultStore } from '@/store.js';
-import { MisskeyEntity } from '@/types/date-separated-list.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
