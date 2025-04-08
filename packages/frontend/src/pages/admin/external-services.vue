@@ -37,21 +37,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton primary @click="save_deepl">Save</MkButton>
 					</div>
 				</MkFolder>
-
-				<MkFolder>
-					<template #label>Sentry logging</template>
-
-					<div class="_gaps_m">
-						<MkSwitch v-model="enableSentryLogging">
-							<template #label>Enable sentry logging</template>
-						</MkSwitch>
-						<MkInput v-model="sentryDsn">
-							<template #prefix><i class="ti ti-key"></i></template>
-							<template #label>SentryDSN</template>
-						</MkInput>
-						<MkButton primary @click="save_sentry">Save</MkButton>
-					</div>
-				</MkFolder>
 			</div>
 		</FormSuspense>
 	</MkSpacer>
@@ -63,7 +48,6 @@ import { ref, computed } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -74,8 +58,6 @@ import MkFolder from '@/components/MkFolder.vue';
 
 const deeplAuthKey = ref('');
 const deeplIsPro = ref(false);
-const enableSentryLogging = ref(false);
-const sentryDsn = ref('');
 
 const googleAnalyticsMeasurementId = ref<string>('');
 
@@ -83,8 +65,6 @@ async function init() {
 	const meta = await misskeyApi('admin/meta');
 	deeplAuthKey.value = meta.deeplAuthKey ?? '';
 	deeplIsPro.value = meta.deeplIsPro;
-	enableSentryLogging.value = meta.enableSentryLogging;
-	sentryDsn.value = meta.sentryDsn;
 	googleAnalyticsMeasurementId.value = meta.googleAnalyticsMeasurementId ?? '';
 }
 
@@ -92,15 +72,6 @@ function save_deepl() {
 	os.apiWithDialog('admin/update-meta', {
 		deeplAuthKey: deeplAuthKey.value,
 		deeplIsPro: deeplIsPro.value,
-	}).then(() => {
-		fetchInstance(true);
-	});
-}
-
-function save_sentry() {
-	os.apiWithDialog('admin/update-meta', {
-		enableSentryLogging: enableSentryLogging.value,
-		sentryDsn: sentryDsn.value,
 	}).then(() => {
 		fetchInstance(true);
 	});

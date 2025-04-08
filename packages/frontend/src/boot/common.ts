@@ -283,14 +283,6 @@ export async function common(createVue: () => App<Element>) {
 
 	const app = createVue();
 
-	if (!_DEV_ && instance.enableSentryLogging && instance.sentryDsn && !defaultStore.state.optoutStatistics) {
-		Sentry.init({
-			app,
-			dsn: instance.sentryDsn,
-			release: version,
-		});
-	}
-
 	setupRouter(app, createMainRouter);
 
 	if (_DEV_) {

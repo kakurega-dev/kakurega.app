@@ -102,8 +102,6 @@ export const paramDef = {
 		deeplAuthKey: { type: 'string', nullable: true },
 		deeplIsPro: { type: 'boolean' },
 		enablePatreonIntegration: { type: 'boolean' },
-		enableSentryLogging: { type: 'boolean' },
-		sentryDsn: { type: 'string', nullable: true },
 		patreonClientId: { type: 'string', nullable: true },
 		patreonClientSecret: { type: 'string', nullable: true },
 		patreonAccessToken: { type: 'string', nullable: true },
@@ -442,14 +440,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.enablePatreonIntegration !== undefined) {
 				set.enablePatreonIntegration = ps.enablePatreonIntegration;
-			}
-
-			if (ps.enableSentryLogging !== undefined) {
-				set.enableSentryLogging = ps.enableSentryLogging;
-			}
-
-			if (ps.sentryDsn !== undefined) {
-				set.sentryDsn = ps.sentryDsn;
 			}
 
 			if (ps.patreonClientId !== undefined) {
