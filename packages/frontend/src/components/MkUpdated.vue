@@ -15,19 +15,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_buttons">
 			<MkButton full @click="whatIsNew">{{ i18n.ts.whatIsNew }}</MkButton>
 			<MkButton full @click="whatIsNewKakurega">{{ i18n.ts.whatIsNewKakurega }}</MkButton>
-			<MkButton full primary @click="close">{{ i18n.ts.gotIt }}</MkButton>
+			<MkButton full primary @click="closePanel">{{ i18n.ts.gotIt }}</MkButton>
 		</div>
 	</div>
-	<button class="_button" :class="$style.close" @click="close"><i class="ti ti-x"></i></button>
+	<button class="_button" :class="$style.close" @click="closePanel"><i class="ti ti-x"></i></button>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { version } from '@@/js/config.js';
-import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
-import MkSparkle from '@/components/MkSparkle.vue';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
@@ -38,7 +37,7 @@ const zIndex = os.claimZIndex('low');
 const misskeyVersion = version.split('-')[0];
 const kakuregaVersion = version.split('-')[1].replace('kakurega.', '');
 
-function close() {
+function closePanel() {
 	emit('closed');
 }
 
@@ -47,14 +46,10 @@ function whatIsNew() {
 	window.open(`https://misskey-hub.net/docs/releases/#_${version.split('-')[0].replace(/\./g, '-')}`, '_blank');
 }
 
-;
-
 function whatIsNewKakurega() {
 	emit('closed');
 	window.open('https://github.com/hideki0403/misskey.yukineko.me/blob/master-kakurega/CHANGELOG_KAKUREGA.md', '_blank');
 }
-
-;
 </script>
 
 <style lang="scss" module>

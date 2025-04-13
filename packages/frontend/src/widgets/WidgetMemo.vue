@@ -23,11 +23,10 @@ import { defineAsyncComponent, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/scripts/form.js';
-
+import type { GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
@@ -61,7 +60,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 const getMemo = () => {
 	if (!props.widget) return;
-	const memo = defaultStore.state.memo;
+	const memo = store.s.memo;
 	if (typeof memo === 'string') return memo;
 	if (memo && typeof memo === 'object') return memo[props.widget.id];
 	return;
@@ -72,10 +71,10 @@ const changed = ref(false);
 let timeoutId: number | undefined;
 
 const saveMemo = () => {
-	const memo = defaultStore.state.memo;
+	const memo = store.s.memo;
 	const list = memo && typeof memo === 'object' ? memo : {};
 	list[props.widget?.id ?? uuid()] = text.value;
-	defaultStore.set('memo', list);
+	store.set('memo', list);
 	changed.value = false;
 };
 
@@ -89,9 +88,11 @@ const showMemoList = () => {
 		return;
 	}
 
-	os.popup(defineAsyncComponent(() => import('@/components/MkMemoSelectDialog.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkMemoSelectDialog.vue')), {
 		widgetId: props.widget.id,
-	}, 'closed');
+	}, {
+		closed: () => dispose(),
+	});
 };
 
 const onChange = () => {
@@ -100,7 +101,7 @@ const onChange = () => {
 	timeoutId = window.setTimeout(saveMemo, 1000);
 };
 
-watch(defaultStore.reactiveState.memo, () => {
+watch(() => store.r.memo, newText => {
 	text.value = getMemo() ?? '';
 });
 

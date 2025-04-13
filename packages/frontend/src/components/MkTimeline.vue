@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		v-if="paginationQuery"
 		ref="tlComponent"
 		:pagination="paginationQuery"
-		:noGap="!defaultStore.state.showGapBetweenNotesInTimeline"
+		:noGap="!prefer.s.showGapBetweenNotesInTimeline"
 		:filter="props.filter"
 		@queue="emit('queue', $event)"
 		@status="prComponent?.setDisabled($event)"
@@ -18,19 +18,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, onUnmounted, provide, ref, shallowRef } from 'vue';
+import { computed, watch, onUnmounted, provide, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { Paging } from '@/components/MkPagination.vue';
 import type { Filter as NoteFilter } from '@/components/MkNotes.vue';
-import type { MisskeyEntity } from '@/types/date-separated-list.js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { useStream } from '@/stream.js';
-import * as sound from '@/scripts/sound.js';
-import { $i } from '@/account.js';
+import * as sound from '@/utility/sound.js';
+import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -71,15 +70,15 @@ type TimelineQueryType = {
 	roleId?: string
 };
 
-const prComponent = shallowRef<InstanceType<typeof MkPullToRefresh>>();
-const tlComponent = shallowRef<InstanceType<typeof MkNotes>>();
+const prComponent = useTemplateRef('prComponent');
+const tlComponent = useTemplateRef('tlComponent');
 
 let tlNotesCount = 0;
 
-function prepend(note: Misskey.entities.Note & MisskeyEntity) {
+function prepend(note: Misskey.entities.Note & { _shouldInsertAd_?: boolean }) {
 	if (tlComponent.value == null) return;
 	if (props.src === 'global') {
-		const mutedInstancesGtl = defaultStore.state.mutedInstancesGtl;
+		const mutedInstancesGtl = prefer.s.mutedInstancesGtl;
 		if (note.user.host && mutedInstancesGtl.includes(note.user.host)) return;
 		if (note.renote?.user.host && mutedInstancesGtl.includes(note.renote.user.host)) return;
 	}
@@ -248,7 +247,7 @@ function updatePaginationQuery() {
 }
 
 function refreshEndpointAndChannel() {
-	if (!defaultStore.state.disableStreamingTimeline) {
+	if (!prefer.s.disableStreamingTimeline) {
 		disconnectChannel();
 		connectChannel();
 	}

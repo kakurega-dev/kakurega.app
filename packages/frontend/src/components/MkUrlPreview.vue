@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"
 			scrolling="no"
 			:style="{ position: 'relative', width: '100%', height: `${tweetHeight}px`, border: 0 }"
-			:src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${defaultStore.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"
+			:src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${store.s.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"
 		></iframe>
 	</div>
 	<div :class="$style.action">
@@ -89,11 +89,11 @@ import { versatileLang } from '@@/js/intl-const.js';
 import type { summaly } from '@misskey-dev/summaly';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { deviceKind } from '@/utility/device-kind.js';
 import MkButton from '@/components/MkButton.vue';
-import { getDataSaverState } from '@/scripts/datasaver.js';
-import { transformPlayerUrl } from '@/scripts/player-url-transform.js';
-import { defaultStore } from '@/store.js';
+import { getDataSaverState } from '@/utility/datasaver.js';
+import { transformPlayerUrl } from '@/utility/player-url-transform.js';
+import { store } from '@/store.js';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 
@@ -246,6 +246,7 @@ onUnmounted(() => {
 	box-shadow: 0 0 0 1px var(--MI_THEME-divider);
 	border-radius: 8px;
 	overflow: clip;
+	text-align: left;
 
 	&:hover {
 		text-decoration: none;

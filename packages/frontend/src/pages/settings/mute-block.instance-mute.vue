@@ -23,16 +23,16 @@ import { ref, watch } from 'vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
-import { defaultStore } from '@/store.js';
-import { signinRequired } from '@/account.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { prefer } from '@/preferences.js';
+import { ensureSignin } from '@/i.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
-const instanceMutes = ref($i.mutedInstances.join('\n'));
+const instanceMutes = ref($i.mutedInstances?.join('\n') ?? '');
 const changed = ref(false);
-const instanceMutesGtl = ref(defaultStore.state.mutedInstancesGtl.join('\n'));
+const instanceMutesGtl = ref(prefer.s.mutedInstancesGtl.join('\n'));
 let changedInstanceMutes = false;
 let changedInstanceMutesGtl = false;
 
@@ -57,7 +57,7 @@ async function save() {
 			.map(el => el.trim())
 			.filter(el => el);
 
-		defaultStore.set('mutedInstancesGtl', mutesGtl);
+		prefer.commit('mutedInstancesGtl', mutesGtl);
 	}
 
 	changedInstanceMutes = false;

@@ -14,6 +14,7 @@ const siteName = document.querySelector<HTMLMetaElement>('meta[property="og:site
 export const host = address.host;
 export const hostname = address.hostname;
 export const url = address.origin;
+export const port = address.port;
 export const apiUrl = (overrideAddress ? address.origin : location.origin) + '/api';
 export const wsOrigin = (overrideAddress ? address.origin : location.origin);
 export const lang = localStorage.getItem('lang') ?? 'en-US';
