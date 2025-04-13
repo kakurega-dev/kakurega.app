@@ -42,6 +42,9 @@ export const PREF_DEF = {
 		accountDependent: true,
 		default: [] as Misskey.entities.UserList[],
 	},
+	mutedInstancesGtl: {
+		default: [] as string[],
+	},
 	uploadFolder: {
 		accountDependent: true,
 		default: null as string | null,
@@ -93,7 +96,6 @@ export const PREF_DEF = {
 		serverDependent: true,
 		default: null as string | null,
 	},
-
 	overridedDeviceKind: {
 		default: null as DeviceKind | null,
 	},
@@ -109,11 +111,23 @@ export const PREF_DEF = {
 	syncDeviceDarkMode: {
 		default: true,
 	},
+	syncTimeDarkMode: {
+		default: false,
+	},
+	customFont: {
+		default: null as null | string,
+	},
 	defaultNoteVisibility: {
 		default: 'public' as (typeof Misskey.noteVisibilities)[number],
 	},
 	defaultNoteLocalOnly: {
 		default: false,
+	},
+	defaultScheduledNoteDelete: {
+		default: false,
+	},
+	defaultScheduledNoteDeleteTime: {
+		default: 86400000,
 	},
 	keepCw: {
 		default: true,
@@ -121,11 +135,26 @@ export const PREF_DEF = {
 	rememberNoteVisibility: {
 		default: false,
 	},
+	rememberReactionAcceptance: {
+		default: false,
+	},
 	reportError: {
 		default: false,
 	},
 	collapseRenotes: {
 		default: true,
+	},
+	collapseRenotesTrigger: {
+		default: 'action' as 'action' | 'see' | 'all',
+	},
+	collapseSelfRenotes: {
+		default: false,
+	},
+	disableNoteDrafting: {
+		default: false,
+	},
+	draftSavingBehavior: {
+		default: 'auto' as 'auto' | 'manual',
 	},
 	menu: {
 		default: [
@@ -143,6 +172,19 @@ export const PREF_DEF = {
 			'ui',
 		],
 	},
+	postFormActions: {
+		default: [
+			'attachFile',
+			'poll',
+			'scheduledNoteDelete',
+			'useCw',
+			'mention',
+			'hashtags',
+			'plugins',
+			'emoji',
+			'addMfmFunction',
+		],
+	},
 	statusbars: {
 		default: [] as {
 			name: string;
@@ -154,10 +196,19 @@ export const PREF_DEF = {
 		}[],
 	},
 	serverDisconnectedBehavior: {
-		default: 'quiet' as 'quiet' | 'reload' | 'dialog',
+		default: 'quiet' as 'none' | 'quiet' | 'reload' | 'dialog',
+	},
+	showConnectionStatus: {
+		default: false,
+	},
+	optoutStatistics: {
+		default: false,
 	},
 	nsfw: {
 		default: 'respect' as 'respect' | 'force' | 'ignore',
+	},
+	hideNsfwNote: {
+		default: false,
 	},
 	highlightSensitiveMedia: {
 		default: false,
@@ -185,6 +236,12 @@ export const PREF_DEF = {
 	},
 	disableShowingAnimatedImages: {
 		default: window.matchMedia('(prefers-reduced-motion)').matches,
+	},
+	enableDataSaverMode: {
+		default: false,
+	},
+	autoDataSaver: {
+		default: false,
 	},
 	emojiStyle: {
 		default: 'twemoji', // twemoji / fluentEmoji / native
@@ -219,6 +276,9 @@ export const PREF_DEF = {
 	instanceTicker: {
 		default: 'remote' as 'none' | 'remote' | 'always',
 	},
+	instanceTickerStyle: {
+		default: 'default' as 'default' | 'minimal' | 'icon',
+	},
 	emojiPickerScale: {
 		default: 2,
 	},
@@ -252,6 +312,12 @@ export const PREF_DEF = {
 	limitWidthOfReaction: {
 		default: true,
 	},
+	hideReactionCount: {
+		default: 'none' as 'none' | 'self' | 'others' | 'all',
+	},
+	hideReactionUsers: {
+		default: false,
+	},
 	forceShowAds: {
 		default: false,
 	},
@@ -281,6 +347,12 @@ export const PREF_DEF = {
 	},
 	useGroupedNotifications: {
 		default: true,
+	},
+	enableOverrideTLDisplayLimit: {
+		default: false,
+	},
+	overrideTLDisplayLimit: {
+		default: 20,
 	},
 	dataSaver: {
 		default: {
