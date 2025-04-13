@@ -139,6 +139,29 @@ export function migrateOldSettings() {
 		prefer.commit('defaultNoteVisibility', store.s.defaultNoteVisibility);
 		prefer.commit('defaultNoteLocalOnly', store.s.defaultNoteLocalOnly);
 
+		// #region 隠れ家独自機能のマイグレーション
+		prefer.commit('collapseRenotesTrigger', store.s.collapseRenotesTrigger);
+		prefer.commit('collapseSelfRenotes', store.s.collapseSelfRenotes);
+		prefer.commit('disableNoteDrafting', store.s.disableNoteDrafting);
+		prefer.commit('draftSavingBehavior', store.s.draftSavingBehavior);
+		prefer.commit('rememberReactionAcceptance', store.s.rememberReactionAcceptance);
+		prefer.commit('defaultScheduledNoteDelete', store.s.defaultScheduledNoteDelete);
+		prefer.commit('defaultScheduledNoteDeleteTime', store.s.defaultScheduledNoteDeleteTime);
+		prefer.commit('postFormActions', store.s.postFormActions);
+		prefer.commit('mutedInstancesGtl', store.s.mutedInstancesGtl);
+		prefer.commit('showConnectionStatus', store.s.showConnectionStatus);
+		prefer.commit('hideNsfwNote', store.s.hideNsfwNote);
+		prefer.commit('enableDataSaverMode', store.s.enableDataSaverMode);
+		prefer.commit('autoDataSaver', store.s.autoDataSaver);
+		prefer.commit('customFont', store.s.customFont);
+		prefer.commit('instanceTickerStyle', store.s.instanceTickerStyle);
+		prefer.commit('hideReactionCount', store.s.hideReactionCount);
+		prefer.commit('hideReactionUsers', store.s.hideReactionUsers);
+		prefer.commit('enableOverrideTLDisplayLimit', store.s.enableOverrideTLDisplayLimit);
+		prefer.commit('overrideTLDisplayLimit', store.s.overrideTLDisplayLimit);
+		prefer.commit('optoutStatistics', store.s.optoutStatistics);
+		// #endregion
+
 		window.setTimeout(() => {
 			unisonReload();
 		}, 10000);
