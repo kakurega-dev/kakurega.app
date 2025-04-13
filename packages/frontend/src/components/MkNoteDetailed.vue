@@ -183,7 +183,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-else-if="tab === 'reactions'" :class="$style.tab_reactions">
 			<div :class="$style.reactionTabs">
-				<button v-for="reaction in Object.keys(appearNote.reactions)" :key="reaction" :class="[$style.reactionTab, { [$style.reactionTabActive]: reactionTabType === reaction }]" class="_button" @click="reactionTabType = defaultStore.state.hideReactionUsers ? null : reaction">
+				<button v-for="reaction in Object.keys(appearNote.reactions)" :key="reaction" :class="[$style.reactionTab, { [$style.reactionTabActive]: reactionTabType === reaction }]" class="_button" @click="reactionTabType = prefer.s.hideReactionUsers ? null : reaction">
 					<MkReactionIcon :reaction="reaction"/>
 					<span v-if="!hideReactionCount" style="margin-left: 4px;">{{ appearNote.reactions[reaction] }}</span>
 				</button>
@@ -313,7 +313,7 @@ const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i?.id);
 const hideReactionCount = computed(() => {
-	switch (defaultStore.state.hideReactionCount) {
+	switch (prefer.s.hideReactionCount) {
 		case 'none': return false;
 		case 'all': return true;
 		case 'self': return props.note.userId === $i?.id;

@@ -114,12 +114,19 @@ function onClick(ev: MouseEvent) {
 			});
 		}
 
-		if (!defaultStore.state.reactions.includes(`:${props.name}:`)) {
+		const reactionEmojiPalette = prefer.s.emojiPaletteForReaction == null ? prefer.s.emojiPalettes[0] : prefer.s.emojiPalettes.find(palette => palette.id === prefer.s.emojiPaletteForReaction);
+		if (reactionEmojiPalette != null && !reactionEmojiPalette.emojis.includes(`:${props.name}:`)) {
 			menuItems.push({
 				text: i18n.ts.addToEmojiPicker,
 				icon: 'ti ti-plus',
 				action: () => {
-					defaultStore.set('reactions', [...defaultStore.state.reactions, `:${props.name}:`]);
+					prefer.commit('emojiPalettes', prefer.s.emojiPalettes.map(palette => {
+						if (palette.id !== reactionEmojiPalette.id) return palette;
+						return {
+							...palette,
+							emojis: [...palette.emojis, `:${props.name}:`],
+						};
+					}));
 				},
 			});
 		}

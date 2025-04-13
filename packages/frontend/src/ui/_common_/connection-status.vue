@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="defaultStore.state.showConnectionStatus" :class="[$style.root, hasDisconnected ? $style.offline : $style.online]" class="_panel _shadow">
+<div v-if="prefer.s.showConnectionStatus" :class="[$style.root, hasDisconnected ? $style.offline : $style.online]" class="_panel _shadow">
 	<i ref="statusIcon" class="ti" :class="[$style.icon, hasDisconnected ? 'ti-circle' : 'ti-circle-filled']"></i>
 	<span>{{ hasDisconnected ? i18n.ts.offline : i18n.ts.online }}</span>
 </div>
@@ -15,7 +15,7 @@ import { onUnmounted, ref, shallowRef } from 'vue';
 import { useStream } from '@/stream.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 
 const zIndex = os.claimZIndex('middle');
@@ -40,7 +40,9 @@ function showRipple() {
 			const rect = el.getBoundingClientRect();
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
-			os.popup(MkRippleEffect, { x, y, particle: false }, {}, 'end');
+			const { dispose } = os.popup(MkRippleEffect, { x, y, particle: false }, {
+				end: () => dispose(),
+			});
 		}
 	}
 }
