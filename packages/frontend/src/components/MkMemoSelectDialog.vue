@@ -29,13 +29,13 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import * as os from '@/os.js';
 
 const memoList = ref<Record<string, string>>({});
 
 const getMemoList = () => {
-	const memo = defaultStore.state.memo;
+	const memo = store.s.memo;
 	if (!memo) return {};
 	if (typeof memo === 'string') return { 'default': memo };
 	return memo;
@@ -53,7 +53,7 @@ const selectMemo = (key: string) => {
 	memoList.value[uuid()] = memoList.value[props.widgetId];
 	memoList.value[props.widgetId] = memoList.value[key];
 	delete memoList.value[key];
-	defaultStore.set('memo', memoList.value);
+	store.set('memo', memoList.value);
 	dialog.value?.close();
 };
 
@@ -65,7 +65,7 @@ const deleteMemo = async (key: string) => {
 	if (confirm.canceled) return;
 
 	delete memoList.value[key];
-	defaultStore.set('memo', memoList.value);
+	store.set('memo', memoList.value);
 };
 
 </script>

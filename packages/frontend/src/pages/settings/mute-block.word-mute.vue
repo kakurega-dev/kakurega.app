@@ -22,7 +22,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 
 const props = defineProps<{
 	muted: (string[] | string)[];
@@ -33,7 +33,7 @@ const emit = defineEmits<{
 	(ev: 'save', value: (string[] | string)[]): void;
 }>();
 
-const render = (mutedWords: string[][]) => mutedWords.map(x => {
+const render = (mutedWords: (string[] | string)[]) => mutedWords.map(x => {
 	if (Array.isArray(x)) {
 		return x.join(' ');
 	} else {
@@ -44,7 +44,7 @@ const render = (mutedWords: string[][]) => mutedWords.map(x => {
 const mutedWords = ref(render(props.muted));
 const changed = ref(false);
 
-const oldMutedWords = ref(render(defaultStore.state.mutedWords));
+const oldMutedWords = ref(render(store.s.mutedWords));
 
 watch(mutedWords, () => {
 	changed.value = true;
@@ -105,7 +105,7 @@ async function transferOldMuteWords() {
 	mutedWords.value = oldMutedWords.value;
 
 	oldMutedWords.value = '';
-	defaultStore.set('mutedWords', []); // clear old muted words
+	store.set('mutedWords', []); // clear old muted words
 
 	save();
 }
