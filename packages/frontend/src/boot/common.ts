@@ -314,7 +314,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 		return root;
 	})();
 
-	if (instance.sentryForFrontend) {
+	if (!prefer.s.optoutStatistics && instance.sentryForFrontend) {
 		const Sentry = await import('@sentry/vue');
 		Sentry.init({
 			app,

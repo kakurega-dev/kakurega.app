@@ -230,7 +230,11 @@ export class UserSearchService {
 
 		const nameQuery = this.usersRepository.createQueryBuilder('user')
 			.where(new Brackets(qb => {
-				qb.where('user.name ILIKE :query', { query: '%' + sqlLikeEscape(query) + '%' });
+				if (this.config.fulltextSearch?.provider === 'sqlPgroonga') {
+					qb.where('user.name &@~ :query', { query });
+				} else {
+					qb.where('user.name ILIKE :query', { query: '%' + sqlLikeEscape(query) + '%' });
+				}
 
 				if (isUsername) {
 					qb.orWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(query.replace('@', '').toLowerCase()) + '%' });
@@ -264,8 +268,13 @@ export class UserSearchService {
 
 		if (users.length < (options.limit ?? 30)) {
 			const profQuery = this.userProfilesRepository.createQueryBuilder('prof')
-				.select('prof.userId')
-				.where('prof.description ILIKE :query', { query: '%' + sqlLikeEscape(query) + '%' });
+				.select('prof.userId');
+
+			if (this.config.fulltextSearch?.provider === 'sqlPgroonga') {
+				profQuery.where('prof.description &@~ :query', { query });
+			} else {
+				profQuery.where('prof.description ILIKE :query', { query: '%' + sqlLikeEscape(query) + '%' });
+			}
 
 			if (mutingQuery) {
 				profQuery.andWhere(`prof.userId NOT IN (${mutingQuery.getQuery()})`);

@@ -7,6 +7,7 @@ import { notificationTypes } from 'misskey-js';
 import { ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { i18n } from './i18n.js';
+import type { Filter as NoteFilter } from '@/components/MkNotes.vue';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { SoundStore } from '@/preferences/def.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -55,6 +56,7 @@ export type Column = {
 	channelId?: string;
 	roleId?: string;
 	excludeTypes?: typeof notificationTypes[number][];
+	filter?: NoteFilter;
 	tl?: BasicTimelineType;
 	withRenotes?: boolean;
 	withReplies?: boolean;

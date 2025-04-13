@@ -359,6 +359,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
+							<SearchMarker :keywords="['remember', 'reaction', 'acceptance']">
+								<MkPreferenceContainer k="rememberReactionAcceptance">
+									<MkSwitch v-model="rememberReactionAcceptance">
+										<SearchLabel>{{ i18n.ts.rememberReactionAcceptance }}</SearchLabel>
+										<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
 							<SearchMarker :keywords="['mfm', 'enable', 'show', 'advanced', 'picker', 'form', 'function', 'fn']">
 								<MkPreferenceContainer k="enableQuickAddMfmFunction">
 									<MkSwitch v-model="enableQuickAddMfmFunction">
@@ -866,6 +875,7 @@ const confirmOnReact = prefer.model('confirmOnReact');
 const defaultNoteVisibility = prefer.model('defaultNoteVisibility');
 const defaultNoteLocalOnly = prefer.model('defaultNoteLocalOnly');
 const rememberNoteVisibility = prefer.model('rememberNoteVisibility');
+const rememberReactionAcceptance = prefer.model('rememberReactionAcceptance');
 const showGapBetweenNotesInTimeline = prefer.model('showGapBetweenNotesInTimeline');
 const notificationPosition = prefer.model('notificationPosition');
 const notificationStackAxis = prefer.model('notificationStackAxis');
