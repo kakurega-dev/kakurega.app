@@ -9,11 +9,11 @@ import { computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { zenStore } from '@/ui/universal-zen/zen-store.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 
 const showWidgets = computed(zenStore.makeGetterSetter('showWidgets'));
 
-definePageMetadata({
+definePage({
 	title: i18n.ts.zenMode,
 	icon: 'ti ti-seeding',
 });

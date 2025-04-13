@@ -35,17 +35,17 @@ import { onMounted, ref, computed } from 'vue';
 import { host } from '@@/js/config.js';
 import FormSection from '@/components/form/section.vue';
 import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { instance } from '@/instance.js';
 import { userPage } from '@/filters/user.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 
- type SupporterUser = {
+type SupporterUser = {
 	username: string,
 	name: string,
 	avatarUrl: string,
 	withIcon: boolean,
-}
+};
 
 const supporterName = ref<SupporterUser[]>([]);
 const supporterNameWithIcon = ref<SupporterUser[]>([]);
@@ -64,7 +64,7 @@ onMounted(async () => {
 	});
 });
 
-definePageMetadata({
+definePage({
 	title: i18n.ts.supporterList,
 	icon: null,
 });
