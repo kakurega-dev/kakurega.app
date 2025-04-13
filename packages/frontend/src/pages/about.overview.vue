@@ -139,7 +139,7 @@ import { instance } from '@/instance.js';
 import { miLocalStorage } from '@/local-storage.js';
 import number from '@/filters/number.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { cacheClear } from '@/utility/cache-clear.js';
+import { clearCache } from '@/utility/clear-cache.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
@@ -161,7 +161,7 @@ async function setOverrideAddress() {
 
 	if (result.canceled) return;
 	miLocalStorage.setItem('overrideAddress', result.result!);
-	cacheClear();
+	clearCache();
 }
 </script>
 

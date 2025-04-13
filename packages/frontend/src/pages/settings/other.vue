@@ -155,7 +155,7 @@ import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { cacheClear } from '@/utility/cache-clear.js';
+import { clearCache } from '@/utility/clear-cache.js';
 import { definePage } from '@/page.js';
 import { reloadAsk } from '@/utility/reload-ask.js';
 import { prefer } from '@/preferences.js';
@@ -177,7 +177,7 @@ const overrideAddress = ref(miLocalStorage.getItem('overrideAddress') ?? '');
 
 watch(overrideAddress, async () => {
 	miLocalStorage.setItem('overrideAddress', overrideAddress.value);
-	cacheClear();
+	clearCache();
 });
 
 watch(skipNoteRender, async () => {
