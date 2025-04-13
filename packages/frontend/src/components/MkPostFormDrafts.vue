@@ -33,10 +33,10 @@ import { shallowRef, ref, onMounted } from 'vue';
 import * as noteDrafts from '@/utility/note-drafts.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-import { signinRequired } from '@/account.js';
+import { ensureSignin } from '@/i.js';
 import * as os from '@/os.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const props = defineProps<{
 	channelId?: string;
