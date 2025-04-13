@@ -9,6 +9,7 @@ import { ColdDeviceStorage, store } from '@/store.js';
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
+import { zenStore } from '@/ui/universal-zen/zen-store.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -160,6 +161,7 @@ export function migrateOldSettings() {
 		prefer.commit('enableOverrideTLDisplayLimit', store.s.enableOverrideTLDisplayLimit);
 		prefer.commit('overrideTLDisplayLimit', store.s.overrideTLDisplayLimit);
 		prefer.commit('optoutStatistics', store.s.optoutStatistics);
+		prefer.commit('zenMode.showWidgets', zenStore.s.showWidgets);
 		// #endregion
 
 		window.setTimeout(() => {

@@ -458,6 +458,10 @@ export const PREF_DEF = {
 		default: null as string | null,
 	},
 
+	'zenMode.showWidgets': {
+		default: true,
+	},
+
 	'chat.showSenderName': {
 		default: false,
 	},

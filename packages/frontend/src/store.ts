@@ -244,6 +244,10 @@ export const store = markRaw(new Pizzax('base', {
 			props: Record<string, any>;
 		}[],
 	},
+	mutedWords: {
+		where: 'account',
+		default: [] as string[],
+	},
 	mutedInstancesGtl: {
 		where: 'account',
 		default: [] as string[],
