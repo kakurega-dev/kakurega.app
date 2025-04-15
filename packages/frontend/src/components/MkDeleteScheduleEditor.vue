@@ -4,12 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.padding]: !afterOnly }]">
-	<div v-if="!afterOnly" :class="[$style.label, { [$style.withAccent]: !showDetail }]" @click="showDetail = !showDetail"><i class="ti" :class="showDetail ? 'ti-chevron-up' : 'ti-chevron-down'"></i> {{ summaryText }}</div>
+<div :class="[$style.root, { [$style.padding]: !settingsMode }]">
+	<div v-if="!settingsMode" :class="[$style.label, { [$style.withAccent]: !showDetail }]" @click="showDetail = !showDetail"><i class="ti" :class="showDetail ? 'ti-chevron-up' : 'ti-chevron-down'"></i> {{ summaryText }}</div>
 	<MkInfo v-if="!isValid" warn>{{ i18n.ts.cannotScheduleLaterThanOneYear }}</MkInfo>
-	<section v-if="afterOnly || showDetail">
+	<section v-if="settingsMode || showDetail">
 		<div>
-			<MkSelect v-if="!afterOnly" v-model="expiration" small>
+			<MkSelect v-if="!settingsMode" v-model="expiration" small>
 				<template #label>{{ i18n.ts._poll.expiration }}</template>
 				<option value="at">{{ i18n.ts._poll.at }}</option>
 				<option value="after">{{ i18n.ts._poll.after }}</option>
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</section>
 			<section v-else-if="expiration === 'after'">
 				<MkInput v-model="after" small type="number" class="input">
-					<template #label>{{ i18n.ts._poll.duration }}</template>
+					<template v-if="!settingsMode" #label>{{ i18n.ts._poll.duration }}</template>
 				</MkInput>
 				<MkSelect v-model="unit" small>
 					<option value="second">{{ i18n.ts._time.second }}</option>
@@ -56,8 +56,10 @@ export type DeleteScheduleEditorModelValue = {
 
 const props = defineProps<{
 	modelValue: DeleteScheduleEditorModelValue;
-	afterOnly?: boolean;
+	settingsMode?: boolean;
+	hideTitle?: boolean;
 }>();
+
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: DeleteScheduleEditorModelValue): void;
 }>();
