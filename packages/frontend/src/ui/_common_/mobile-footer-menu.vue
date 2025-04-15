@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</button>
 
-	<button :class="$style.item" class="_button" @click="mainRouter.push('/my/notifications')">
+	<button v-if="!isZenMode" :class="$style.item" class="_button" @click="mainRouter.push('/my/notifications')">
 		<div :class="$style.itemInner">
 			<i :class="$style.itemIcon" class="ti ti-bell"></i>
 			<span v-if="$i?.hasUnreadNotification" :class="$style.itemIndicator" class="_blink">
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</button>
 
-	<button :class="$style.item" class="_button" @click="widgetsShowing = true">
+	<button v-if="!isZenMode" :class="$style.item" class="_button" @click="widgetsShowing = true">
 		<div :class="$style.itemInner">
 			<i :class="$style.itemIcon" class="ti ti-apps"></i>
 		</div>
@@ -46,6 +46,12 @@ import { $i } from '@/i.js';
 import * as os from '@/os.js';
 import { mainRouter } from '@/router.js';
 import { navbarItemDef } from '@/navbar.js';
+
+withDefaults(defineProps<{
+	isZenMode?: boolean;
+}>(), {
+	isZenMode: false,
+});
 
 const drawerMenuShowing = defineModel<boolean>('drawerMenuShowing');
 const widgetsShowing = defineModel<boolean>('widgetsShowing');
@@ -78,9 +84,7 @@ watch(rootEl, () => {
 <style lang="scss" module>
 .root {
 	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-	grid-gap: 8px;
+	display: flex;
 	width: 100%;
 	box-sizing: border-box;
 	background: var(--MI_THEME-bg);
@@ -88,6 +92,8 @@ watch(rootEl, () => {
 }
 
 .item {
+	flex-grow: 1;
+
 	&.post {
 		.itemInner {
 			background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
