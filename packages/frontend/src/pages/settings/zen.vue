@@ -1,17 +1,21 @@
 <template>
 <div class="_gaps_m">
-	<MkSwitch v-model="showWidgets">{{ i18n.ts.showWidgets }}</MkSwitch>
+	<SearchMarker :keywords="['zen']">
+		<MkPreferenceContainer k="zenMode.showWidgets">
+			<MkSwitch v-model="showWidgets">{{ i18n.ts.showWidgets }}</MkSwitch>
+		</MkPreferenceContainer>
+	</SearchMarker>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { zenStore } from '@/ui/universal-zen/zen-store.js';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
+import { prefer } from '@/preferences.js';
 
-const showWidgets = computed(zenStore.makeGetterSetter('showWidgets'));
+const showWidgets = prefer.model('zenMode.showWidgets');
 
 definePage({
 	title: i18n.ts.zenMode,

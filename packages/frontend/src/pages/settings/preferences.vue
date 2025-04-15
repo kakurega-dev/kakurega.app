@@ -106,11 +106,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</SearchMarker>
 
 						<SearchMarker :keywords="['font', 'custom', 'style']">
-							<MkSelect v-model="customFont">
-								<template #label><SearchLabel>{{ i18n.ts.customFont }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-								<option :value="null">{{ i18n.ts.default }}</option>
-								<option v-for="[name, font] of Object.entries(fontList)" :key="name" :value="name">{{ font.name }}</option>
-							</MkSelect>
+							<MkPreferenceContainer k="customFont">
+								<MkSelect v-model="customFont">
+									<template #label><SearchLabel>{{ i18n.ts.customFont }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+									<option :value="null">{{ i18n.ts.default }}</option>
+									<option v-for="[name, font] of Object.entries(fontList)" :key="name" :value="name">{{ font.name }}</option>
+								</MkSelect>
+							</MkPreferenceContainer>
 						</SearchMarker>
 					</div>
 				</MkFolder>
@@ -150,41 +152,49 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 							<MkDisableSection :disabled="!collapseRenotes">
 								<SearchMarker :keywords="['renote']">
-									<MkSelect v-model="collapseRenotesTrigger">
-										<template #label><SearchLabel>{{ i18n.ts.collapseRenotesTrigger }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span><span class="_beta">{{ i18n.ts.beta }}</span></template>
-										<option value="action">{{ i18n.ts._collapseRenotesTrigger.action }}</option>
-										<option value="see">{{ i18n.ts._collapseRenotesTrigger.see }}</option>
-										<option value="all">{{ i18n.ts._collapseRenotesTrigger.all }}</option>
-									</MkSelect>
+									<MkPreferenceContainer k="collapseRenotesTrigger">
+										<MkSelect v-model="collapseRenotesTrigger">
+											<template #label><SearchLabel>{{ i18n.ts.collapseRenotesTrigger }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span><span class="_beta">{{ i18n.ts.beta }}</span></template>
+											<option value="action">{{ i18n.ts._collapseRenotesTrigger.action }}</option>
+											<option value="see">{{ i18n.ts._collapseRenotesTrigger.see }}</option>
+											<option value="all">{{ i18n.ts._collapseRenotesTrigger.all }}</option>
+										</MkSelect>
+									</MkPreferenceContainer>
 								</SearchMarker>
 							</MkDisableSection>
 
 							<MkDisableSection :disabled="!collapseRenotes">
 								<SearchMarker :keywords="['renote']">
-									<MkSwitch v-model="collapseSelfRenotes">
-										<template #caption><SearchKeyword>{{ i18n.ts.collapseSelfRenotesDescription }}</SearchKeyword></template>
-										<SearchLabel>{{ i18n.ts.collapseSelfRenotes }}</SearchLabel>
-										<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-									</MkSwitch>
+									<MkPreferenceContainer k="collapseSelfRenotes">
+										<MkSwitch v-model="collapseSelfRenotes">
+											<template #caption><SearchKeyword>{{ i18n.ts.collapseSelfRenotesDescription }}</SearchKeyword></template>
+											<SearchLabel>{{ i18n.ts.collapseSelfRenotes }}</SearchLabel>
+											<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+										</MkSwitch>
+									</MkPreferenceContainer>
 								</SearchMarker>
 							</MkDisableSection>
 
 							<SearchMarker :keywords="['reaction']">
-								<MkSelect v-model="hideReactionCount">
-									<template #label><SearchLabel>{{ i18n.ts.hideReactionCount }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-									<option value="none">{{ i18n.ts._hideReactionCount.none }}</option>
-									<option value="self">{{ i18n.ts._hideReactionCount.self }}</option>
-									<option value="others">{{ i18n.ts._hideReactionCount.others }}</option>
-									<option value="all">{{ i18n.ts._hideReactionCount.all }}</option>
-								</MkSelect>
+								<MkPreferenceContainer k="hideReactionCount">
+									<MkSelect v-model="hideReactionCount">
+										<template #label><SearchLabel>{{ i18n.ts.hideReactionCount }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+										<option value="none">{{ i18n.ts._hideReactionCount.none }}</option>
+										<option value="self">{{ i18n.ts._hideReactionCount.self }}</option>
+										<option value="others">{{ i18n.ts._hideReactionCount.others }}</option>
+										<option value="all">{{ i18n.ts._hideReactionCount.all }}</option>
+									</MkSelect>
+								</MkPreferenceContainer>
 							</SearchMarker>
 
 							<SearchMarker :keywords="['reaction']">
-								<MkSwitch v-model="hideReactionUsers">
-									<template #caption><SearchKeyword>{{ i18n.ts.hideReactionUsersDescription }}</SearchKeyword></template>
-									<SearchLabel>{{ i18n.ts.hideReactionUsers }}</SearchLabel>
-									<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-								</MkSwitch>
+								<MkPreferenceContainer k="hideReactionUsers">
+									<MkSwitch v-model="hideReactionUsers">
+										<template #caption><SearchKeyword>{{ i18n.ts.hideReactionUsersDescription }}</SearchKeyword></template>
+										<SearchLabel>{{ i18n.ts.hideReactionUsers }}</SearchLabel>
+										<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+									</MkSwitch>
+								</MkPreferenceContainer>
 							</SearchMarker>
 
 							<SearchMarker :keywords="['note', 'timeline', 'gap']">
@@ -309,12 +319,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</SearchMarker>
 
 							<SearchMarker :keywords="['ticker', 'style']">
-								<MkSelect v-model="instanceTickerStyle">
-									<template #label><SearchLabel>{{ i18n.ts.instanceTickerStyle }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-									<option value="default">{{ i18n.ts._instanceTickerStyle.default }}</option>
-									<option value="minimal">{{ i18n.ts._instanceTickerStyle.minimal }}</option>
-									<option value="icon">{{ i18n.ts._instanceTickerStyle.icon }}</option>
-								</MkSelect>
+								<MkPreferenceContainer k="instanceTickerStyle">
+									<MkSelect v-model="instanceTickerStyle">
+										<template #label><SearchLabel>{{ i18n.ts.instanceTickerStyle }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+										<option value="default">{{ i18n.ts._instanceTickerStyle.default }}</option>
+										<option value="minimal">{{ i18n.ts._instanceTickerStyle.minimal }}</option>
+										<option value="icon">{{ i18n.ts._instanceTickerStyle.icon }}</option>
+									</MkSelect>
+								</MkPreferenceContainer>
 							</SearchMarker>
 
 							<SearchMarker :keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'nsfw', 'sensitive', 'display', 'show', 'hide', 'visibility']">
@@ -338,46 +350,52 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><SearchIcon><i class="ti ti-edit"></i></SearchIcon></template>
 
 					<div class="_gaps_m">
-						<div class="_gaps_m">
-							<FormSlot>
-								<template #label>{{ i18n.ts.postForm }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-								<MkContainer :showHeader="false">
-									<Sortable v-model="postFormItems" :class="$style.items" :itemKey="items => items" :animation="100" :delay="50" :delayOnTouchOnly="true">
-										<template #item="{element}">
-											<button v-tooltip="postformBottomItemDef[element.type].title" class="_button" :class="$style.item" @click="removeItemPostform(element.type, $event)">
-												<i class="ti ti-fw" :class="[$style.itemIcon, postformBottomItemDef[element.type].icon]"></i>
-											</button>
-										</template>
-									</Sortable>
-								</MkContainer>
-							</FormSlot>
+						<MkPreferenceContainer k="postFormActions">
+							<div class="_gaps_m">
+								<FormSlot>
+									<template #label>{{ i18n.ts.postForm }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+									<MkContainer :showHeader="false">
+										<Sortable v-model="postFormItems" :class="$style.items" :itemKey="items => items" :animation="100" :delay="50" :delayOnTouchOnly="true">
+											<template #item="{element}">
+												<button v-tooltip="postformBottomItemDef[element.type].title" class="_button" :class="$style.item" @click="removeItemPostform(element.type, $event)">
+													<i class="ti ti-fw" :class="[$style.itemIcon, postformBottomItemDef[element.type].icon]"></i>
+												</button>
+											</template>
+										</Sortable>
+									</MkContainer>
+								</FormSlot>
 
-							<div class="_buttons">
-								<MkButton @click="addItemPostform"><i class="ti ti-plus"></i> {{ i18n.ts.addItem }}</MkButton>
-								<MkButton danger @click="resetPostform"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
-								<MkButton primary class="save" @click="savePostform"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+								<div class="_buttons">
+									<MkButton @click="addItemPostform"><i class="ti ti-plus"></i> {{ i18n.ts.addItem }}</MkButton>
+									<MkButton danger @click="resetPostform"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+									<MkButton primary class="save" @click="savePostform"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+								</div>
+
+								<div :class="$style.label">{{ i18n.ts.postFormBottomSettingsDescription }}</div>
 							</div>
-
-							<div :class="$style.label">{{ i18n.ts.postFormBottomSettingsDescription }}</div>
-						</div>
+						</MkPreferenceContainer>
 
 						<hr>
 
-						<div class="_gaps_s">
+						<div class="_gaps_m">
 							<SearchMarker :keywords="['postform', 'draft', 'save']">
-								<MkSelect v-model="draftSavingBehavior">
-									<template #label><SearchLabel>{{ i18n.ts.draftSavingBehavior }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-									<option value="auto">{{ i18n.ts._draftSavingBehavior.auto }}</option>
-									<option value="manual">{{ i18n.ts._draftSavingBehavior.manual }}</option>
-								</MkSelect>
+								<MkPreferenceContainer k="draftSavingBehavior">
+									<MkSelect v-model="draftSavingBehavior">
+										<template #label><SearchLabel>{{ i18n.ts.draftSavingBehavior }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+										<option value="auto">{{ i18n.ts._draftSavingBehavior.auto }}</option>
+										<option value="manual">{{ i18n.ts._draftSavingBehavior.manual }}</option>
+									</MkSelect>
+								</MkPreferenceContainer>
 							</SearchMarker>
 
 							<SearchMarker :keywords="['postform', 'draft']">
-								<MkSwitch v-model="disableNoteDrafting">
-									<template #caption><SearchKeyword>{{ i18n.ts.disableNoteDraftingDescription }}</SearchKeyword></template>
-									<SearchLabel>{{ i18n.ts.disableNoteDrafting }}</SearchLabel>
-									<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-								</MkSwitch>
+								<MkPreferenceContainer k="disableNoteDrafting">
+									<MkSwitch v-model="disableNoteDrafting">
+										<template #caption><SearchKeyword>{{ i18n.ts.disableNoteDraftingDescription }}</SearchKeyword></template>
+										<SearchLabel>{{ i18n.ts.disableNoteDrafting }}</SearchLabel>
+										<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+									</MkSwitch>
+								</MkPreferenceContainer>
 							</SearchMarker>
 						</div>
 
@@ -385,20 +403,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<div class="_gaps_s">
 							<SearchMarker :keywords="['postform', 'note', 'schedule', 'delete']">
-								<div>
-									<div :class="$style.label">
-										<SearchLabel>{{ i18n.ts.defaultScheduledNoteDeleteTime }}</SearchLabel>
-										<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+								<MkPreferenceContainer k="defaultScheduledNoteDeleteTime">
+									<div>
+										<div :class="$style.label">
+											<SearchLabel>{{ i18n.ts.defaultScheduledNoteDeleteTime }}</SearchLabel>
+											<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+										</div>
+										<MkDeleteScheduleEditor v-model="scheduledNoteDelete" :settingsMode="true"/>
 									</div>
-									<MkDeleteScheduleEditor v-model="scheduledNoteDelete" :afterOnly="true"/>
-								</div>
+								</MkPreferenceContainer>
 							</SearchMarker>
 
 							<SearchMarker :keywords="['postform', 'note', 'schedule', 'delete']">
-								<MkSwitch v-model="defaultScheduledNoteDelete">
-									<SearchLabel>{{ i18n.ts.defaultScheduledNoteDelete }}</SearchLabel>
-									<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-								</MkSwitch>
+								<MkPreferenceContainer k="defaultScheduledNoteDelete">
+									<MkSwitch v-model="defaultScheduledNoteDelete">
+										<SearchLabel>{{ i18n.ts.defaultScheduledNoteDelete }}</SearchLabel>
+										<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+									</MkSwitch>
+								</MkPreferenceContainer>
 							</SearchMarker>
 						</div>
 
@@ -697,54 +719,69 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker :label="i18n.ts.dataSaver" :keywords="['datasaver']">
-				<MkSwitch v-model="enableDataSaverMode" :disabled="autoDataSaver">{{ i18n.ts.dataSaver }}</MkSwitch>
+			<SearchMarker v-slot="slotProps" :keywords="['datasaver']">
+				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+					<template #label><SearchLabel>{{ i18n.ts.dataSaver }}</SearchLabel></template>
+					<template #icon><SearchIcon><i class="ti ti-antenna-bars-3"></i></SearchIcon></template>
+
+					<div class="_gaps_s">
+						<SearchMarker :label="i18n.ts.dataSaver" :keywords="['datasaver']">
+							<MkPreferenceContainer k="enableDataSaverMode">
+								<MkSwitch v-model="enableDataSaverMode" :disabled="autoDataSaver">{{ i18n.ts.dataSaver }}</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['datasaver']">
+							<MkPreferenceContainer k="autoDataSaver">
+								<MkSwitch v-model="autoDataSaver" :disabled="!supportAutoDataSaver">
+									<template #caption><SearchKeyword>{{ i18n.ts.autoDataSaverDescription }}</SearchKeyword></template>
+									<SearchLabel>{{ i18n.ts.autoDataSaver }}</SearchLabel>
+									<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+								</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<MkDisableSection :disabled="!enableDataSaverMode">
+							<SearchMarker v-slot="innerSlotProps" :label="i18n.ts.dataSaverAdvancedSettings" :keywords="['datasaver']">
+								<MkFolder :defaultOpen="innerSlotProps.isParentOfTarget">
+									<template #label>
+										<SearchLabel>{{ i18n.ts.dataSaverAdvancedSettings }}</SearchLabel>
+									</template>
+
+									<div class="_gaps_m">
+										<MkInfo>{{ i18n.ts.reloadRequiredToApplySettings }}</MkInfo>
+
+										<div class="_buttons">
+											<MkButton inline @click="enableAllDataSaver">{{ i18n.ts.enableAll }}</MkButton>
+											<MkButton inline @click="disableAllDataSaver">{{ i18n.ts.disableAll }}</MkButton>
+										</div>
+										<MkPreferenceContainer k="dataSaver">
+											<div class="_gaps_m">
+												<MkSwitch v-model="dataSaver.media">
+													{{ i18n.ts._dataSaver._media.title }}
+													<template #caption>{{ i18n.ts._dataSaver._media.description }}</template>
+												</MkSwitch>
+												<MkSwitch v-model="dataSaver.avatar">
+													{{ i18n.ts._dataSaver._avatar.title }}
+													<template #caption>{{ i18n.ts._dataSaver._avatar.description }}</template>
+												</MkSwitch>
+												<MkSwitch v-model="dataSaver.urlPreview">
+													{{ i18n.ts._dataSaver._urlPreview.title }}
+													<template #caption>{{ i18n.ts._dataSaver._urlPreview.description }}</template>
+												</MkSwitch>
+												<MkSwitch v-model="dataSaver.code">
+													{{ i18n.ts._dataSaver._code.title }}
+													<template #caption>{{ i18n.ts._dataSaver._code.description }}</template>
+												</MkSwitch>
+											</div>
+										</MkPreferenceContainer>
+									</div>
+								</MkFolder>
+							</SearchMarker>
+						</MkDisableSection>
+					</div>
+				</MkFolder>
 			</SearchMarker>
-
-			<SearchMarker :keywords="['datasaver']">
-				<MkSwitch v-model="autoDataSaver" :disabled="!supportAutoDataSaver">
-					<template #caption><SearchKeyword>{{ i18n.ts.autoDataSaverDescription }}</SearchKeyword></template>
-					<SearchLabel>{{ i18n.ts.autoDataSaver }}</SearchLabel>
-					<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-				</MkSwitch>
-			</SearchMarker>
-
-			<MkDisableSection :disabled="!enableDataSaverMode">
-				<SearchMarker v-slot="slotProps" :label="i18n.ts.dataSaverAdvancedSettings" :keywords="['datasaver']">
-					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
-						<template #label>
-							<SearchLabel>{{ i18n.ts.dataSaverAdvancedSettings }}</SearchLabel>
-						</template>
-
-						<div class="_gaps_m">
-							<MkInfo>{{ i18n.ts.reloadRequiredToApplySettings }}</MkInfo>
-
-							<div class="_buttons">
-								<MkButton inline @click="enableAllDataSaver">{{ i18n.ts.enableAll }}</MkButton>
-								<MkButton inline @click="disableAllDataSaver">{{ i18n.ts.disableAll }}</MkButton>
-							</div>
-							<div class="_gaps_m">
-								<MkSwitch v-model="dataSaver.media">
-									{{ i18n.ts._dataSaver._media.title }}
-									<template #caption>{{ i18n.ts._dataSaver._media.description }}</template>
-								</MkSwitch>
-								<MkSwitch v-model="dataSaver.avatar">
-									{{ i18n.ts._dataSaver._avatar.title }}
-									<template #caption>{{ i18n.ts._dataSaver._avatar.description }}</template>
-								</MkSwitch>
-								<MkSwitch v-model="dataSaver.urlPreview">
-									{{ i18n.ts._dataSaver._urlPreview.title }}
-									<template #caption>{{ i18n.ts._dataSaver._urlPreview.description }}</template>
-								</MkSwitch>
-								<MkSwitch v-model="dataSaver.code">
-									{{ i18n.ts._dataSaver._code.title }}
-									<template #caption>{{ i18n.ts._dataSaver._code.description }}</template>
-								</MkSwitch>
-							</div>
-						</div>
-					</MkFolder>
-				</SearchMarker>
-			</MkDisableSection>
 
 			<SearchMarker v-slot="slotProps" :keywords="['other']">
 				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
@@ -809,15 +846,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<!-- TODO: 将来的には開発者用ページに移動させる -->
 						<SearchMarker :keywords="['cache', 'page']">
-							<MkSwitch v-model="enableOverrideTLDisplayLimit"><SearchLabel>{{ i18n.ts.enableOverrideTLDisplayLimit }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></MkSwitch>
+							<MkPreferenceContainer k="enableOverrideTLDisplayLimit">
+								<MkSwitch v-model="enableOverrideTLDisplayLimit">
+									<SearchLabel>{{ i18n.ts.enableOverrideTLDisplayLimit }}</SearchLabel>
+									<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<MkDisableSection :disabled="!enableOverrideTLDisplayLimit">
 							<SearchMarker :keywords="['cache', 'page']">
-								<MkRange v-model="overrideTLDisplayLimit" :min="20" :max="200" :step="1" easing>
-									<template #label><SearchLabel>{{ i18n.ts.overrideTLDisplayLimit }}</SearchLabel></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.overrideTLDisplayLimitDescription }}</SearchKeyword></template>
-								</MkRange>
+								<MkPreferenceContainer k="overrideTLDisplayLimit">
+									<MkRange v-model="overrideTLDisplayLimit" :min="20" :max="200" :step="1" easing>
+										<template #label><SearchLabel>{{ i18n.ts.overrideTLDisplayLimit }}</SearchLabel></template>
+										<template #caption><SearchKeyword>{{ i18n.ts.overrideTLDisplayLimitDescription }}</SearchKeyword></template>
+									</MkRange>
+								</MkPreferenceContainer>
 							</SearchMarker>
 						</MkDisableSection>
 
