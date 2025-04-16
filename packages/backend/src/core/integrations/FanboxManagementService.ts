@@ -17,13 +17,13 @@ type SupporterUser = {
 	username: string,
 	name: string,
 	avatarUrl: string,
-}
+};
 
 type FanboxMember = {
 	amounts: number,
 	hide: boolean,
 	user: SupporterUser,
-}
+};
 
 export type FanboxMembers = Map<string, FanboxMember>;
 

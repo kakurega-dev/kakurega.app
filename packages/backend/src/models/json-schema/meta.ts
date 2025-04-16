@@ -223,14 +223,6 @@ export const packedMetaLiteSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
-		enableSentryLogging: {
-			type: 'boolean',
-			optional: false, nullable: false,
-		},
-		sentryDsn: {
-			type: 'string',
-			optional: false, nullable: true,
-		},
 		enableSupporterPage: {
 			type: 'boolean',
 			optional: false, nullable: false,
@@ -398,10 +390,6 @@ export const packedMetaDetailedOnlySchema = {
 					optional: false, nullable: false,
 				},
 				fanbox: {
-					type: 'boolean',
-					optional: false, nullable: false,
-				},
-				sentryLogging: {
 					type: 'boolean',
 					optional: false, nullable: false,
 				},

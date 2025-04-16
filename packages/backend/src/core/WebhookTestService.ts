@@ -24,6 +24,7 @@ function generateDummyUser(override?: Partial<MiUser>): MiUser {
 		lastFetchedAt: new Date(Date.now() - oneDayMillis * 5),
 		lastActiveDate: new Date(Date.now() - oneDayMillis * 3),
 		hideOnlineStatus: false,
+		hideSearchResult: false,
 		username: 'dummy1',
 		usernameLower: 'dummy1',
 		name: 'DummyUser1',
@@ -105,6 +106,7 @@ function generateDummyNote(override?: Partial<MiNote>): MiNote {
 		replyUserHost: null,
 		renoteUserId: null,
 		renoteUserHost: null,
+		deleteAt: null,
 		...override,
 	};
 }
@@ -455,6 +457,7 @@ export class WebhookTestService {
 			followersCount: user.followersCount,
 			followingCount: user.followingCount,
 			notesCount: user.notesCount,
+			hideActivity: false,
 			pinnedNoteIds: [],
 			pinnedNotes: [],
 			pinnedPageId: null,

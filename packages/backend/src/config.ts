@@ -294,6 +294,7 @@ export function loadConfig(): Config {
 		redisForTimelines: config.redisForTimelines ? convertRedisOptions(config.redisForTimelines, host) : redis,
 		redisForReactions: config.redisForReactions ? convertRedisOptions(config.redisForReactions, host) : redis,
 		sentryForBackend: config.sentryForBackend,
+		sentryForFrontend: config.sentryForFrontend,
 		id: config.id,
 		proxy: config.proxy,
 		proxySmtp: config.proxySmtp,

@@ -310,7 +310,7 @@ export default class Connection {
 	 */
 	@bindThis
 	private onPingRequested() {
-		this.sendMessageToWs('ping', 'pong');
+		this.sendMessageToWs('ping', { 'pong': true });
 	}
 
 	/**
