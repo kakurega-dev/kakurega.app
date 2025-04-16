@@ -223,14 +223,6 @@ export const packedMetaLiteSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
-		enableSentryLogging: {
-			type: 'boolean',
-			optional: false, nullable: false,
-		},
-		sentryDsn: {
-			type: 'string',
-			optional: false, nullable: true,
-		},
 		enableSupporterPage: {
 			type: 'boolean',
 			optional: false, nullable: false,
@@ -242,6 +234,38 @@ export const packedMetaLiteSchema = {
 		translatorAvailable: {
 			type: 'boolean',
 			optional: false, nullable: false,
+		},
+		sentryForFrontend: {
+			type: 'object',
+			optional: false, nullable: true,
+			properties: {
+				options: {
+					type: 'object',
+					optional: false, nullable: false,
+					properties: {
+						dsn: {
+							type: 'string',
+							optional: false, nullable: false,
+						},
+					},
+					additionalProperties: true,
+				},
+				vueIntegration: {
+					type: 'object',
+					optional: true, nullable: true,
+					additionalProperties: true,
+				},
+				browserTracingIntegration: {
+					type: 'object',
+					optional: true, nullable: true,
+					additionalProperties: true,
+				},
+				replayIntegration: {
+					type: 'object',
+					optional: true, nullable: true,
+					additionalProperties: true,
+				},
+			},
 		},
 		mediaProxy: {
 			type: 'string',
@@ -366,10 +390,6 @@ export const packedMetaDetailedOnlySchema = {
 					optional: false, nullable: false,
 				},
 				fanbox: {
-					type: 'boolean',
-					optional: false, nullable: false,
-				},
-				sentryLogging: {
 					type: 'boolean',
 					optional: false, nullable: false,
 				},

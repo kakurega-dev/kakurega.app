@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready }]"
+	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready, [$style.withWallpaper]: withWallpaper }]"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@dragstart="onDragstart"
 		@dragend="onDragend"
 		@contextmenu.prevent.stop="onContextmenu"
-		@wheel="emit('headerWheel', $event)"
+		@wheel.passive="emit('headerWheel', $event)"
 	>
 		<svg viewBox="0 0 256 128" :class="$style.tabShape">
 			<g transform="matrix(6.2431,0,0,6.2431,-677.417,-29.3839)">
@@ -42,17 +42,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, watch, shallowRef, ref, computed } from 'vue';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from './deck-store.js';
-import type { MenuItem } from '@/types/menu.js';
+import { onBeforeUnmount, onMounted, provide, watch, useTemplateRef, ref, computed } from 'vue';
+import type { Column } from '@/deck.js';
 import type { Filter as NoteFilter } from '@/components/MkNotes.vue';
-import type { Column } from './deck-store.js';
+import type { MenuItem } from '@/types/menu.js';
+import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from '@/deck.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
-provide('forceSpacerMin', true);
+provide(DI.forceSpacerMin, true);
+
+const withWallpaper = prefer.s['deck.wallpaper'] != null;
 
 const props = withDefaults(defineProps<{
 	column: Column;
@@ -70,7 +74,7 @@ const emit = defineEmits<{
 	(ev: 'headerWheel', ctx: WheelEvent): void;
 }>();
 
-const body = shallowRef<HTMLDivElement | null>();
+const body = useTemplateRef('body');
 
 const dragging = ref(false);
 watch(dragging, v => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));
@@ -102,7 +106,7 @@ function onOtherDragEnd() {
 function toggleActive() {
 	if (!props.isStacked) return;
 	updateColumn(props.column.id, {
-		active: !props.column.active,
+		active: props.column.active == null ? false : !props.column.active,
 	});
 }
 
@@ -110,9 +114,7 @@ function getMenu() {
 	const menuItems: MenuItem[] = [];
 
 	if (props.menu) {
-		menuItems.push(...props.menu, {
-			type: 'divider',
-		});
+		menuItems.push(...props.menu);
 	}
 
 	if (props.refresher) {
@@ -194,6 +196,12 @@ function getMenu() {
 		});
 	}
 
+	if (menuItems.length > 0) {
+		menuItems.push({
+			type: 'divider',
+		});
+	}
+
 	menuItems.push({
 		icon: 'ti ti-settings',
 		text: i18n.ts._deck.configureColumn,
@@ -220,6 +228,21 @@ function getMenu() {
 			if (canceled) return;
 			updateColumn(props.column.id, result);
 		},
+	});
+
+	const flexibleRef = ref(props.column.flexible ?? false);
+
+	watch(flexibleRef, flexible => {
+		updateColumn(props.column.id, {
+			flexible,
+		});
+	});
+
+	menuItems.push({
+		type: 'switch',
+		icon: 'ti ti-arrows-horizontal',
+		text: i18n.ts._deck.flexible,
+		ref: flexibleRef,
 	});
 
 	const moveToMenuItems: MenuItem[] = [];
@@ -402,9 +425,7 @@ function onDrop(ev) {
 	}
 
 	&.naked {
-		background: var(--MI_THEME-acrylicBg) !important;
-		-webkit-backdrop-filter: var(--MI-blur, blur(10px));
-		backdrop-filter: var(--MI-blur, blur(10px));
+		background: color(from var(--MI_THEME-bg) srgb r g b / 0.5) !important;
 
 		> .header {
 			background: transparent;
@@ -422,12 +443,27 @@ function onDrop(ev) {
 		}
 	}
 
+	&.withWallpaper {
+		&.naked {
+			background: color(from var(--MI_THEME-bg) srgb r g b / 0.75) !important;
+			-webkit-backdrop-filter: var(--MI-blur, blur(10px));
+			backdrop-filter: var(--MI-blur, blur(10px));
+
+			> .header {
+				color: light-dark(#000000bf, #ffffffbf);
+			}
+		}
+
+		.tabShape {
+			display: none;
+		}
+	}
+
 	&.paged {
 		background: var(--MI_THEME-bg) !important;
 
 		> .body {
 			background: var(--MI_THEME-bg) !important;
-			overflow-y: scroll !important;
 			scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
 
 			&::-webkit-scrollbar-track {
@@ -447,9 +483,14 @@ function onDrop(ev) {
 	font-size: 0.9em;
 	color: var(--MI_THEME-panelHeaderFg);
 	background: var(--MI_THEME-panelHeaderBg);
-	box-shadow: 0 1px 0 0 var(--MI_THEME-panelHeaderDivider);
 	cursor: pointer;
 	user-select: none;
+}
+
+@container style(--MI_THEME-panelHeaderBg: var(--MI_THEME-panel)) {
+	.header {
+		box-shadow: 0 0.5px 0 0 light-dark(#0002, #fff2);
+	}
 }
 
 .color {

@@ -42,11 +42,11 @@ import { apiUrl } from '@@/js/config.js';
 import * as os from '@/os.js';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const patreonForm = ref<Window | null>(null);
 
@@ -134,9 +134,9 @@ async function requestFanboxRefresh() {
 }
 
 onMounted(() => {
-	document.cookie = `igi=${$i!.token}; path=/;` +
+	window.document.cookie = `igi=${$i!.token}; path=/;` +
 		' max-age=31536000;' +
-		(document.location.protocol.startsWith('https') ? ' secure' : '');
+		(window.document.location.protocol.startsWith('https') ? ' secure' : '');
 
 	watch(integrations, () => {
 		if (integrations.value.patreon) {
@@ -149,7 +149,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePage({
 	title: i18n.ts.integration,
 	icon: 'ti ti-share',
 });

@@ -26,11 +26,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
-import * as os from '@/os.js';
 import MkLoading from '@/components/global/MkLoading.vue';
 import { i18n } from '@/i18n.js';
-import { getDataSaverState } from '@/scripts/datasaver.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { getDataSaverState } from '@/utility/datasaver.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 
 const props = withDefaults(defineProps<{
 	code: string;
@@ -42,13 +41,12 @@ const props = withDefaults(defineProps<{
 	forceShow: false,
 });
 
-const show = ref(props.forceShow ?? !getDataSaverState('code'));
+const show = ref(props.forceShow || !getDataSaverState('code'));
 
 const XCode = defineAsyncComponent(() => import('@/components/MkCode.core.vue'));
 
 function copy() {
 	copyToClipboard(props.code);
-	os.success();
 }
 </script>
 

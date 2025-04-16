@@ -27,11 +27,10 @@ type SupporterUser = {
 	name: string,
 	avatarUrl: string,
 	withIcon: boolean,
-}
+};
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private patreonManagementService: PatreonManagementService,
 		private fanboxManagementService: FanboxManagementService,
@@ -50,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				const user = patreon.user;
 				users.set(user.username, {
 					...patreon.user,
-					withIcon: meta.supporterNameWithIconThreshold <= patreon.amounts
+					withIcon: meta.supporterNameWithIconThreshold <= patreon.amounts,
 				});
 			}
 

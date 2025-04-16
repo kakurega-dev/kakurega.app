@@ -1,7 +1,7 @@
 import { markRaw } from 'vue';
-import { Storage } from '@/pizzax.js';
+import { Pizzax } from '@/lib/pizzax.js';
 
-export const zenStore = markRaw(new Storage('zenMode', {
+export const zenStore = markRaw(new Pizzax('zenMode', {
 	showWidgets: {
 		where: 'deviceAccount',
 		default: true,

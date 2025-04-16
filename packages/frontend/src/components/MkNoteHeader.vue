@@ -43,15 +43,15 @@ import { i18n } from '@/i18n.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 import MkInstanceTickerIcon from '@/components/MkInstanceTickerIcon.vue';
-import { dateTimeFormat } from '@/scripts/intl-const.js';
-import { defaultStore } from '@/store.js';
+import { dateTimeFormat } from '@/utility/intl-const.js';
+import { DI } from '@/di.js';
 
 defineProps<{
 	note: Misskey.entities.Note;
 	showInstance?: boolean;
 }>();
 
-const mock = inject<boolean>('mock', false);
+const mock = inject(DI.mock, false);
 </script>
 
 <style lang="scss" module>

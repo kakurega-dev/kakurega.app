@@ -4,16 +4,16 @@
  */
 
 import { computed, reactive } from 'vue';
-import { $i } from '@/account.js';
+import { ui } from '@@/js/config.js';
+import { $i } from '@/i.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { openInstanceMenu, openToolsMenu } from '@/ui/_common_/common.js';
-import { lookup } from '@/scripts/lookup.js';
+import { lookup } from '@/utility/lookup.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { ui } from '@@/js/config.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
-import { defaultStore } from '@/store.js';
-import { clearCache } from '@/scripts/clear-cache.js';
+import { store } from '@/store.js';
+import { clearCache } from '@/utility/clear-cache.js';
+import { unisonReload } from '@/utility/unison-reload.js';
 
 export const navbarItemDef = reactive({
 	notifications: {
@@ -111,6 +111,13 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-device-tv',
 		to: '/channels',
 	},
+	chat: {
+		title: i18n.ts.chat,
+		icon: 'ti ti-messages',
+		to: '/chat',
+		show: computed(() => $i != null && $i.policies.chatAvailability !== 'unavailable'),
+		indicated: computed(() => $i != null && $i.hasUnreadChatMessages),
+	},
 	achievements: {
 		title: i18n.ts.achievements,
 		icon: 'ti ti-medal',
@@ -141,13 +148,6 @@ export const navbarItemDef = reactive({
 					unisonReload();
 				},
 			}, {
-				text: i18n.ts.classic,
-				active: ui === 'classic',
-				action: () => {
-					miLocalStorage.setItem('ui', 'classic');
-					unisonReload();
-				},
-			}, {
 				text: i18n.ts.zenMode,
 				active: ui === 'zen',
 				action: () => {
@@ -166,9 +166,9 @@ export const navbarItemDef = reactive({
 				text: i18n.ts.withSensitive,
 				children: [{
 					text: i18n.ts.on,
-					active: defaultStore.state.tl.filter.withSensitive,
+					active: store.s.tl.filter.withSensitive,
 					action: () => {
-						const out = { ...defaultStore.state.tl };
+						const out = { ...store.s.tl };
 						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 						if (!out.filter) {
 							out.filter = {
@@ -179,14 +179,14 @@ export const navbarItemDef = reactive({
 							};
 						}
 						out.filter.withSensitive = true;
-						defaultStore.set('tl', out);
+						store.set('tl', out);
 						unisonReload();
 					},
 				}, {
 					text: i18n.ts.off,
-					active: !defaultStore.state.tl.filter.withSensitive,
+					active: !store.s.tl.filter.withSensitive,
 					action: () => {
-						const out = { ...defaultStore.state.tl };
+						const out = { ...store.s.tl };
 						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 						if (!out.filter) {
 							out.filter = {
@@ -197,7 +197,7 @@ export const navbarItemDef = reactive({
 							};
 						}
 						out.filter.withSensitive = false;
-						defaultStore.set('tl', out);
+						store.set('tl', out);
 						unisonReload();
 					},
 				}],
@@ -206,15 +206,15 @@ export const navbarItemDef = reactive({
 				text: i18n.ts.dataSaver,
 				children: [{
 					text: i18n.ts.on,
-					active: defaultStore.state.enableDataSaverMode,
+					active: store.s.enableDataSaverMode,
 					action: () => {
-						defaultStore.set('enableDataSaverMode', true);
+						store.set('enableDataSaverMode', true);
 					},
 				}, {
 					text: i18n.ts.off,
-					active: !defaultStore.state.enableDataSaverMode,
+					active: !store.s.enableDataSaverMode,
 					action: () => {
-						defaultStore.set('enableDataSaverMode', false);
+						store.set('enableDataSaverMode', false);
 					},
 				}],
 			}], ev.currentTarget ?? ev.target);
@@ -238,7 +238,7 @@ export const navbarItemDef = reactive({
 		title: i18n.ts.reload,
 		icon: 'ti ti-refresh',
 		action: (ev) => {
-			location.reload();
+			window.location.reload();
 		},
 	},
 	profile: {

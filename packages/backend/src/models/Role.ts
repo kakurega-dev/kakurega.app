@@ -144,7 +144,7 @@ type CondFormulaValueFollowingMoreThanOrEq = {
 type CondFormulaValuePatreonAmountsLessThanOrEq = {
 	type: 'patreonAmountsLessThanOrEq';
 	value: number
-}
+};
 
 /**
  * Patreon/Fanboxの支援額が指定値以上の場合のみ成立とする
@@ -152,7 +152,7 @@ type CondFormulaValuePatreonAmountsLessThanOrEq = {
 type CondFormulaValuePatreonAmountsMoreThanOrEq = {
 	type: 'patreonAmountsMoreThanOrEq';
 	value: number
-}
+};
 
 /**
  * 投稿数が指定値以下の場合のみ成立とする
@@ -265,6 +265,11 @@ export class MiRole {
 		default: false,
 	})
 	public isExplorable: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public preserveAssignmentOnMoveAccount: boolean;
 
 	@Column('boolean', {
 		default: false,

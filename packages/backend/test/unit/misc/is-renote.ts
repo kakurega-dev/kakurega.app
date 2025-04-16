@@ -43,6 +43,7 @@ const base: MiNote = {
 	replyUserHost: null,
 	renoteUserId: null,
 	renoteUserHost: null,
+	deleteAt: null,
 };
 
 describe('misc:is-renote', () => {

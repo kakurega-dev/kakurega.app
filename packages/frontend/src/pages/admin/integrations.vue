@@ -1,8 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header>
-		<MkPageHeader :actions="headerActions" :tabs="headerTabs"/>
-	</template>
+	<template #header><XHeader/></template>
 	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
@@ -26,15 +24,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
+import XHeader from './_header_.vue';
 import XPatreon from './integrations.patreon.vue';
 import XFanbox from './integrations.fanbox.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const enablePatreonIntegration = ref(false);
 const enableFanboxIntegration = ref(false);
@@ -45,11 +44,7 @@ async function init() {
 	enableFanboxIntegration.value = meta.enableFanboxIntegration;
 }
 
-const headerActions = computed(() => []);
-
-const headerTabs = computed(() => []);
-
-definePageMetadata({
+definePage({
 	title: i18n.ts.integration,
 	icon: 'ti ti-share',
 });

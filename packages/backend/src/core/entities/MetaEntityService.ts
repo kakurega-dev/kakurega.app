@@ -124,8 +124,6 @@ export class MetaEntityService {
 			enableEmail: instance.enableEmail,
 			enablePatreonIntegration: instance.enablePatreonIntegration,
 			enableFanboxIntegration: instance.enableFanboxIntegration,
-			enableSentryLogging: instance.enableSentryLogging,
-			sentryDsn: instance.sentryDsn,
 			enableSupporterPage: instance.enableSupporterPage,
 			enableServiceWorker: instance.enableServiceWorker,
 			disableExploreLocalUsers: instance.disableExploreLocalUsers,
@@ -139,6 +137,7 @@ export class MetaEntityService {
 
 			policies: { ...DEFAULT_POLICIES, ...instance.policies },
 
+			sentryForFrontend: this.config.sentryForFrontend ?? null,
 			mediaProxy: this.config.mediaProxy,
 			enableUrlPreview: instance.urlPreviewEnabled,
 			noteSearchableScope: (this.config.meilisearch == null || this.config.meilisearch.scope !== 'local') ? 'global' : 'local',
@@ -178,7 +177,6 @@ export class MetaEntityService {
 				objectStorage: instance.useObjectStorage,
 				patreon: instance.enablePatreonIntegration,
 				fanbox: instance.enableFanboxIntegration,
-				sentryLogging: instance.enableSentryLogging,
 				serviceWorker: instance.enableServiceWorker,
 				miauth: true,
 			},

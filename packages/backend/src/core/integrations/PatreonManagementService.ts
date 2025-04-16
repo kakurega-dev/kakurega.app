@@ -18,14 +18,14 @@ type SupporterUser = {
 	username: string,
 	name: string,
 	avatarUrl: string,
-}
+};
 
 type PatreonMember = {
 	amounts: number,
 	hide: boolean,
 	isPatreon: boolean,
 	user: SupporterUser,
-}
+};
 
 export type PatreonMembers = Map<string, PatreonMember>;
 
