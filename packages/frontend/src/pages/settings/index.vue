@@ -162,6 +162,18 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 	}],
 }, {
 	items: [{
+		type: 'switch',
+		icon: 'ti ti-cloud-up',
+		text: i18n.ts._preferencesBackup.autoBackup,
+		ref: store.r.enablePreferencesAutoCloudBackup,
+		action: async () => {
+			if (store.s.enablePreferencesAutoCloudBackup) {
+				store.set('enablePreferencesAutoCloudBackup', false);
+			} else {
+				enableAutoBackup();
+			}
+		},
+	}, {
 		type: 'button',
 		icon: 'ti ti-settings-2',
 		text: i18n.ts.preferencesProfile,

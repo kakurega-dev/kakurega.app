@@ -31,6 +31,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 						<span class="text">{{ item.text }}</span>
 					</button>
+					<button v-else-if="item.type === 'switch'" class="_button item switch" :class="{ enabled: item.ref.value }" :disabled="item.active" @click.prevent="item.action">
+						<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
+						<span class="text">{{ item.text }}</span>
+						<span class="text switchStateText">{{ item.ref.value ? i18n.ts.enabled : i18n.ts.disabled }}</span>
+						<MkSwitchButton class="switchButton" :checked="item.ref" :disabled="item.active" @toggle="item.action"/>
+					</button>
 					<MkA v-else :to="item.to" class="_button item" :class="{ danger: item.danger, active: item.active }">
 						<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 						<span class="text">{{ item.text }}</span>
@@ -88,6 +94,13 @@ export type SuperMenuDef = {
 		text: string;
 		danger?: boolean;
 		active?: boolean;
+	} | {
+		type?: 'switch';
+		ref: Ref<boolean>;
+		text: string;
+		icon?: string;
+		active?: boolean;
+		action: () => void | Promise<void>;
 	})[];
 };
 </script>
@@ -95,8 +108,10 @@ export type SuperMenuDef = {
 <script lang="ts" setup>
 import { useTemplateRef, ref, watch, nextTick, computed } from 'vue';
 import { getScrollContainer } from '@@/js/scroll.js';
+import type { Ref } from 'vue';
 import type { SearchIndexItem } from '@/utility/settings-search-index.js';
 import MkInput from '@/components/MkInput.vue';
+import MkSwitchButton from '@/components/MkSwitch.button.vue';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
 import { initIntlString, compareStringIncludes } from '@/utility/intl-string.js';
@@ -271,6 +286,13 @@ function searchOnKeyDown(ev: KeyboardEvent) {
 					flex-shrink: 1;
 				}
 
+				> .switchButton {
+					margin-left: auto;
+				}
+
+				> .switchStateText {
+					display: none;
+				}
 			}
 		}
 	}
@@ -312,6 +334,10 @@ function searchOnKeyDown(ev: KeyboardEvent) {
 						}
 					}
 
+					&.switch.enabled {
+						color: var(--MI_THEME-accent);
+					}
+
 					> .icon {
 						display: grid;
 						place-content: center;
@@ -329,6 +355,14 @@ function searchOnKeyDown(ev: KeyboardEvent) {
 						padding-right: 0;
 						width: 100%;
 						font-size: 0.8em;
+					}
+
+					> .switchButton {
+						display: none;
+					}
+
+					> .switchStateText {
+						display: block;
 					}
 				}
 			}
