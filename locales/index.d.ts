@@ -2195,7 +2195,7 @@ export interface Locale extends ILocale {
      */
     "showNoteActionsOnlyHover": string;
     /**
-     * ノートのリアクション数を表示する
+     * ノートの合計リアクション数を表示する
      */
     "showReactionsCount": string;
     /**
