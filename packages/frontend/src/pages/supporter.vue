@@ -1,8 +1,5 @@
 <template>
-<MkStickyContainer>
-	<template #header>
-		<MkPageHeader :actions="headerActions" :tabs="headerTabs"/>
-	</template>
+<PageWithHeader>
 	<div style="overflow: clip;">
 		<MkSpacer :contentMax="600" :marginMin="20">
 			<div class="_gaps_m">
@@ -27,7 +24,7 @@
 			</div>
 		</MkSpacer>
 	</div>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -50,9 +47,6 @@ type SupporterUser = {
 const supporterName = ref<SupporterUser[]>([]);
 const supporterNameWithIcon = ref<SupporterUser[]>([]);
 
-const headerActions = computed(() => []);
-const headerTabs = computed(() => []);
-
 onMounted(async () => {
 	const supporters = (await misskeyApi('supporter-list')) as SupporterUser[];
 	supporters.forEach(supporter => {
@@ -66,7 +60,7 @@ onMounted(async () => {
 
 definePage({
 	title: i18n.ts.supporterList,
-	icon: null,
+	icon: 'ti ti-heart',
 });
 </script>
 
