@@ -1,8 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header>
-		<MkPageHeader :actions="headerActions" :tabs="headerTabs"/>
-	</template>
+	<template #header><XHeader/></template>
 	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
@@ -26,7 +24,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
+import XHeader from './_header_.vue';
 import XPatreon from './integrations.patreon.vue';
 import XFanbox from './integrations.fanbox.vue';
 import FormSuspense from '@/components/form/suspense.vue';
@@ -44,10 +43,6 @@ async function init() {
 	enablePatreonIntegration.value = meta.enablePatreonIntegration;
 	enableFanboxIntegration.value = meta.enableFanboxIntegration;
 }
-
-const headerActions = computed(() => []);
-
-const headerTabs = computed(() => []);
 
 definePage({
 	title: i18n.ts.integration,
