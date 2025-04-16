@@ -149,20 +149,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
+						</div>
 
-							<MkDisableSection :disabled="!collapseRenotes">
-								<SearchMarker :keywords="['renote']">
-									<MkPreferenceContainer k="collapseRenotesTrigger">
-										<MkSelect v-model="collapseRenotesTrigger">
-											<template #label><SearchLabel>{{ i18n.ts.collapseRenotesTrigger }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span><span class="_beta">{{ i18n.ts.beta }}</span></template>
-											<option value="action">{{ i18n.ts._collapseRenotesTrigger.action }}</option>
-											<option value="see">{{ i18n.ts._collapseRenotesTrigger.see }}</option>
-											<option value="all">{{ i18n.ts._collapseRenotesTrigger.all }}</option>
-										</MkSelect>
-									</MkPreferenceContainer>
-								</SearchMarker>
-							</MkDisableSection>
+						<MkDisableSection :disabled="!collapseRenotes">
+							<SearchMarker :keywords="['renote']">
+								<MkPreferenceContainer k="collapseRenotesTrigger">
+									<MkSelect v-model="collapseRenotesTrigger">
+										<template #label><SearchLabel>{{ i18n.ts.collapseRenotesTrigger }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span><span class="_beta">{{ i18n.ts.beta }}</span></template>
+										<option value="action">{{ i18n.ts._collapseRenotesTrigger.action }}</option>
+										<option value="see">{{ i18n.ts._collapseRenotesTrigger.see }}</option>
+										<option value="all">{{ i18n.ts._collapseRenotesTrigger.all }}</option>
+									</MkSelect>
+								</MkPreferenceContainer>
+							</SearchMarker>
+						</MkDisableSection>
 
+						<div class="_gaps_s">
 							<MkDisableSection :disabled="!collapseRenotes">
 								<SearchMarker :keywords="['renote']">
 									<MkPreferenceContainer k="collapseSelfRenotes">
@@ -174,28 +176,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</MkPreferenceContainer>
 								</SearchMarker>
 							</MkDisableSection>
-
-							<SearchMarker :keywords="['reaction']">
-								<MkPreferenceContainer k="hideReactionCount">
-									<MkSelect v-model="hideReactionCount">
-										<template #label><SearchLabel>{{ i18n.ts.hideReactionCount }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-										<option value="none">{{ i18n.ts._hideReactionCount.none }}</option>
-										<option value="self">{{ i18n.ts._hideReactionCount.self }}</option>
-										<option value="others">{{ i18n.ts._hideReactionCount.others }}</option>
-										<option value="all">{{ i18n.ts._hideReactionCount.all }}</option>
-									</MkSelect>
-								</MkPreferenceContainer>
-							</SearchMarker>
-
-							<SearchMarker :keywords="['reaction']">
-								<MkPreferenceContainer k="hideReactionUsers">
-									<MkSwitch v-model="hideReactionUsers">
-										<template #caption><SearchKeyword>{{ i18n.ts.hideReactionUsersDescription }}</SearchKeyword></template>
-										<SearchLabel>{{ i18n.ts.hideReactionUsers }}</SearchLabel>
-										<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-									</MkSwitch>
-								</MkPreferenceContainer>
-							</SearchMarker>
 
 							<SearchMarker :keywords="['note', 'timeline', 'gap']">
 								<MkPreferenceContainer k="showGapBetweenNotesInTimeline">
@@ -247,6 +227,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<MkPreferenceContainer k="showReactionsCount">
 										<MkSwitch v-model="showReactionsCount">
 											<template #label><SearchLabel>{{ i18n.ts.showReactionsCount }}</SearchLabel></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
+							</div>
+
+							<SearchMarker :keywords="['reaction']">
+								<MkPreferenceContainer k="hideReactionCount">
+									<MkSelect v-model="hideReactionCount">
+										<template #label><SearchLabel>{{ i18n.ts.hideReactionCount }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+										<option value="none">{{ i18n.ts._hideReactionCount.none }}</option>
+										<option value="self">{{ i18n.ts._hideReactionCount.self }}</option>
+										<option value="others">{{ i18n.ts._hideReactionCount.others }}</option>
+										<option value="all">{{ i18n.ts._hideReactionCount.all }}</option>
+									</MkSelect>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
+							<div class="_gaps_s">
+								<SearchMarker :keywords="['reaction']">
+									<MkPreferenceContainer k="hideReactionUsers">
+										<MkSwitch v-model="hideReactionUsers">
+											<template #caption><SearchKeyword>{{ i18n.ts.hideReactionUsersDescription }}</SearchKeyword></template>
+											<SearchLabel>{{ i18n.ts.hideReactionUsers }}</SearchLabel>
+											<span class="_beta">{{ i18n.ts.originalFeature }}</span>
 										</MkSwitch>
 									</MkPreferenceContainer>
 								</SearchMarker>
