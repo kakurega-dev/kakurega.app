@@ -150,7 +150,7 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	defaultNoteVisibility: {
 		where: 'account',
-		default: 'public' as (typeof Misskey.noteVisibilities)[number],
+		default: 'home' as (typeof Misskey.noteVisibilities)[number],
 	},
 	defaultNoteLocalOnly: {
 		where: 'account',
