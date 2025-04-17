@@ -118,7 +118,7 @@ export const PREF_DEF = {
 		default: null as null | string,
 	},
 	defaultNoteVisibility: {
-		default: 'public' as (typeof Misskey.noteVisibilities)[number],
+		default: 'home' as (typeof Misskey.noteVisibilities)[number],
 	},
 	defaultNoteLocalOnly: {
 		default: false,

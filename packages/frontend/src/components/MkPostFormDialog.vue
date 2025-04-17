@@ -43,6 +43,7 @@ const emit = defineEmits<{
 }>();
 
 const modal = useTemplateRef('modal');
+const form = useTemplateRef('form');
 
 function onPosted() {
 	modal.value?.close({
