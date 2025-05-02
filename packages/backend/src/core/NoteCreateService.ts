@@ -564,28 +564,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		if (data.reply == null) {
-			// TODO: キャッシュ
-			this.followingsRepository.findBy({
-				followeeId: user.id,
-				notify: 'normal',
-			}).then(async followings => {
-				if (note.visibility !== 'specified') {
-					const isPureRenote = this.isRenote(data) && !this.isQuote(data) ? true : false;
-					for (const following of followings) {
-						// TODO: ワードミュート考慮
-						let isRenoteMuted = false;
-						if (isPureRenote) {
-							const userIdsWhoMeMutingRenotes = await this.cacheService.renoteMutingsCache.fetch(following.followerId);
-							isRenoteMuted = userIdsWhoMeMutingRenotes.has(user.id);
-						}
-						if (!isRenoteMuted) {
-							this.notificationService.createNotification(following.followerId, 'note', {
-								noteId: note.id,
-							}, user.id);
-						}
-					}
-				}
-			});
+			this.noteNotificationService.sendNotificationToSubscriber(note, user);
 		}
 
 		if (data.renote && data.renote.userId !== user.id && !user.isBot) {
