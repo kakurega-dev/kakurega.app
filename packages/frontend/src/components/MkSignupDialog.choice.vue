@@ -52,7 +52,7 @@ function doneWithCode() {
 }
 
 async function doneWithoutCode() {
-	const res = await os.apiWithDialog('signup-available');
+	const res = await os.apiWithDialog('signup-available', {});
 	if (!res.available) {
 		return await os.alert({
 			type: 'error',
