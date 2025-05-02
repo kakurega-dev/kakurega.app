@@ -354,8 +354,8 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 }
 
 .t_note {
-	padding: 3px;
-	background: #007aff;
+	background: var(--eventOther);
+	pointer-events: none;
 }
 
 .t_exportCompleted {
