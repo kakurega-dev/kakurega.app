@@ -1,7 +1,7 @@
 <template>
 <PageWithHeader>
 	<div style="overflow: clip;">
-		<MkSpacer :contentMax="600" :marginMin="20">
+		<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 20px;">
 			<div class="_gaps_m">
 				<p>{{ i18n.tsx.supporterDescription({ name: instance.name ?? host }) }}</p>
 				<FormSection :first="true">
@@ -22,7 +22,7 @@
 					<p>{{ i18n.ts.moreSupporters }}</p>
 				</FormSection>
 			</div>
-		</MkSpacer>
+		</div>
 	</div>
 </PageWithHeader>
 </template>

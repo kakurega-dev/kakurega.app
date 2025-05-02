@@ -10,11 +10,11 @@
 		</div>
 
 		<PageWithHeader v-if="isRoot" :class="$style.content" :actions="headerActions">
-			<MkSpacer :contentMax="800" :class="$style.zencontents">
+			<div class="_spacer" style="--MI_SPACER-w: 800px;" :class="$style.zencontents">
 				<MkPostForm :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
 				<XWidgets v-if="showWidgets" :class="$style.widgets" :place="null"/>
 				<div :class="$style.spacer"></div>
-			</MkSpacer>
+			</div>
 		</PageWithHeader>
 		<StackingRouterView v-else-if="prefer.s['experimental.stackingRouterView']" :class="$style.content"/>
 		<RouterView v-else :class="$style.content"/>

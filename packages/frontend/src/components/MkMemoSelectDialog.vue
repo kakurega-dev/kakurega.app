@@ -6,8 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkModalWindow ref="dialog" :width="400" :height="450" :withOkButton="false" :okButtonDisabled="true" @close="dialog?.close()">
 	<template #header>{{ i18n.ts.memo }}</template>
-
-	<MkSpacer :marginMin="20" :marginMax="28">
+	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 		<div class="_gaps">
 			<MkFolder v-for="(value, key) of memoList" :key="key">
 				<template #label>{{ value }}</template>
@@ -18,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 		</div>
-	</MkSpacer>
+	</div>
 </MkModalWindow>
 </template>
 
