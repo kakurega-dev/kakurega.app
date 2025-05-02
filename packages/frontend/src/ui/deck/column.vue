@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide, watch, useTemplateRef, ref, computed } from 'vue';
 import type { Column } from '@/deck.js';
-import type { Filter as NoteFilter } from '@/components/MkNotes.vue';
+import type { NoteFilter } from '@/components/MkTimeline.vue';
 import type { MenuItem } from '@/types/menu.js';
 import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from '@/deck.js';
 import * as os from '@/os.js';
