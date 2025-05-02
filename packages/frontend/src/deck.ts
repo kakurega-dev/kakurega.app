@@ -39,6 +39,7 @@ export const columnTypes = [
 	'mentions',
 	'direct',
 	'roleTimeline',
+	'chat',
 ] as const;
 
 export type ColumnType = typeof columnTypes[number];
