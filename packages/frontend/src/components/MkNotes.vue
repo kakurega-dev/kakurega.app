@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad" :displayLimit="overrideDisplayLimit" :suppressInfinityFetch="isNeedSuppressInfinityFetch()">
+<MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad">
 	<template #empty>
 		<div class="_fullinfo">
 			<img :src="infoImageUrl" draggable="false"/>
@@ -13,88 +13,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<template #default="{ items: notes }">
-		<component
-			:is="prefer.s.animation ? TransitionGroup : 'div'" :class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap }]"
-			:enterActiveClass="$style.transition_x_enterActive"
-			:leaveActiveClass="$style.transition_x_leaveActive"
-			:enterFromClass="$style.transition_x_enterFrom"
-			:leaveToClass="$style.transition_x_leaveTo"
-			:moveClass=" $style.transition_x_move"
-			tag="div"
-		>
+		<div :class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap, [$style.reverse]: pagination.reversed }]">
 			<template v-for="(note, i) in notes" :key="note.id">
-				<div v-if="note._shouldInsertAd_" :class="[$style.noteWithAd, { '_gaps': !noGap }]">
+				<div v-if="note._shouldInsertAd_" :class="[$style.noteWithAd, { '_gaps': !noGap }]" :data-scroll-anchor="note.id">
 					<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
 					<div :class="$style.ad">
 						<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 					</div>
 				</div>
-				<MkNote v-else-if="!isFilteredNote(note)" class="$style.note" :note="note" :withHardMute="true"/>
-				<!-- なんか無限にリロードされる問題があるのでそれ対策 -->
-				<div v-else></div>
+				<MkNote v-else :class="$style.note" :note="note" :withHardMute="true" :data-scroll-anchor="note.id"/>
 			</template>
-		</component>
+		</div>
 	</template>
 </MkPagination>
 </template>
 
 <script lang="ts" setup>
-import { ref, TransitionGroup, useTemplateRef } from 'vue';
-import * as Misskey from 'misskey-js';
+import { useTemplateRef } from 'vue';
 import type { Paging } from '@/components/MkPagination.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
-import { prefer } from '@/preferences.js';
-
-export type Filter = {
-	includeKeywords?: string[];
-	includeKeywordsAll?: string[];
-	excludeKeywords?: string[];
-	includeInstances?: string[];
-	excludeInstances?: string[];
-	excludeRenotes?: boolean;
-	excludeReplies?: boolean;
-	mediaOnly?: boolean;
-};
 
 const props = defineProps<{
 	pagination: Paging;
 	noGap?: boolean;
-	filter?: Filter;
 	disableAutoLoad?: boolean;
 }>();
 
-const overrideDisplayLimit = ref<undefined | number>();
-
-if (prefer.s.enableOverrideTLDisplayLimit) {
-	overrideDisplayLimit.value = Math.max(20, prefer.s.overrideTLDisplayLimit);
-}
-
 const pagingComponent = useTemplateRef('pagingComponent');
-
-const isNeedSuppressInfinityFetch = () => {
-	return props.filter && Object.values(props.filter).some(x => x);
-};
-
-const isFilteredNote = (note: Misskey.entities.Note) => {
-	if (!props.filter) return false;
-	const filter = props.filter;
-
-	if (filter.excludeRenotes && note.renote) return true;
-	if (filter.excludeReplies && note.reply) return true;
-	if (filter.mediaOnly && !note.fileIds?.length && !note.renote?.fileIds?.length) return true;
-
-	if (filter.excludeInstances?.some(instance => note.user.host === instance)) return true;
-	if (filter.includeInstances && !filter.includeInstances.some(instance => note.user.host === instance)) return true;
-
-	if (filter.excludeKeywords?.some(keyword => note.text?.includes(keyword))) return true;
-	if (filter.includeKeywords && !filter.includeKeywords.some(keyword => note.text?.includes(keyword))) return true;
-	if (filter.includeKeywordsAll && !filter.includeKeywordsAll.every(keyword => note.text?.includes(keyword))) return true;
-
-	return false;
-};
 
 defineExpose({
 	pagingComponent,
@@ -102,18 +50,9 @@ defineExpose({
 </script>
 
 <style lang="scss" module>
-.transition_x_move,
-.transition_x_enterActive,
-.transition_x_leaveActive {
-	transition: opacity 0.3s cubic-bezier(0,.5,.5,1), transform 0.3s cubic-bezier(0,.5,.5,1) !important;
-}
-.transition_x_enterFrom,
-.transition_x_leaveTo {
-	opacity: 0;
-	transform: translateY(-50%);
-}
-.transition_x_leaveActive {
-	position: absolute;
+.reverse {
+	display: flex;
+	flex-direction: column-reverse;
 }
 
 .root {

@@ -345,6 +345,12 @@ export async function common(createVue: () => Promise<App<Element>>) {
 				replaysOnErrorSampleRate: 1.0,
 			} : {}),
 
+			// Set release version
+			release: version,
+
+			// Set environment
+			environment: _DEV_ ? 'development' : 'production',
+
 			...instance.sentryForFrontend.options,
 		});
 	}

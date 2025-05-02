@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.banner">
 		<i class="ti ti-ticket"></i>
 	</div>
-	<MkSpacer :marginMin="20" :marginMax="28">
+	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 		<div class="_gaps_m" :class="$style.root">
 			<MkInfo info>
 				{{ i18n.tsx.registrationLimitDetails({ limit: instance.registrationLimitCooldown, count:
@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<MkButton inline rounded @click="emit('cancel')">{{ i18n.ts.cancel }}</MkButton>
 		</div>
-	</MkSpacer>
+	</div>
 </div>
 </template>
 
@@ -52,7 +52,7 @@ function doneWithCode() {
 }
 
 async function doneWithoutCode() {
-	const res = await os.apiWithDialog('signup-available');
+	const res = await os.apiWithDialog('signup-available', {});
 	if (!res.available) {
 		return await os.alert({
 			type: 'error',

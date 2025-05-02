@@ -5,6 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
+	class="_forceShrinkSpacer"
 	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready, [$style.withWallpaper]: withWallpaper }]"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
@@ -44,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide, watch, useTemplateRef, ref, computed } from 'vue';
 import type { Column } from '@/deck.js';
-import type { Filter as NoteFilter } from '@/components/MkNotes.vue';
+import type { NoteFilter } from '@/components/MkTimeline.vue';
 import type { MenuItem } from '@/types/menu.js';
 import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from '@/deck.js';
 import * as os from '@/os.js';
@@ -54,7 +55,6 @@ import { DI } from '@/di.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
-provide(DI.forceSpacerMin, true);
 
 const withWallpaper = prefer.s['deck.wallpaper'] != null;
 
