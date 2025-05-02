@@ -525,10 +525,18 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#endregion
 
 		//#region scheduled note delete
-		this.scheduledNoteDeleteQueueWorker = new Bull.Worker(QUEUE.SCHEDULED_NOTE_DELETE, (job) => this.scheduledNoteDeleteProcessorService.process(job), {
-			...baseQueueOptions(this.config, QUEUE.SCHEDULED_NOTE_DELETE),
-			autorun: false,
-		});
+		{
+			this.scheduledNoteDeleteQueueWorker = new Bull.Worker(QUEUE.SCHEDULED_NOTE_DELETE, (job) => {
+				if (this.config.sentryForBackend) {
+					return Sentry.startSpan({ name: 'Queue: ScheduledNoteDelete' }, () => this.scheduledNoteDeleteProcessorService.process(job));
+				} else {
+					return this.scheduledNoteDeleteProcessorService.process(job);
+				}
+			}, {
+				...baseWorkerOptions(this.config, QUEUE.SCHEDULED_NOTE_DELETE),
+				autorun: false,
+			});
+		}
 	}
 
 	@bindThis
