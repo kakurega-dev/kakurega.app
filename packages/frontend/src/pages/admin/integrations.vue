@@ -1,7 +1,6 @@
 <template>
-<MkStickyContainer>
-	<template #header><XHeader/></template>
-	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
+<PageWithHeader>
+	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
 				<MkFolder>
@@ -19,18 +18,16 @@
 				</MkFolder>
 			</div>
 		</FormSuspense>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import XHeader from './_header_.vue';
 import XPatreon from './integrations.patreon.vue';
 import XFanbox from './integrations.fanbox.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
