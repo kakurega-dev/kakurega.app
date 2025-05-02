@@ -9,7 +9,7 @@
 			<XStatusBars :class="$style.statusbars"/>
 		</div>
 
-		<PageWithHeader v-if="isRoot" :class="$style.content" :actions="headerActions">
+		<PageWithHeader v-if="isRoot" :class="$style.content" :actions="headerActions" :overridePageMetadata="defaultPageMetadata">
 			<div class="_spacer" style="--MI_SPACER-w: 800px;" :class="$style.zencontents">
 				<MkPostForm :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
 				<XWidgets v-if="showWidgets" :class="$style.widgets" :place="null"/>
@@ -68,7 +68,7 @@ const defaultPageMetadata: PageMetadata = {
 	icon: 'ti ti-seeding',
 };
 
-const pageMetadata = ref<null | PageMetadata>(isRoot.value ? defaultPageMetadata : null);
+const pageMetadata = ref<null | PageMetadata>(null);
 const widgetsShowing = ref(false);
 
 const showWidgets = ref(prefer.s['zenMode.showWidgets']);
