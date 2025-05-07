@@ -1546,6 +1546,7 @@ _preferencesProfile:
   profileName: "プロファイル名"
   profileNameDescription: "このデバイスを識別する名前を設定してください。"
   profileNameDescription2: "例: 「メインPC」、「スマホ」など"
+  manageProfiles: "プロファイルの管理"
 
 _preferencesBackup:
   autoBackup: "自動バックアップ"
