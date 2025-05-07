@@ -196,6 +196,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 const QUEUE_TYPES = [
 	'system',
 	'endedPollNotification',
+	'scheduledNoteDelete',
 	'deliver',
 	'inbox',
 	'db',
