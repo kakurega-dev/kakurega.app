@@ -34,6 +34,7 @@ import XCommon from './_common_/common.vue';
 import type { PageMetadata } from '@/page.js';
 import XMobileFooterMenu from '@/ui/_common_/mobile-footer-menu.vue';
 import XPreferenceRestore from '@/ui/_common_/PreferenceRestore.vue';
+import XSidebar from '@/ui/_common_/navbar.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -47,7 +48,6 @@ import { shouldSuggestRestoreBackup } from '@/preferences/utility.js';
 import { DI } from '@/di.js';
 
 const XWidgets = defineAsyncComponent(() => import('./_common_/widgets.vue'));
-const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
