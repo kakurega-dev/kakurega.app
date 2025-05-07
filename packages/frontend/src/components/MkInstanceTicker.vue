@@ -62,19 +62,9 @@ $height: 2ex;
 	border-radius: 4px 0 0 4px;
 	overflow: clip;
 	color: #fff;
-	text-shadow: /* .866 ≈ sin(60deg) */
-		1px 0 1px #000,
-		.866px .5px 1px #000,
-		.5px .866px 1px #000,
-		0 1px 1px #000,
-		-.5px .866px 1px #000,
-		-.866px .5px 1px #000,
-		-1px 0 1px #000,
-		-.866px -.5px 1px #000,
-		-.5px -.866px 1px #000,
-		0 -1px 1px #000,
-		.5px -.866px 1px #000,
-		.866px -.5px 1px #000;
+
+	// text-shadowは重いから使うな
+
 	mask-image: linear-gradient(90deg,
 		rgb(0,0,0),
 		rgb(0,0,0) calc(100% - 16px),

@@ -31,6 +31,12 @@ declare namespace acct {
 export { acct }
 
 // @public (undocumented)
+type Achievement = components['schemas']['Achievement'];
+
+// @public (undocumented)
+type AchievementName = components['schemas']['AchievementName'];
+
+// @public (undocumented)
 type Ad = components['schemas']['Ad'];
 
 // Warning: (ae-forgotten-export) The symbol "operations" needs to be exported by the entry point index.d.ts
@@ -2100,6 +2106,8 @@ declare namespace entities {
         UserDetailed,
         User,
         UserList,
+        Achievement,
+        AchievementName,
         Ad,
         Announcement,
         App,
