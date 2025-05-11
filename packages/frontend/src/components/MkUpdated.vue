@@ -42,13 +42,11 @@ function closePanel() {
 }
 
 function whatIsNew() {
-	emit('closed');
-	window.open(`https://misskey-hub.net/docs/releases/#_${version.split('-')[0].replace(/\./g, '-')}`, '_blank');
+	window.open(`https://misskey-hub.net/ja/docs/releases/#_${misskeyVersion.replaceAll('.', '-')}`, '_blank');
 }
 
 function whatIsNewKakurega() {
-	emit('closed');
-	window.open('https://github.com/hideki0403/misskey.yukineko.me/blob/master-kakurega/CHANGELOG_KAKUREGA.md', '_blank');
+	window.open(`https://docs.kakurega.app/references/changelog#${kakuregaVersion.replaceAll('.', '-')}`, '_blank');
 }
 </script>
 
