@@ -22,6 +22,12 @@ export async function workerMain() {
 				...(config.sentryForBackend.enableNodeProfiling ? [nodeProfilingIntegration()] : []),
 			],
 
+			// Set release version
+			release: config.version,
+
+			// Set environment
+			environment: typeof process.env.NODE_ENV !== 'undefined' ? process.env.NODE_ENV : 'development',
+
 			// Performance Monitoring
 			tracesSampleRate: 1.0, //  Capture 100% of the transactions
 
