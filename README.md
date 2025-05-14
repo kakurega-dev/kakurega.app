@@ -12,9 +12,9 @@
 <img src="./assets/kakurega.png" alt="Kakurega logo" style="margin-bottom:16px" width="128"/>  
   
 このリポジトリはMisskeyサーバー「[隠れ家](https://misskey.yukineko.me)」で使用している本家Misskeyのフォークです。  
-詳細については[こちらのドキュメント](./docs/index.md)をご覧ください。  
+詳細については[こちらのドキュメント](https://docs.kakurega.app/references/)をご覧ください。  
   
-Dockerを用いたセットアップ方法は[こちら](./docs/setup/docker.md)
+Dockerを用いたセットアップ方法は[こちら](https://docs.kakurega.app/references/admin/setup#docker)
 
 ---
 

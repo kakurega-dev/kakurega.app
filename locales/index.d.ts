@@ -5845,6 +5845,10 @@ export interface Locale extends ILocale {
      * スクロールして閉じる
      */
     "scrollToClose": string;
+    /**
+     * 「ファイル付きのみ」が有効になっています
+     */
+    "onlyFilesIsEnabled": string;
     "_chat": {
         /**
          * まだメッセージはありません
