@@ -171,7 +171,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { toUnicode } from 'punycode.js';
 import * as Misskey from 'misskey-js';
 import * as config from '@@/js/config.js';
@@ -411,6 +411,13 @@ function onSignupApiError() {
 		text: i18n.ts.somethingHappened,
 	});
 }
+
+onMounted(() => {
+	const params = new URLSearchParams(window.location.search);
+	if (params.has('invite-code') && useInviteCode) {
+		invitationCode.value = params.get('invite-code') ?? '';
+	}
+});
 </script>
 
 <style lang="scss" module>
