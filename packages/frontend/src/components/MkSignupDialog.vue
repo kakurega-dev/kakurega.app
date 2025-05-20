@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-if="!isAcceptedServerRule">
 				<XServerRules @done="isAcceptedServerRule = true" @cancel="onClose"/>
 			</template>
-			<template v-else-if="!isChoosed && instance.enableRegistrationLimit">
+			<template v-else-if="!skipChoose && !isChoosed && !instance.disableRegistration && instance.enableRegistrationLimit">
 				<XChoice @done="doneChoice" @cancel="dialog?.close()"/>
 			</template>
 			<template v-else>
@@ -47,8 +47,10 @@ import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;
+	skipChoose?: boolean;
 }>(), {
 	autoSet: false,
+	skipChoose: false,
 });
 
 const emit = defineEmits<{
@@ -61,7 +63,7 @@ const dialog = useTemplateRef('dialog');
 
 const isAcceptedServerRule = ref(false);
 const isChoosed = ref(false);
-const withoutInviteCode = ref(true);
+const withoutInviteCode = ref(false);
 
 function doneChoice(hasInviteCode: boolean) {
 	isChoosed.value = true;
