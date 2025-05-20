@@ -415,9 +415,10 @@ export async function mainBoot() {
 
 	// もしURLのクエリにinvite-codeを持っていたらsignupダイアログを開く
 	const params = new URLSearchParams(window.location.search);
-	if (params.has('invite-code') && instance.disableRegistration) {
+	if (params.has('invite-code') && (instance.disableRegistration || instance.enableRegistrationLimit)) {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSignupDialog.vue')), {
 			autoSet: true,
+			skipChoose: true,
 		}, {
 			closed: () => dispose(),
 		});
