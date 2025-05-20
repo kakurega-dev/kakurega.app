@@ -374,6 +374,9 @@ async function onSubmit(): Promise<void> {
 	});
 
 	if (res && res.ok) {
+		const redirect = new URL(window.location.href);
+		redirect.searchParams.delete('invite-code');
+
 		if (res.status === 204 || instance.emailRequiredForSignup) {
 			os.alert({
 				type: 'success',
@@ -388,7 +391,7 @@ async function onSubmit(): Promise<void> {
 			emit('signup', resJson);
 
 			if (props.autoSet) {
-				await login(resJson.token);
+				await login(resJson.token, redirect.toString());
 			}
 		}
 	} else {

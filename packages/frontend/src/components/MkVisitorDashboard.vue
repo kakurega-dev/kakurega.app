@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { instanceName } from '@@/js/config.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
@@ -71,6 +71,7 @@ import { instance } from '@/instance.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
 import { openInstanceMenu } from '@/ui/_common_/common.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
@@ -97,13 +98,6 @@ function signup() {
 function showMenu(ev: MouseEvent) {
 	openInstanceMenu(ev);
 }
-
-onMounted(() => {
-	const params = new URLSearchParams(window.location.search);
-	if (params.has('invite-code') && instance.disableRegistration) {
-		signup();
-	}
-});
 </script>
 
 <style lang="scss" module>
