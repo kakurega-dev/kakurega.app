@@ -18,13 +18,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<!-- eslint-disable-next-line vue/no-v-html -->
 				<div v-html="instance.description || i18n.ts.headlineMisskey"></div>
 			</div>
-			<div v-if="instance.disableRegistration || instance.federation !== 'all'" :class="$style.mainWarn" class="_gaps_s">
+			<div v-if="instance.disableRegistration || instance.enableRegistrationLimit || instance.federation !== 'all'" :class="$style.mainWarn" class="_gaps_s">
+				<MkInfo v-if="!instance.disableRegistration && instance.enableRegistrationLimit" info>{{ i18n.tsx.registrationLimitDetails({ limit: instance.registrationLimitCooldown, count: instance.registrationLimit }) }}</MkInfo>
 				<MkInfo v-if="instance.disableRegistration" warn>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
 				<MkInfo v-if="instance.federation === 'specified'" warn>{{ i18n.ts.federationSpecified }}</MkInfo>
 				<MkInfo v-else-if="instance.federation === 'none'" warn>{{ i18n.ts.federationDisabled }}</MkInfo>
-			</div>
-			<div v-if="instance.enableRegistrationLimit" :class="$style.mainWarn">
-				<MkInfo info>{{ i18n.tsx.registrationLimitDetails({ limit: instance.registrationLimitCooldown, count: instance.registrationLimit }) }}</MkInfo>
 			</div>
 			<div class="_gaps_s" :class="$style.mainActions">
 				<MkButton :class="$style.mainAction" full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>
@@ -59,6 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { instanceName } from '@@/js/config.js';
+import type { MenuItem } from '@/types/menu.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -71,7 +70,6 @@ import { instance } from '@/instance.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
 import { openInstanceMenu } from '@/ui/_common_/common.js';
-import type { MenuItem } from '@/types/menu.js';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
