@@ -5849,6 +5849,14 @@ export interface Locale extends ILocale {
      * 「ファイル付きのみ」が有効になっています
      */
     "onlyFilesIsEnabled": string;
+    /**
+     * 招待コードをコピー
+     */
+    "copyInviteCode": string;
+    /**
+     * 招待URLをコピー
+     */
+    "copyInviteUrl": string;
     "_chat": {
         /**
          * まだメッセージはありません

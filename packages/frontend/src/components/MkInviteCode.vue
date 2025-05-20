@@ -11,10 +11,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-else-if="isExpired" style="color: var(--MI_THEME-error)">{{ i18n.ts.expired }}</span>
 		<span v-else style="color: var(--MI_THEME-success)">{{ i18n.ts.unused }}</span>
 	</template>
-	<template #footer>
+	<template v-if="!invite.used || moderator" #footer>
 		<div class="_buttons">
-			<MkButton v-if="!invite.used && !isExpired" primary rounded @click="copyInviteCode()"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
-			<MkButton v-if="!invite.used || moderator" danger rounded @click="deleteCode()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+			<template v-if="!isExpired && !invite.used">
+				<MkButton primary rounded @click="copyInviteUrl(invite.code)"><i class="ti ti-link"></i> {{ i18n.ts.copyInviteUrl }}</MkButton>
+				<MkButton primary rounded @click="copyInviteCode(invite.code)"><i class="ti ti-copy"></i> {{ i18n.ts.copyInviteCode }}</MkButton>
+			</template>
+			<MkButton danger rounded @click="deleteCode()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
 	</template>
 
@@ -64,7 +67,7 @@ import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { copyInviteCode, copyInviteUrl } from '@/utility/invite.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
@@ -86,10 +89,6 @@ function deleteCode() {
 		inviteId: props.invite.id,
 	});
 	emits('deleted', props.invite.id);
-}
-
-function copyInviteCode() {
-	copyToClipboard(props.invite.code);
 }
 </script>
 
