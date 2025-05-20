@@ -375,15 +375,20 @@ async function onSubmit(): Promise<void> {
 
 	if (res && res.ok) {
 		const redirect = new URL(window.location.href);
+		const hasInviteCode = redirect.searchParams.has('invite-code');
 		redirect.searchParams.delete('invite-code');
 
 		if (res.status === 204 || instance.emailRequiredForSignup) {
-			os.alert({
+			await os.alert({
 				type: 'success',
 				title: i18n.ts._signup.almostThere,
 				text: i18n.tsx._signup.emailSent({ email: email.value }),
 			});
 			emit('signupEmailPending');
+
+			if (hasInviteCode) {
+				window.location.href = redirect.toString();
+			}
 		} else {
 			const resJson = (await res.json()) as Misskey.entities.SignupResponse;
 			if (_DEV_) console.log(resJson);
