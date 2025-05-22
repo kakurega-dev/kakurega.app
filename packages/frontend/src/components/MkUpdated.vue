@@ -42,7 +42,7 @@ function closePanel() {
 }
 
 function whatIsNew() {
-	window.open(`https://misskey-hub.net/ja/docs/releases/#_${misskeyVersion.replaceAll('.', '-')}`, '_blank');
+	window.open(`https://misskey-hub.net/docs/releases/#_${misskeyVersion.replaceAll('.', '')}`, '_blank');
 }
 
 function whatIsNewKakurega() {

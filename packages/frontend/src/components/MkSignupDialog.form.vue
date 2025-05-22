@@ -171,7 +171,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { toUnicode } from 'punycode.js';
 import * as Misskey from 'misskey-js';
 import * as config from '@@/js/config.js';
@@ -374,13 +374,21 @@ async function onSubmit(): Promise<void> {
 	});
 
 	if (res && res.ok) {
+		const redirect = new URL(window.location.href);
+		const hasInviteCode = redirect.searchParams.has('invite-code');
+		redirect.searchParams.delete('invite-code');
+
 		if (res.status === 204 || instance.emailRequiredForSignup) {
-			os.alert({
+			await os.alert({
 				type: 'success',
 				title: i18n.ts._signup.almostThere,
 				text: i18n.tsx._signup.emailSent({ email: email.value }),
 			});
 			emit('signupEmailPending');
+
+			if (hasInviteCode) {
+				window.location.href = redirect.toString();
+			}
 		} else {
 			const resJson = (await res.json()) as Misskey.entities.SignupResponse;
 			if (_DEV_) console.log(resJson);
@@ -388,7 +396,7 @@ async function onSubmit(): Promise<void> {
 			emit('signup', resJson);
 
 			if (props.autoSet) {
-				await login(resJson.token);
+				await login(resJson.token, redirect.toString());
 			}
 		}
 	} else {
@@ -411,6 +419,13 @@ function onSignupApiError() {
 		text: i18n.ts.somethingHappened,
 	});
 }
+
+onMounted(() => {
+	const params = new URLSearchParams(window.location.search);
+	if (params.has('invite-code') && useInviteCode) {
+		invitationCode.value = params.get('invite-code') ?? '';
+	}
+});
 </script>
 
 <style lang="scss" module>

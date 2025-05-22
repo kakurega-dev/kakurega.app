@@ -33,6 +33,7 @@ import type { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { copyInviteCode, copyInviteUrl } from '@/utility/invite.js';
 import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
@@ -62,11 +63,32 @@ const resetCycle = computed<null | string>(() => {
 
 async function create() {
 	const ticket = await misskeyApi('invite/create');
-	os.alert({
+	const { result } = await os.actions({
 		type: 'success',
 		title: i18n.ts.inviteCodeCreated,
 		text: ticket.code,
+		actions: [{
+			value: 'copyUrl',
+			text: i18n.ts.copyInviteUrl,
+			primary: true,
+		}, {
+			value: 'copyCode',
+			text: i18n.ts.copyInviteCode,
+			primary: true,
+		}, {
+			value: 'close',
+			text: i18n.ts.close,
+		}],
 	});
+
+	switch (result) {
+		case 'copyUrl':
+			copyInviteUrl(ticket.code);
+			break;
+		case 'copyCode':
+			copyInviteCode(ticket.code);
+			break;
+	}
 
 	pagingComponent.value?.prepend(ticket);
 	update();

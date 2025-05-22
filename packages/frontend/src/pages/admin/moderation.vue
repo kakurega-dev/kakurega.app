@@ -32,22 +32,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #caption>{{ i18n.ts.blockMentionsFromUnfamiliarRemoteUsersDescription }} Cherry-picked from Misskey.io (https://github.com/MisskeyIO/misskey/commit/82cc3987c13db4ad0da1589386027c222ce85ff8)</template>
 						</MkSwitch>
 
-						<MkSwitch v-model="enableRegistrationLimit" :disabled="!enableRegistration" @change="onChange_enableRegistrationLimit">
-							<template #label>{{ i18n.ts.enableRegistrationLimit }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-							<template #caption>{{ i18n.ts.enableRegistrationLimitDescription }}</template>
-						</MkSwitch>
+						<MkDisableSection :disabled="!enableRegistration">
+							<div class="_gaps_m">
+								<MkSwitch v-model="enableRegistrationLimit" @change="onChange_enableRegistrationLimit">
+									<template #label>{{ i18n.ts.enableRegistrationLimit }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+									<template #caption>{{ i18n.ts.enableRegistrationLimitDescription }}</template>
+								</MkSwitch>
 
-						<MkInput v-model="registrationLimitCooldown" type="number" :min="1" :disabled="!enableRegistration || !enableRegistrationLimit">
-							<template #label>{{ i18n.ts.registrationLimitCooldown }}</template>
-							<template #suffix>{{ i18n.ts._time.hour }}</template>
-							<template #caption>{{ i18n.ts.registrationLimitCooldownDescription }}</template>
-						</MkInput>
+								<MkInput v-model="registrationLimitCooldown" type="number" :min="1" :disabled="!enableRegistrationLimit">
+									<template #label>{{ i18n.ts.registrationLimitCooldown }}</template>
+									<template #suffix>{{ i18n.ts._time.hour }}</template>
+									<template #caption>{{ i18n.ts.registrationLimitCooldownDescription }}</template>
+								</MkInput>
 
-						<MkInput v-model="registrationLimit" type="number" :min="0" :disabled="!enableRegistration || !enableRegistrationLimit">
-							<template #label>{{ i18n.ts.registrationLimit }}</template>
-							<template #caption>{{ i18n.ts.registrationLimitDescription }}</template>
-						</MkInput>
-						<MkButton primary :disabled="!enableRegistration || !enableRegistrationLimit" @click="save_registrationLimitSettings">{{ i18n.ts.save }}</MkButton>
+								<MkInput v-model="registrationLimit" type="number" :min="0" :disabled="!enableRegistrationLimit">
+									<template #label>{{ i18n.ts.registrationLimit }}</template>
+									<template #caption>{{ i18n.ts.registrationLimitDescription }}</template>
+								</MkInput>
+								<MkButton primary :disabled="!enableRegistrationLimit" @click="save_registrationLimitSettings">{{ i18n.ts.save }}</MkButton>
+							</div>
+						</MkDisableSection>
 
 						<MkSwitch v-model="disableExploreLocalUsers" @change="onChange_disableExploreLocalUsers">
 							<template #label>{{ i18n.ts.disableExploreLocalUsers }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
@@ -179,6 +183,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import FormSuspense from '@/components/form/suspense.vue';
+import MkDisableSection from '@/components/MkDisableSection.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance } from '@/instance.js';

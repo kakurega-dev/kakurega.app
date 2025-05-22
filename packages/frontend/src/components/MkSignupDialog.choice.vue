@@ -73,6 +73,7 @@ async function doneWithoutCode() {
 .choiceButton {
 	height: 60px;
 	width: 100% !important;
+	border-radius: 16px;
 }
 
 .banner {

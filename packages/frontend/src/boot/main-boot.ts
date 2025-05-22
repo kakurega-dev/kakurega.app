@@ -413,5 +413,16 @@ export async function mainBoot() {
 	} as const satisfies Keymap;
 	window.document.addEventListener('keydown', makeHotkey(keymap), { passive: false });
 
+	// もしURLのクエリにinvite-codeを持っていたらsignupダイアログを開く
+	const params = new URLSearchParams(window.location.search);
+	if (params.has('invite-code') && (instance.disableRegistration || instance.enableRegistrationLimit)) {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSignupDialog.vue')), {
+			autoSet: true,
+			skipChoose: true,
+		}, {
+			closed: () => dispose(),
+		});
+	}
+
 	initializeSw();
 }
