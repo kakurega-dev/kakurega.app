@@ -1343,6 +1343,10 @@ export interface Locale extends ILocale {
      */
     "darkThemes": string;
     /**
+     * ダークモードの同期
+     */
+    "syncDarkMode": string;
+    /**
      * デバイスのダークモードと同期する
      */
     "syncDeviceDarkMode": string;

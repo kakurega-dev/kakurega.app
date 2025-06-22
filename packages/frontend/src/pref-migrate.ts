@@ -54,7 +54,6 @@ export function migrateOldSettings() {
 
 		prefer.commit('lightTheme', ColdDeviceStorage.get('lightTheme'));
 		prefer.commit('darkTheme', ColdDeviceStorage.get('darkTheme'));
-		prefer.commit('syncDeviceDarkMode', ColdDeviceStorage.get('syncDeviceDarkMode'));
 		prefer.commit('emojiPalettes', [{
 			id: 'reactions',
 			name: '',

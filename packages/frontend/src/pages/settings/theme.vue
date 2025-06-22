@@ -27,17 +27,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<div class="sync">
-				<SearchMarker :keywords="['sync', 'device', 'dark', 'light', 'mode']">
-					<MkSwitch v-model="syncDeviceDarkMode" :disabled="syncTimeDarkMode">
-						<template #label><SearchLabel>{{ i18n.ts.syncDeviceDarkMode }}</SearchLabel></template>
-					</MkSwitch>
-				</SearchMarker>
-
-				<SearchMarker :keywords="['sync', 'time', 'dark', 'light', 'mode']">
-					<MkSwitch v-model="syncTimeDarkMode">
-						<template #label><SearchLabel>{{ i18n.ts.syncTimeDarkMode }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-						<template #caption><SearchKeyword>{{ i18n.ts.disableSyncDeviceDarkMode }}</SearchKeyword></template>
-					</MkSwitch>
+				<SearchMarker :keywords="['sync', 'device', 'time', 'dark', 'light', 'mode']">
+					<MkSelect v-model="syncDarkMode">
+						<template #label><SearchLabel>{{ i18n.ts.syncDarkMode }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+						<option :value="null">{{ i18n.ts.none }}</option>
+						<option value="device">{{ i18n.ts.syncDeviceDarkMode }}</option>
+						<option value="time">{{ i18n.ts.syncTimeDarkMode }}</option>
+					</MkSelect>
 				</SearchMarker>
 			</div>
 		</div>
@@ -212,6 +208,7 @@ import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
 import type { Theme } from '@/theme.js';
 import * as os from '@/os.js';
+import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
@@ -265,31 +262,30 @@ const lightThemeId = computed({
 	},
 });
 
-const syncDeviceDarkMode = prefer.model('syncDeviceDarkMode');
-const syncTimeDarkMode = prefer.model('syncTimeDarkMode');
+const syncDarkMode = prefer.model('syncDarkMode');
 const themesCount = installedThemes.value.length;
 
-watch(syncDeviceDarkMode, () => {
-	if (syncDeviceDarkMode.value) {
-		store.set('darkMode', isDeviceDarkmode());
-	}
-});
-
-watch(syncTimeDarkMode, async () => {
-	if (syncTimeDarkMode.value) {
-		store.set('darkMode', isTimeDarkmode());
+watch(syncDarkMode, () => {
+	switch (syncDarkMode.value) {
+		case 'device':
+			store.set('darkMode', isDeviceDarkmode());
+			break;
+		case 'time':
+			store.set('darkMode', isTimeDarkmode());
+			break;
 	}
 });
 
 async function toggleDarkMode() {
 	const value = !store.r.darkMode.value;
-	if (syncDeviceDarkMode.value) {
+	if (syncDarkMode.value != null) {
 		const { canceled } = await os.confirm({
-			text: i18n.tsx.switchDarkModeManuallyWhenSyncEnabledConfirm({ x: i18n.ts.syncDeviceDarkMode }),
+			type: 'warning',
+			text: i18n.tsx.switchDarkModeManuallyWhenSyncEnabledConfirm({ x: i18n.ts.syncDarkMode }),
 		});
 		if (canceled) return;
 
-		syncDeviceDarkMode.value = false;
+		syncDarkMode.value = null;
 		store.set('darkMode', value);
 	} else {
 		store.set('darkMode', value);

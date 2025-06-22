@@ -178,15 +178,18 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	});
 
 	//#region Sync dark mode
-	if (prefer.s.syncDeviceDarkMode) {
-		store.set('darkMode', isDeviceDarkmode());
-	} else if (prefer.s.syncTimeDarkMode) {
-		store.set('darkMode', isTimeDarkmode());
-		initializeTimeBasedDarkmode();
+	switch (prefer.s.syncDarkMode) {
+		case 'device':
+			store.set('darkMode', isDeviceDarkmode());
+			break;
+		case 'time':
+			store.set('darkMode', isTimeDarkmode());
+			initializeTimeBasedDarkmode();
+			break;
 	}
 
 	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (mql) => {
-		if (prefer.s.syncDeviceDarkMode) {
+		if (prefer.s.syncDarkMode === 'device') {
 			store.set('darkMode', mql.matches);
 		}
 	});
