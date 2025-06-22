@@ -171,6 +171,19 @@ export const moderationLogTypes = [
 	'deleteChatRoom',
 ] as const;
 
+export const queueTypes = [
+	'system',
+	'endedPollNotification',
+	'scheduledNoteDelete',
+	'deliver',
+	'inbox',
+	'db',
+	'relationship',
+	'objectStorage',
+	'userWebhookDeliver',
+	'systemWebhookDeliver',
+] as const;
+
 // See: packages/backend/src/core/ReversiService.ts@L410
 export const reversiUpdateKeys = [
 	'map',

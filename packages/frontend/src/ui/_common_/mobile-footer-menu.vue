@@ -131,7 +131,7 @@ watch(rootEl, () => {
 }
 
 .itemIcon {
-	font-size: 14px;
+	font-size: 15px;
 }
 
 .itemIndicator {

@@ -17,8 +17,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkSwitch>
 
 				<MkSwitch v-model="emailRequiredForSignup" @change="onChange_emailRequiredForSignup">
-					<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
+					<template #label>{{ i18n.ts.emailRequiredForSignup }} ({{ i18n.ts.recommended }})</template>
 				</MkSwitch>
+
+				<MkSelect v-model="ugcVisibilityForVisitor" @update:modelValue="onChange_ugcVisibilityForVisitor">
+					<template #label>{{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor }}</template>
+					<option value="all">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.all }}</option>
+					<option value="local">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.localOnly }} ({{ i18n.ts.recommended }})</option>
+					<option value="none">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.none }}</option>
+					<template #caption>
+						<div>{{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor_description }}</div>
+						<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor_description2 }}</div>
+					</template>
+				</MkSelect>
 
 				<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
 
@@ -192,21 +203,23 @@ import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkSelect from '@/components/MkSelect.vue';
 
-const enableRegistration = ref(false);
+const enableRegistration = ref<boolean>(false);
 const enableRegistrationLimit = ref(false);
 const registrationLimit = ref(0);
 const registrationLimitCooldown = ref(0);
-const emailRequiredForSignup = ref(false);
+const emailRequiredForSignup = ref<boolean>(false);
 const disableExploreLocalUsers = ref(false);
 const disableEntranceFeatureTimeline = ref(false);
 const enableAgeRestriction = ref(false);
 const ageRestrictionThreshold = ref(0);
-const sensitiveWords = ref('');
-const preservedUsernames = ref('');
-const prohibitedWords = ref('');
+const ugcVisibilityForVisitor = ref<string>('all');
+const sensitiveWords = ref<string>('');
+const prohibitedWords = ref<string>('');
 const prohibitedWordsForNameOfUser = ref<string>('');
 const hiddenTags = ref('');
+const preservedUsernames = ref<string>('');
 const tosUrl = ref<string | null>(null);
 const privacyPolicyUrl = ref<string | null>(null);
 const blockMentionsFromUnfamiliarRemoteUsers = ref(false);
@@ -226,6 +239,7 @@ async function init() {
 	disableEntranceFeatureTimeline.value = meta.disableEntranceFeatureTimeline;
 	enableAgeRestriction.value = meta.enableAgeRestriction;
 	ageRestrictionThreshold.value = meta.ageRestrictionThreshold;
+	ugcVisibilityForVisitor.value = meta.ugcVisibilityForVisitor;
 	sensitiveWords.value = meta.sensitiveWords.join('\n');
 	prohibitedWords.value = meta.prohibitedWords.join('\n');
 	prohibitedWordsForNameOfUser.value = meta.prohibitedWordsForNameOfUser.join('\n');
@@ -301,6 +315,14 @@ function onChange_disableEntranceFeatureTimeline(value: boolean) {
 function onChange_enableAgeRestriction(value: boolean) {
 	os.apiWithDialog('admin/update-meta', {
 		enableAgeRestriction: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function onChange_ugcVisibilityForVisitor(value: string) {
+	os.apiWithDialog('admin/update-meta', {
+		ugcVisibilityForVisitor: value,
 	}).then(() => {
 		fetchInstance(true);
 	});

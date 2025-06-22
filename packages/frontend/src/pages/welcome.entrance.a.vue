@@ -17,13 +17,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkVisitorDashboard/>
 	</div>
 	<div v-if="instances && instances.length > 0" :class="$style.federation">
-		<MarqueeText :duration="40">
+		<MkMarqueeText :duration="40">
 			<MkA v-for="x in instances" :key="x.id" :class="$style.federationInstance" :to="`/instance-info/${x.host}`" behavior="window">
 				<!--<MkInstanceCardMini :instance="instance"/>-->
 				<img v-if="x.iconUrl" :class="$style.federationInstanceIcon" :src="getInstanceIcon(x)" alt=""/>
 				<span class="_monospace">{{ x.host }}</span>
 			</MkA>
-		</MarqueeText>
+		</MkMarqueeText>
 	</div>
 </div>
 </template>
@@ -33,7 +33,7 @@ import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XTimeline from './welcome.timeline.vue';
 import { instance } from '@/instance.js';
-import MarqueeText from '@/components/MkMarquee.vue';
+import MkMarqueeText from '@/components/MkMarqueeText.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import misskeysvg from '/client-assets/misskey.svg';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
