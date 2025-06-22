@@ -66,28 +66,16 @@ const paginator: Paginator = usePagination({
 	ctx: props.pagination,
 });
 
-const AUTO_FETCH_LIMIT = 3;
-const FETCH_INTERVAL = 500;
-
-let limiterCount = 0;
-let lastFetchTime = 0;
-
-async function ratelimiter(fetcher: () => Promise<void>) {
-	if (props.suppressInfinityFetch) {
-		limiterCount = lastFetchTime - Date.now() < FETCH_INTERVAL ? limiterCount + 1 : 0;
-		if (limiterCount >= AUTO_FETCH_LIMIT) return;
-	}
-
-	await fetcher();
-	lastFetchTime = Date.now();
-}
-
 function appearFetchMoreAhead() {
-	ratelimiter(paginator.fetchNewer);
+	paginator.fetchNewer({
+		suppressInfinityFetch: props.suppressInfinityFetch,
+	});
 }
 
 function appearFetchMore() {
-	ratelimiter(paginator.fetchOlder);
+	paginator.fetchOlder({
+		suppressInfinityFetch: props.suppressInfinityFetch,
+	});
 }
 
 defineSlots<{

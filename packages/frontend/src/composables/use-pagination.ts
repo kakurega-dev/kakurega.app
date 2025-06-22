@@ -12,6 +12,8 @@ const MAX_ITEMS = 30;
 const MAX_QUEUE_ITEMS = 100;
 const FIRST_FETCH_LIMIT = 15;
 const SECOND_FETCH_LIMIT = 30;
+const AUTO_FETCH_LIMIT = 3;
+const AUTO_FETCH_INTERVAL = 500;
 
 export type MisskeyEntity = {
 	id: string;
@@ -53,6 +55,9 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 	const fetchingOlder = ref(false);
 	const canFetchOlder = ref(false);
 	const error = ref(false);
+
+	let limiterCount = 0;
+	let lastFetchTime = 0;
 
 	if (props.autoReInit !== false) {
 		watch(() => [props.ctx.endpoint, props.ctx.params], init, { deep: true });
@@ -126,8 +131,15 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 		return init();
 	}
 
-	async function fetchOlder(): Promise<void> {
+	async function fetchOlder(options: {
+		suppressInfinityFetch?: boolean;
+	}): Promise<void> {
 		if (!canFetchOlder.value || fetching.value || fetchingOlder.value || items.value.length === 0) return;
+		if (options.suppressInfinityFetch) {
+			limiterCount = lastFetchTime - Date.now() < AUTO_FETCH_INTERVAL ? limiterCount + 1 : 0;
+			if (limiterCount >= AUTO_FETCH_LIMIT) return;
+		}
+
 		fetchingOlder.value = true;
 		const params = props.ctx.params ? isRef(props.ctx.params) ? props.ctx.params.value : props.ctx.params : {};
 		await misskeyApi<T[]>(props.ctx.endpoint, {
@@ -161,12 +173,19 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 			}
 		}).finally(() => {
 			fetchingOlder.value = false;
+			lastFetchTime = Date.now();
 		});
 	}
 
 	async function fetchNewer(options: {
 		toQueue?: boolean;
+		suppressInfinityFetch?: boolean;
 	} = {}): Promise<void> {
+		if (options.suppressInfinityFetch) {
+			limiterCount = lastFetchTime - Date.now() < AUTO_FETCH_INTERVAL ? limiterCount + 1 : 0;
+			if (limiterCount >= AUTO_FETCH_LIMIT) return;
+		}
+
 		const params = props.ctx.params ? isRef(props.ctx.params) ? props.ctx.params.value : props.ctx.params : {};
 		await misskeyApi<T[]>(props.ctx.endpoint, {
 			...params,
@@ -189,6 +208,8 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 				unshiftItems(res.toReversed());
 			}
 		});
+
+		lastFetchTime = Date.now();
 	}
 
 	function trim(trigger = true) {
