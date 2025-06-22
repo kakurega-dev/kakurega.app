@@ -6,8 +6,9 @@ import { computed } from 'vue';
 import { hostname } from '@@/js/config.js';
 import { instance } from '@/instance.js';
 import { prefer } from '@/preferences.js';
+import { getDataSaverState } from '@/utility/datasaver.js';
 
-export const isEnabledUrlPreview = computed(() => (instance.enableUrlPreview && !prefer.r.dataSaver.value.disableUrlPreview));
+export const isEnabledUrlPreview = computed(() => (instance.enableUrlPreview && !getDataSaverState('disableUrlPreview')));
 
 export function transformPlayerUrl(url: string): string {
 	const urlObj = new URL(url);

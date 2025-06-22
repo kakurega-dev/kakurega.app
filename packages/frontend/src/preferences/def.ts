@@ -144,11 +144,8 @@ export const PREF_DEF = definePreferences({
 	darkTheme: {
 		default: null as Theme | null,
 	},
-	syncDeviceDarkMode: {
-		default: true,
-	},
-	syncTimeDarkMode: {
-		default: false,
+	syncDarkMode: {
+		default: null as null | 'device' | 'time',
 	},
 	customFont: {
 		default: null as null | string,
@@ -386,12 +383,6 @@ export const PREF_DEF = definePreferences({
 	},
 	useGroupedNotifications: {
 		default: true,
-	},
-	enableOverrideTLDisplayLimit: {
-		default: false,
-	},
-	overrideTLDisplayLimit: {
-		default: 20,
 	},
 	dataSaver: {
 		default: {

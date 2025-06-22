@@ -49,4 +49,8 @@ export const bottomItemDef = {
 		title: i18n.ts.saveAsDraft,
 		icon: 'ti-note',
 	},
+	preview: {
+		title: i18n.ts.preview,
+		icon: 'ti-eye',
+	},
 };

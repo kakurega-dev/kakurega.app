@@ -456,14 +456,6 @@ export const store = markRaw(new Pizzax('base', {
 		where: 'account',
 		default: false,
 	},
-	enableOverrideTLDisplayLimit: {
-		where: 'device',
-		default: false,
-	},
-	overrideTLDisplayLimit: {
-		where: 'device',
-		default: 20,
-	},
 	useGroupedNotifications: {
 		where: 'device',
 		default: true,

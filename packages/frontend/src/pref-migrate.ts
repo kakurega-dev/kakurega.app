@@ -54,7 +54,6 @@ export function migrateOldSettings() {
 
 		prefer.commit('lightTheme', ColdDeviceStorage.get('lightTheme'));
 		prefer.commit('darkTheme', ColdDeviceStorage.get('darkTheme'));
-		prefer.commit('syncDeviceDarkMode', ColdDeviceStorage.get('syncDeviceDarkMode'));
 		prefer.commit('emojiPalettes', [{
 			id: 'reactions',
 			name: '',
@@ -156,8 +155,6 @@ export function migrateOldSettings() {
 		prefer.commit('instanceTickerStyle', store.s.instanceTickerStyle);
 		prefer.commit('hideReactionCount', store.s.hideReactionCount);
 		prefer.commit('hideReactionUsers', store.s.hideReactionUsers);
-		prefer.commit('enableOverrideTLDisplayLimit', store.s.enableOverrideTLDisplayLimit);
-		prefer.commit('overrideTLDisplayLimit', store.s.overrideTLDisplayLimit);
 		prefer.commit('optoutStatistics', store.s.optoutStatistics);
 		prefer.commit('zenMode.showWidgets', zenStore.s.showWidgets);
 		// #endregion

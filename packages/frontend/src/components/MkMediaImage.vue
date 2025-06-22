@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:class="$style.image"
 		/>
 		<div
-			v-else-if="prefer.s.dataSaver.media || hide"
+			v-else-if="getDataSaverState('media') || hide"
 			:title="image.comment || image.name"
 			:style="hide ? 'background: #888;' : null"
 			:class="$style.image"
@@ -70,7 +70,7 @@ import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
 import { getDataSaverState } from '@/utility/datasaver.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import bytes from '@/filters/bytes.js';
 import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';

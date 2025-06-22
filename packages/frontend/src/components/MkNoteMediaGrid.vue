@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		v-if="(((
 			(prefer.s.nsfw === 'force' || file.isSensitive) &&
 			prefer.s.nsfw !== 'ignore'
-		) || (prefer.s.dataSaver.media && file.type.startsWith('image/'))) &&
+		) || (getDataSaverState('media') && file.type.startsWith('image/'))) &&
 			!showingFiles.has(file.id)
 		)"
 		:class="[$style.filePreview, { [$style.square]: square }]"
@@ -25,8 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		/>
 		<div :class="$style.sensitive">
 			<div>
-				<div v-if="file.isSensitive"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ prefer.s.dataSaver.media && file.size ? ` (${bytes(file.size)})` : '' }}</div>
-				<div v-else><i class="ti ti-photo"></i> {{ prefer.s.dataSaver.media && file.size ? bytes(file.size) : i18n.ts.image }}</div>
+				<div v-if="file.isSensitive"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ getDataSaverState('media') && file.size ? ` (${bytes(file.size)})` : '' }}</div>
+				<div v-else><i class="ti ti-photo"></i> {{ getDataSaverState('media') && file.size ? bytes(file.size) : i18n.ts.image }}</div>
 				<div>{{ i18n.ts.clickToShow }}</div>
 			</div>
 		</div>
@@ -46,6 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { getDataSaverState } from '@/utility/datasaver.js';
 import { notePage } from '@/filters/note.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';

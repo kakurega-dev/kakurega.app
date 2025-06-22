@@ -531,22 +531,25 @@ export class MarkerIdAssigner {
 			const markerIdProp = findAttribute(node.props, 'markerId');
 
 			let nodeMarkerId: string;
+			let addMarkerId = true;
 			if (markerIdProp != null) {
 				if (markerIdProp.type !== NodeTypes.ATTRIBUTE) return logger.error(`markerId must be a attribute at ${id}:${markerIdProp.loc.start.line}`);
 				if (markerIdProp.value == null) return logger.error(`markerId must have a value at ${id}:${markerIdProp.loc.start.line}`);
 				nodeMarkerId = markerIdProp.value.content;
+				addMarkerId = false; // markerId が既に存在する場合は追加しない
 			} else {
 				// ファイルパスと行番号からハッシュ値を生成
 				// この際実行環境で差が出ないようにファイルパスを正規化
 				const idKey = id.replace(/\\/g, '/').split('packages/frontend/')[1]
 				const generatedMarkerId = toBase62(hash(`${idKey}:${node.loc.start.line}`));
-
-				// markerId attribute を追加
-				const endOfStartTag = findEndOfStartTagAttributes(node);
-				s.appendRight(endOfStartTag, ` markerId="${generatedMarkerId}" data-in-app-search-marker-id="${generatedMarkerId}"`);
-
 				nodeMarkerId = generatedMarkerId;
 			}
+
+			// markerId attribute を追加
+			const tags = [`data-in-app-search-marker-id="${nodeMarkerId}"`];
+			if (addMarkerId) tags.push(`markerId="${nodeMarkerId}"`);
+			const endOfStartTag = findEndOfStartTagAttributes(node);
+			s.appendRight(endOfStartTag, ` ${tags.join(' ')}`);
 
 			markerRelations.push({
 				parentId: parentId ?? undefined,

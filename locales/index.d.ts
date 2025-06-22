@@ -1343,6 +1343,10 @@ export interface Locale extends ILocale {
      */
     "darkThemes": string;
     /**
+     * ダークモードの同期
+     */
+    "syncDarkMode": string;
+    /**
      * デバイスのダークモードと同期する
      */
     "syncDeviceDarkMode": string;
@@ -5166,18 +5170,6 @@ export interface Locale extends ILocale {
      * フォローリクエストを自動で拒否するようにします。「フォロー中ユーザーからのフォロリクを自動承認」がONになっている場合は、フォロー中ユーザーからのフォローリクエストは自動的に承認され、それ以外のユーザーからのフォローリクエストは自動的に拒否されるようになります。
      */
     "autoRejectFollowRequestDescription": string;
-    /**
-     * TLのノート表示数上限を変更する
-     */
-    "enableOverrideTLDisplayLimit": string;
-    /**
-     * TLのノート表示数上限
-     */
-    "overrideTLDisplayLimit": string;
-    /**
-     * TLに一度に表示できるノート数の上限を変更することが出来ます。TLが正常に表示されない場合にお試しください。数値を大きくすると表示件数が増えますが、パフォーマンスが低下する可能性があります。
-     */
-    "overrideTLDisplayLimitDescription": string;
     /**
      * 新規アカウントの登録制限を有効にする
      */

@@ -96,7 +96,7 @@ function onClick(ev: MouseEvent): void {
 }
 
 function getDecorationUrl(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
-	if (prefer.s.disableShowingAnimatedImages || prefer.s.dataSaver.avatar) return getStaticImageUrl(decoration.url);
+	if (prefer.s.disableShowingAnimatedImages || getDataSaverState('avatar')) return getStaticImageUrl(decoration.url);
 	return decoration.url;
 }
 
