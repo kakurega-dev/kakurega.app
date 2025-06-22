@@ -2,8 +2,12 @@ import { i18n } from '@/i18n.js';
 
 export const bottomItemDef = {
 	attachFile: {
-		title: i18n.ts.attachFile,
+		title: i18n.ts.attachFile + ' (' + i18n.ts.upload + ')',
 		icon: 'ti-photo-plus',
+	},
+	attachFileFromDrive: {
+		title: i18n.ts.attachFile + ' (' + i18n.ts.fromDrive + ')',
+		icon: 'ti-cloud-download',
 	},
 	poll: {
 		title: i18n.ts.poll,
