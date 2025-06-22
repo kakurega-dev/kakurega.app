@@ -368,7 +368,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker v-slot="slotProps" :keywords="['post', 'form']">
+			<SearchMarker v-slot="slotProps" :keywords="['post', 'form']" markerId="post-form-settings">
 				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 					<template #label><SearchLabel>{{ i18n.ts.postForm }}</SearchLabel></template>
 					<template #icon><SearchIcon><i class="ti ti-edit"></i></SearchIcon></template>

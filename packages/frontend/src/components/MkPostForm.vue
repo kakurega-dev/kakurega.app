@@ -692,6 +692,11 @@ function showOtherSettings() {
 		action: () => {
 			toggleReactionAcceptance();
 		},
+	}, {
+		type: 'link',
+		icon: 'ti ti-settings',
+		text: i18n.ts.settings,
+		to: '/settings/preferences#post-form-settings',
 	}, { type: 'divider' }, {
 		type: 'switch',
 		icon: 'ti ti-eye',
