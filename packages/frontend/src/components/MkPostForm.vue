@@ -91,7 +91,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</div>
 		<div :class="$style.footerRight">
-			<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
+			<!-- <button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button> -->
 		</div>
 	</footer>
 	<datalist id="hashtags">
@@ -321,7 +321,7 @@ const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
 	attachFile: {
 		action: chooseFileFromPc,
 	},
-	attatchFileFromDrive: {
+	attachFileFromDrive: {
 		action: chooseFileFromDrive,
 	},
 	poll: {
@@ -359,6 +359,10 @@ const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
 	},
 	saveAsDraft: {
 		action: () => saveDraft(false),
+	},
+	preview: {
+		active: showPreview,
+		action: () => showPreview.value = !showPreview.value,
 	},
 });
 
