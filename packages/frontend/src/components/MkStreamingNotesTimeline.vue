@@ -39,12 +39,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
 				</div>
 				<div v-else-if="note._shouldInsertAd_" :data-scroll-anchor="note.id">
-					<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
+					<MkNote v-if="!isFilteredNote(note)" :class="$style.note" :note="note" :withHardMute="true"/>
 					<div :class="$style.ad">
 						<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 					</div>
 				</div>
-				<MkNote v-else :class="$style.note" :note="note" :withHardMute="true" :data-scroll-anchor="note.id"/>
+				<MkNote v-else-if="!isFilteredNote(note)" :class="$style.note" :note="note" :withHardMute="true" :data-scroll-anchor="note.id"/>
+				<!-- なんか無限にリロードされる問題があるのでそれ対策 -->
+				<div v-else></div>
 			</template>
 		</component>
 		<button v-show="paginator.canFetchOlder.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchOlder : null" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
@@ -76,6 +78,32 @@ import { i18n } from '@/i18n.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 
+export type NoteFilter = {
+	includeKeywords?: string[];
+	includeKeywordsAll?: string[];
+	excludeKeywords?: string[];
+	includeInstances?: string[];
+	excludeInstances?: string[];
+};
+
+function isNeedSuppressInfinityFetch() {
+	return props.filter && Object.values(props.filter).some(x => x);
+}
+
+function isFilteredNote(note: Misskey.entities.Note) {
+	if (!props.filter) return false;
+	const filter = props.filter;
+
+	if (filter.excludeInstances?.some(x => note.user.host === x)) return true;
+	if (filter.includeInstances && !filter.includeInstances.some(x => note.user.host === x)) return true;
+
+	if (filter.excludeKeywords?.some(keyword => note.text?.includes(keyword))) return true;
+	if (filter.includeKeywords && !filter.includeKeywords.some(keyword => note.text?.includes(keyword))) return true;
+	if (filter.includeKeywordsAll && !filter.includeKeywordsAll.every(keyword => note.text?.includes(keyword))) return true;
+
+	return false;
+}
+
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
 	list?: string;
@@ -83,6 +111,7 @@ const props = withDefaults(defineProps<{
 	channel?: string;
 	role?: string;
 	sound?: boolean;
+	filter?: NoteFilter;
 	withRenotes?: boolean;
 	withReplies?: boolean;
 	withSensitive?: boolean;
@@ -177,6 +206,12 @@ function releaseQueue() {
 }
 
 function prepend(note: Misskey.entities.Note) {
+	if (props.src === 'global') {
+		const mutedInstancesGtl = prefer.s.mutedInstancesGtl;
+		if (note.user.host && mutedInstancesGtl.includes(note.user.host)) return;
+		if (note.renote?.user.host && mutedInstancesGtl.includes(note.renote.user.host)) return;
+	}
+
 	adInsertionCounter++;
 
 	if (instance.notesPerOneAd > 0 && adInsertionCounter % instance.notesPerOneAd === 0) {
@@ -359,6 +394,7 @@ refreshEndpointAndChannel();
 const paginator = usePagination({
 	ctx: paginationQuery,
 	useShallowRef: true,
+	suppressInfinityFetch: isNeedSuppressInfinityFetch(),
 });
 
 onUnmounted(() => {

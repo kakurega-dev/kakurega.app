@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide, watch, useTemplateRef, ref, computed } from 'vue';
 import type { Column } from '@/deck.js';
-import type { NoteFilter } from '@/components/MkTimeline.vue';
+import type { NoteFilter } from '@/components/MkStreamingNotesTimeline.vue';
 import type { MenuItem } from '@/types/menu.js';
 import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from '@/deck.js';
 import * as os from '@/os.js';
@@ -165,21 +165,6 @@ function getMenu() {
 						label: i18n.ts._filter.excludeInstances,
 						default: props.column.filter?.excludeInstances?.join(' ') ?? null,
 						description: i18n.ts._filter.splitDescription,
-					},
-					excludeRenotes: {
-						type: 'boolean',
-						label: i18n.ts._filter.excludeRenotes,
-						default: props.column.filter?.excludeRenotes ?? null,
-					},
-					excludeReplies: {
-						type: 'boolean',
-						label: i18n.ts._filter.excludeReplies,
-						default: props.column.filter?.excludeReplies ?? null,
-					},
-					mediaOnly: {
-						type: 'boolean',
-						label: i18n.ts._filter.mediaOnly,
-						default: props.column.filter?.mediaOnly ?? null,
 					},
 				});
 				if (canceled) return;
