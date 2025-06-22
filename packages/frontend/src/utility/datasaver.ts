@@ -25,6 +25,6 @@ export function initializeDetectNetworkChange(): void {
 	});
 }
 
-export function getDataSaverState(type: 'media' | 'avatar' | 'urlPreview' | 'code') {
+export function getDataSaverState(type: 'media' | 'avatar' | 'urlPreviewThumbnail' | 'disableUrlPreview' | 'code') {
 	return prefer.s.enableDataSaverMode && prefer.s.dataSaver[type];
 }
