@@ -395,6 +395,7 @@ const paginator = usePagination({
 	ctx: paginationQuery,
 	useShallowRef: true,
 	suppressInfinityFetch: isNeedSuppressInfinityFetch(),
+	displayLimit: prefer.s.enableOverrideTLDisplayLimit ? Math.max(20, prefer.s.overrideTLDisplayLimit) : undefined,
 });
 
 onUnmounted(() => {
