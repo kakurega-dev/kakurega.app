@@ -20,6 +20,7 @@ import { host as localHost } from '@@/js/config.js';
 import type { MkABehavior } from '@/components/global/MkA.vue';
 import { $i } from '@/i.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import { getDataSaverState } from '@/utility/datasaver.js';
 import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
@@ -36,7 +37,7 @@ const isMe = $i && (
 	`@${props.username}@${toUnicode(props.host)}` === `@${$i.username}@${toUnicode(localHost)}`.toLowerCase()
 );
 
-const avatarUrl = computed(() => prefer.s.disableShowingAnimatedImages || prefer.s.dataSaver.avatar
+const avatarUrl = computed(() => prefer.s.disableShowingAnimatedImages || getDataSaverState('avatar')
 	? getStaticImageUrl(`/avatar/@${props.username}@${props.host}`)
 	: `/avatar/@${props.username}@${props.host}`,
 );

@@ -521,7 +521,7 @@ onDeactivated(() => {
 	elapsedTimeMs.value = 0;
 	durationMs.value = 0;
 	bufferedEnd.value = 0;
-	hide.value = (prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.video.isSensitive && prefer.s.nsfw !== 'ignore');
+	hide.value = (prefer.s.nsfw === 'force' || getDataSaverState('media')) ? true : (props.video.isSensitive && prefer.s.nsfw !== 'ignore');
 	stopVideoElWatch();
 	onceInit = false;
 	if (mediaTickFrameId) {
