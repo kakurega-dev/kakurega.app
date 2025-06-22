@@ -20,10 +20,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref, watch } from 'vue';
-import { v4 as uuid } from 'uuid';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { GetFormResultType } from '@/utility/form.js';
+import { genId } from '@/utility/id.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
 import { store } from '@/store.js';
@@ -73,7 +73,7 @@ let timeoutId: number | undefined;
 const saveMemo = () => {
 	const memo = store.s.memo;
 	const list = memo && typeof memo === 'object' ? memo : {};
-	list[props.widget?.id ?? uuid()] = text.value;
+	list[props.widget?.id ?? genId()] = text.value;
 	store.set('memo', list);
 	changed.value = false;
 };

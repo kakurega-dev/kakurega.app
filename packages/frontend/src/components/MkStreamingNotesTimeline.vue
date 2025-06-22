@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-else></div>
 			</template>
 		</component>
-		<button v-show="paginator.canFetchOlder.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchOlder : null" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
+		<button v-show="paginator.canFetchOlder.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? appearFetchMore : null" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
 			<div v-if="!paginator.fetchingOlder.value">{{ i18n.ts.loadMore }}</div>
 			<MkLoading v-else :inline="true"/>
 		</button>
@@ -64,6 +64,7 @@ import { useInterval } from '@@/js/use-interval.js';
 import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { PagingCtx } from '@/composables/use-pagination.js';
+import type { SoundStore } from '@/preferences/def.js';
 import { usePagination } from '@/composables/use-pagination.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { useStream } from '@/stream.js';
@@ -86,24 +87,6 @@ export type NoteFilter = {
 	excludeInstances?: string[];
 };
 
-function isNeedSuppressInfinityFetch() {
-	return props.filter && Object.values(props.filter).some(x => x);
-}
-
-function isFilteredNote(note: Misskey.entities.Note) {
-	if (!props.filter) return false;
-	const filter = props.filter;
-
-	if (filter.excludeInstances?.some(x => note.user.host === x)) return true;
-	if (filter.includeInstances && !filter.includeInstances.some(x => note.user.host === x)) return true;
-
-	if (filter.excludeKeywords?.some(keyword => note.text?.includes(keyword))) return true;
-	if (filter.includeKeywords && !filter.includeKeywords.some(keyword => note.text?.includes(keyword))) return true;
-	if (filter.includeKeywordsAll && !filter.includeKeywordsAll.every(keyword => note.text?.includes(keyword))) return true;
-
-	return false;
-}
-
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
 	list?: string;
@@ -112,6 +95,7 @@ const props = withDefaults(defineProps<{
 	role?: string;
 	sound?: boolean;
 	filter?: NoteFilter;
+	customSound?: SoundStore | null;
 	withRenotes?: boolean;
 	withReplies?: boolean;
 	withSensitive?: boolean;
@@ -121,6 +105,8 @@ const props = withDefaults(defineProps<{
 	withReplies: false,
 	withSensitive: true,
 	onlyFiles: false,
+	sound: false,
+	customSound: null,
 });
 
 provide('inTimeline', true);
@@ -141,6 +127,30 @@ function onScrollContainerScroll() {
 	if (isTop()) {
 		paginator.releaseQueue();
 	}
+}
+
+function isNeedSuppressInfinityFetch() {
+	return props.filter && Object.values(props.filter).some(x => x);
+}
+
+function isFilteredNote(note: Misskey.entities.Note) {
+	if (!props.filter) return false;
+	const filter = props.filter;
+
+	if (filter.excludeInstances?.some(x => note.user.host === x)) return true;
+	if (filter.includeInstances && !filter.includeInstances.some(x => note.user.host === x)) return true;
+
+	if (filter.excludeKeywords?.some(keyword => note.text?.includes(keyword))) return true;
+	if (filter.includeKeywords && !filter.includeKeywords.some(keyword => note.text?.includes(keyword))) return true;
+	if (filter.includeKeywordsAll && !filter.includeKeywordsAll.every(keyword => note.text?.includes(keyword))) return true;
+
+	return false;
+}
+
+function appearFetchMore() {
+	paginator.fetchOlder({
+		suppressInfinityFetch: isNeedSuppressInfinityFetch(),
+	});
 }
 
 const rootEl = useTemplateRef('rootEl');
@@ -225,7 +235,11 @@ function prepend(note: Misskey.entities.Note) {
 	}
 
 	if (props.sound) {
-		sound.playMisskeySfx($i && (note.userId === $i.id) ? 'noteMy' : 'note');
+		if (props.customSound) {
+			sound.playMisskeySfxFile(props.customSound);
+		} else {
+			sound.playMisskeySfx($i && (note.userId === $i.id) ? 'noteMy' : 'note');
+		}
 	}
 }
 
@@ -394,8 +408,6 @@ refreshEndpointAndChannel();
 const paginator = usePagination({
 	ctx: paginationQuery,
 	useShallowRef: true,
-	suppressInfinityFetch: isNeedSuppressInfinityFetch(),
-	displayLimit: prefer.s.enableOverrideTLDisplayLimit ? Math.max(20, prefer.s.overrideTLDisplayLimit) : undefined,
 });
 
 onUnmounted(() => {
@@ -457,7 +469,7 @@ defineExpose({
 	background: var(--MI_THEME-panel);
 }
 
-.note {
+.note:not(:empty) {
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
 }
 
