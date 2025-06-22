@@ -387,12 +387,6 @@ export const PREF_DEF = definePreferences({
 	useGroupedNotifications: {
 		default: true,
 	},
-	enableOverrideTLDisplayLimit: {
-		default: false,
-	},
-	overrideTLDisplayLimit: {
-		default: 20,
-	},
 	dataSaver: {
 		default: {
 			media: false,

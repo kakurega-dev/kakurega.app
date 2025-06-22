@@ -917,27 +917,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkPreferenceContainer>
 						</SearchMarker>
 
-						<!-- TODO: 将来的には開発者用ページに移動させる -->
-						<SearchMarker :keywords="['cache', 'page']">
-							<MkPreferenceContainer k="enableOverrideTLDisplayLimit">
-								<MkSwitch v-model="enableOverrideTLDisplayLimit">
-									<SearchLabel>{{ i18n.ts.enableOverrideTLDisplayLimit }}</SearchLabel>
-									<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-								</MkSwitch>
-							</MkPreferenceContainer>
-						</SearchMarker>
-
-						<MkDisableSection :disabled="!enableOverrideTLDisplayLimit">
-							<SearchMarker :keywords="['cache', 'page']">
-								<MkPreferenceContainer k="overrideTLDisplayLimit">
-									<MkRange v-model="overrideTLDisplayLimit" :min="20" :max="200" :step="1" easing>
-										<template #label><SearchLabel>{{ i18n.ts.overrideTLDisplayLimit }}</SearchLabel></template>
-										<template #caption><SearchKeyword>{{ i18n.ts.overrideTLDisplayLimitDescription }}</SearchKeyword></template>
-									</MkRange>
-								</MkPreferenceContainer>
-							</SearchMarker>
-						</MkDisableSection>
-
 						<SearchMarker :keywords="['ad', 'show']">
 							<MkPreferenceContainer k="forceShowAds">
 								<MkSwitch v-model="forceShowAds">
@@ -1092,8 +1071,6 @@ const useNativeUiForVideoAudioPlayer = prefer.model('useNativeUiForVideoAudioPla
 const contextMenu = prefer.model('contextMenu');
 const autoDataSaver = prefer.model('autoDataSaver');
 const enableDataSaverMode = prefer.model('enableDataSaverMode');
-const enableOverrideTLDisplayLimit = prefer.model('enableOverrideTLDisplayLimit');
-const overrideTLDisplayLimit = prefer.model('overrideTLDisplayLimit');
 const menuStyle = prefer.model('menuStyle');
 const makeEveryTextElementsSelectable = prefer.model('makeEveryTextElementsSelectable');
 const disableNoteDrafting = prefer.model('disableNoteDrafting');

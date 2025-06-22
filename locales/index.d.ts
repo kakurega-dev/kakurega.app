@@ -5167,18 +5167,6 @@ export interface Locale extends ILocale {
      */
     "autoRejectFollowRequestDescription": string;
     /**
-     * TLのノート表示数上限を変更する
-     */
-    "enableOverrideTLDisplayLimit": string;
-    /**
-     * TLのノート表示数上限
-     */
-    "overrideTLDisplayLimit": string;
-    /**
-     * TLに一度に表示できるノート数の上限を変更することが出来ます。TLが正常に表示されない場合にお試しください。数値を大きくすると表示件数が増えますが、パフォーマンスが低下する可能性があります。
-     */
-    "overrideTLDisplayLimitDescription": string;
-    /**
      * 新規アカウントの登録制限を有効にする
      */
     "enableRegistrationLimit": string;
