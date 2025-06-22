@@ -7,7 +7,7 @@ import { notificationTypes } from 'misskey-js';
 import { ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { i18n } from './i18n.js';
-import type { NoteFilter } from '@/components/MkTimeline.vue';
+import type { NoteFilter } from '@/components/MkStreamingNotesTimeline.vue';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { SoundStore } from '@/preferences/def.js';
 import type { MenuItem } from '@/types/menu.js';
