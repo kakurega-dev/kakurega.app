@@ -1354,7 +1354,7 @@ export interface Locale extends ILocale {
      * この設定を有効にすると、デバイスのダークモードと同期されなくなります。
      */
     "disableSyncDeviceDarkMode": string;
-		/*
+    /**
      * 「{x}」がオンになっています。同期をオフにして手動でモードを切り替えますか？
      */
     "switchDarkModeManuallyWhenSyncEnabledConfirm": ParameterizedString<"x">;
@@ -5873,7 +5873,7 @@ export interface Locale extends ILocale {
      * 招待URLをコピー
      */
     "copyInviteUrl": string;
-		/**
+    /**
      * アドバイス
      */
     "advice": string;
