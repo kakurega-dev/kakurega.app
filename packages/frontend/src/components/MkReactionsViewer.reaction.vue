@@ -41,6 +41,7 @@ import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as isEmojiMuted } 
 
 const props = defineProps<{
 	noteId: Misskey.entities.Note['id'];
+	userId?: Misskey.entities.User['id'];
 	reaction: string;
 	reactionEmojis: Misskey.entities.Note['reactionEmojis'];
 	myReaction: Misskey.entities.Note['myReaction'];
@@ -78,11 +79,12 @@ const isLocalCustomEmoji = props.reaction[0] === ':' && props.reaction.includes(
 const plainReaction = computed(() => customEmojisMap.has(emojiName.value) ? getReactionName(props.reaction, true) : props.reaction);
 
 const hideReactionCount = computed(() => {
+	if (props.userId === undefined) return false;
 	switch (prefer.s.hideReactionCount) {
 		case 'none': return false;
 		case 'all': return true;
-		case 'self': return props.note.userId === $i?.id;
-		case 'others': return props.note.userId !== $i?.id;
+		case 'self': return props.userId === $i?.id;
+		case 'others': return props.userId !== $i?.id;
 		default: return false;
 	}
 });
