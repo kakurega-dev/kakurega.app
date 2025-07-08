@@ -131,11 +131,11 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 		return init();
 	}
 
-	async function fetchOlder(options: {
+	async function fetchOlder(options?: {
 		suppressInfinityFetch?: boolean;
 	}): Promise<void> {
 		if (!canFetchOlder.value || fetching.value || fetchingOlder.value || items.value.length === 0) return;
-		if (options.suppressInfinityFetch) {
+		if (options?.suppressInfinityFetch) {
 			limiterCount = lastFetchTime - Date.now() < AUTO_FETCH_INTERVAL ? limiterCount + 1 : 0;
 			if (limiterCount >= AUTO_FETCH_LIMIT) return;
 		}
