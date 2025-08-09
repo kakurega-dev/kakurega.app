@@ -127,6 +127,10 @@ export class NoteDraftEntityService implements OnModuleInit {
 				allowRenoteToExternal: channel.allowRenoteToExternal,
 				userId: channel.userId,
 			} : undefined,
+			scheduledDelete: noteDraft.deleteAt || noteDraft.deleteAfter ? {
+				deleteAt: noteDraft.deleteAt ? noteDraft.deleteAt.toISOString() : null,
+				deleteAfter: noteDraft.deleteAt ? undefined : noteDraft.deleteAfter ?? null,
+			} : undefined,
 
 			...(opts.detail ? {
 				reply: noteDraft.replyId ? nullIfEntityNotFound(this.noteEntityService.pack(noteDraft.replyId, me, {

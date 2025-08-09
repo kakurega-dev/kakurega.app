@@ -153,6 +153,17 @@ export class MiNoteDraft {
 
 	// ここまで追加
 
+	// 時限ノート用
+	@Column('timestamp with time zone', {
+		nullable: true,
+	})
+	public deleteAt: Date | null;
+
+	@Column('bigint', {
+		nullable: true,
+	})
+	public deleteAfter: number | null;
+
 	constructor(data: Partial<MiNoteDraft>) {
 		if (data == null) return;
 

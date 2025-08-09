@@ -30,6 +30,10 @@ export type NoteDraftOptions = {
 	hashtag?: string;
 	channelId?: MiChannel['id'] | null;
 	poll?: (IPoll & { expiredAfter?: number | null }) | null;
+	scheduledDelete?: {
+		deleteAt?: Date | null;
+		deleteAfter?: number | null;
+	} | null;
 };
 
 @Injectable()
@@ -307,6 +311,8 @@ export class NoteDraftService {
 			visibleUserIds: data.visibleUserIds ?? [],
 			localOnly: data.localOnly,
 			reactionAcceptance: data.reactionAcceptance,
+			deleteAt: data.scheduledDelete?.deleteAt ? new Date(data.scheduledDelete.deleteAt) : null,
+			deleteAfter: data.scheduledDelete?.deleteAfter ?? null,
 		} satisfies MiNoteDraft;
 
 		return appliedDraft;

@@ -4536,6 +4536,11 @@ export type components = {
             localOnly?: boolean;
             /** @enum {string|null} */
             reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
+            scheduledDelete?: {
+                /** Format: date-time */
+                deleteAt?: string | null;
+                deleteAfter?: number | null;
+            } | null;
         };
         NoteReaction: {
             /**
@@ -29747,6 +29752,10 @@ export interface operations {
                     renoteId?: string | null;
                     /** Format: misskey:id */
                     channelId?: string | null;
+                    scheduledDelete?: {
+                        deleteAt?: number | null;
+                        deleteAfter?: number | null;
+                    } | null;
                     text?: string | null;
                     fileIds?: string[];
                     poll?: {
@@ -29988,6 +29997,10 @@ export interface operations {
                     renoteId?: string | null;
                     /** Format: misskey:id */
                     channelId?: string | null;
+                    scheduledDelete?: {
+                        deleteAt?: number | null;
+                        deleteAfter?: number | null;
+                    } | null;
                     text?: string | null;
                     fileIds?: string[];
                     poll?: {

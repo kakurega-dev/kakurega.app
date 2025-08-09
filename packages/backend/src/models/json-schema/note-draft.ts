@@ -167,5 +167,21 @@ export const packedNoteDraftSchema = {
 			optional: false, nullable: true,
 			enum: ['likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote', null],
 		},
+		scheduledDelete: {
+			type: 'object',
+			optional: true, nullable: true,
+			properties: {
+				deleteAt: {
+					type: 'string',
+					optional: true, nullable: true,
+					format: 'date-time',
+				},
+				deleteAfter: {
+					type: 'number',
+					optional: true, nullable: true,
+					minimum: 1,
+				},
+			},
+		}
 	},
 } as const;
