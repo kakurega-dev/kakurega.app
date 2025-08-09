@@ -23,7 +23,12 @@ export class NestLogger implements LoggerService {
    */
 	error(message: any, ...optionalParams: any[]) {
 		const ctx = optionalParams[0];
-		nestLogger.error(ctx + ': ' + message);
+
+		if (message instanceof Error) {
+			nestLogger.error(ctx + ': ' + message.stack);
+		} else {
+			nestLogger.error(ctx + ': ' + message);
+		}
 	}
 
 	/**
