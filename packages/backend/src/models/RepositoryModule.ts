@@ -145,6 +145,7 @@ const $noteReactionsRepository: Provider = {
 const $noteNotificationsRepository: Provider = {
 	provide: DI.noteNotificationsRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiNoteNotification).extend(miRepository as MiRepository<MiNoteNotification>),
+	inject: [DI.db],
 };
 
 const $noteDraftsRepository: Provider = {
