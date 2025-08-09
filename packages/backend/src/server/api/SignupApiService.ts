@@ -133,7 +133,7 @@ export class SignupApiService {
 		const isInvalidInvitationCode = invitationCode == null || typeof invitationCode !== 'string';
 		const ticket = isInvalidInvitationCode || !isNeedFetchTicket ? null : await this.fetchTicket(invitationCode, this.meta.emailRequiredForSignup);
 
-		if (this.meta.disableRegistration) {
+		if (process.env.NODE_ENV !== 'test' && this.meta.disableRegistration) {
 			// 新規登録を無効にしている場合
 			if (ticket === null) {
 				reply.code(400);

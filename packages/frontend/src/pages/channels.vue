@@ -25,29 +25,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.excludeNonActiveChannels }}</template>
 					</MkSwitch>
 				</div>
+				<MkButton class="search" @click="search"><i class="ti ti-search"></i> {{ i18n.ts.search }}</MkButton>
 			</MkFolder>
-			<MkPagination v-slot="{items}" :pagination="listPagination">
+			<MkPagination v-slot="{items}" :pagination="listPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
 				</div>
 			</MkPagination>
 		</div>
 		<div v-if="tab === 'featured'">
-			<MkPagination v-slot="{items}" :pagination="featuredPagination">
+			<MkPagination v-slot="{items}" :paginator="featuredPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
 				</div>
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'favorites'">
-			<MkPagination v-slot="{items}" :pagination="favoritesPagination">
+			<MkPagination v-slot="{items}" :paginator="favoritesPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
 				</div>
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'following'">
-			<MkPagination v-slot="{items}" :pagination="followingPagination">
+			<MkPagination v-slot="{items}" :paginator="followingPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
 				</div>
@@ -55,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-else-if="tab === 'owned'">
 			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
-			<MkPagination v-slot="{items}" :pagination="ownedPagination">
+			<MkPagination v-slot="{items}" :paginator="ownedPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
 				</div>
@@ -66,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, markRaw, onMounted, ref, shallowRef, type Raw } from 'vue';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -77,6 +78,8 @@ import MkFolder from '@/components/MkFolder.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
+import { Paginator } from '@/utility/paginator.js';
+import type { entities } from 'misskey-js';
 
 const router = useRouter();
 
@@ -86,45 +89,32 @@ const props = defineProps<{
 }>();
 
 const tab = ref('featured');
+const searchType = ref('')
 const sortType = ref('+notesCount');
 const searchQuery = ref('');
 const excludeNonActiveChannels = ref(false);
 const includeDescription = ref(false);
-const channelPagination = ref();
+
+const listPaginator = shallowRef<Raw<Paginator<'channels/list'>>>();
 
 onMounted(() => {
 	searchQuery.value = props.query ?? '';
 });
 
-const featuredPagination = {
-	endpoint: 'channels/featured' as const,
+const featuredPaginator = markRaw(new Paginator('channels/featured', {
 	limit: 10,
 	noPaging: true,
-};
-const listPagination = {
-	endpoint: 'channels/list' as const,
-	limit: 10,
-	offsetMode: true,
-	params: computed(() => ({
-		sort: sortType.value,
-		search: searchQuery.value,
-		excludeNonActiveChannels: excludeNonActiveChannels.value,
-		includeDescription: includeDescription.value,
-	})),
-};
-const favoritesPagination = {
-	endpoint: 'channels/my-favorites' as const,
+}));
+const favoritesPaginator = markRaw(new Paginator('channels/my-favorites', {
 	limit: 100,
 	noPaging: true,
-};
-const followingPagination = {
-	endpoint: 'channels/followed' as const,
+}));
+const followingPaginator = markRaw(new Paginator('channels/followed', {
 	limit: 10,
-};
-const ownedPagination = {
-	endpoint: 'channels/owned' as const,
+}));
+const ownedPaginator = markRaw(new Paginator('channels/owned', {
 	limit: 10,
-};
+}));
 
 const sortOptions = [
 	{ value: '+notesCount', displayName: i18n.ts._sortType.notesCountDesc },
@@ -136,6 +126,22 @@ const sortOptions = [
 	{ value: '+name', displayName: i18n.ts._sortType.nameDesc },
 	{ value: '-name', displayName: i18n.ts._sortType.nameAsc },
 ];
+
+async function search() {
+	listPaginator.value = markRaw(new Paginator('channels/list', {
+		limit: 10,
+		offsetMode: true,
+		params: {
+			sort: sortType.value as entities.ChannelsListRequest['sort'],
+			search: searchQuery.value,
+			excludeNonActiveChannels: excludeNonActiveChannels.value,
+			includeDescription: includeDescription.value,
+		},
+	}));
+}
+
+// 初期化
+search();
 
 function create() {
 	router.push('/channels/new');
