@@ -18,6 +18,11 @@ export class MiNoteDraft {
 	@PrimaryColumn(id())
 	public id: string;
 
+	@Column('timestamp with time zone', {
+		default: () => 'now()',
+	})
+	public updatedAt: Date;
+
 	@Index('IDX_NOTE_DRAFT_REPLY_ID')
 	@Column({
 		...id(),

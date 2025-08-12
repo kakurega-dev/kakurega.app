@@ -295,6 +295,7 @@ export class NoteDraftService {
 
 		appliedDraft = {
 			...appliedDraft,
+			updatedAt: new Date(),
 			visibility: data.visibility,
 			cw: data.cw ?? null,
 			fileIds: fileIds ?? [],

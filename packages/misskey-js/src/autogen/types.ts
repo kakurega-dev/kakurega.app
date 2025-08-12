@@ -4488,6 +4488,8 @@ export type components = {
             id: string;
             /** Format: date-time */
             createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
             text: string | null;
             cw?: string | null;
             /** Format: id */

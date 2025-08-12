@@ -17,6 +17,11 @@ export const packedNoteDraftSchema = {
 			optional: false, nullable: false,
 			format: 'date-time',
 		},
+		updatedAt: {
+			type: 'string',
+			optional: false, nullable: false,
+			format: 'date-time',
+		},
 		text: {
 			type: 'string',
 			optional: false, nullable: true,
