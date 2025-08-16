@@ -5925,6 +5925,10 @@ export interface Locale extends ILocale {
      * 低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。
      */
     "defaultImageCompressionLevel_description": string;
+    /**
+     * 絞り込み
+     */
+    "narrowDown": string;
     "_order": {
         /**
          * 新しい順
@@ -8775,7 +8779,7 @@ export interface Locale extends ILocale {
          */
         "featured": string;
         /**
-         * 検索 (チャンネル一覧)
+         * チャンネル一覧と検索
          */
         "listAndSearch": string;
         /**

@@ -1476,6 +1476,7 @@ redisplayAllTips: "全ての「ヒントとコツ」を再表示"
 hideAllTips: "全ての「ヒントとコツ」を非表示"
 defaultImageCompressionLevel: "デフォルトの画像圧縮度"
 defaultImageCompressionLevel_description: "低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。"
+narrowDown: "絞り込み"
 
 _order:
   newest: "新しい順"
@@ -2295,7 +2296,7 @@ _channel:
   setBanner: "バナーを設定"
   removeBanner: "バナーを削除"
   featured: "トレンド"
-  listAndSearch: "検索 (チャンネル一覧)"
+  listAndSearch: "チャンネル一覧と検索"
   owned: "管理中"
   following: "フォロー中"
   usersCount: "{n}人が参加中"
