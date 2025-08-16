@@ -12,6 +12,8 @@ const MAX_ITEMS = 30;
 const MAX_QUEUE_ITEMS = 100;
 const FIRST_FETCH_LIMIT = 15;
 const SECOND_FETCH_LIMIT = 30;
+const AUTO_FETCH_LIMIT = 3;
+const AUTO_FETCH_INTERVAL = 500;
 
 export type MisskeyEntity = {
 	id: string;
@@ -49,8 +51,8 @@ export interface IPaginator<T = unknown, _T = T & MisskeyEntity> {
 
 	init(): Promise<void>;
 	reload(): Promise<void>;
-	fetchOlder(): Promise<void>;
-	fetchNewer(options?: { toQueue?: boolean }): Promise<void>;
+	fetchOlder(options?: { suppressInfinityFetch?: boolean }): Promise<void>;
+	fetchNewer(options?: { toQueue?: boolean, suppressInfinityFetch?: boolean }): Promise<void>;
 	trim(trigger?: boolean): void;
 	unshiftItems(newItems: (_T)[]): void;
 	pushItems(oldItems: (_T)[]): void;
@@ -93,6 +95,10 @@ export class Paginator<
 	private canFetchDetection: 'safe' | 'limit' | null = null;
 	private aheadQueue: T[] = [];
 	private useShallowRef: SRef;
+
+	// 無限フェッチ防止用 (隠れ家独自機能)
+	private limiterCount = 0;
+	private lastFetchTime = 0;
 
 	// 配列内の要素をどのような順序で並べるか
 	// newest: 新しいものが先頭 (default)
@@ -242,8 +248,15 @@ export class Paginator<
 		return this.init();
 	}
 
-	public async fetchOlder(): Promise<void> {
+	public async fetchOlder(options?: {
+		suppressInfinityFetch?: boolean;
+	}): Promise<void> {
 		if (!this.canFetchOlder.value || this.fetching.value || this.fetchingOlder.value || this.items.value.length === 0) return;
+		if (options?.suppressInfinityFetch) {
+			this.limiterCount = this.lastFetchTime - Date.now() < AUTO_FETCH_INTERVAL ? this.limiterCount + 1 : 0;
+			if (this.limiterCount >= AUTO_FETCH_LIMIT) return;
+		}
+
 		this.fetchingOlder.value = true;
 
 		const data: E['req'] = {
@@ -263,6 +276,7 @@ export class Paginator<
 		})) as T[] | null;
 
 		this.fetchingOlder.value = false;
+		this.lastFetchTime = Date.now();
 
 		if (apiRes == null) {
 			return;
@@ -292,7 +306,13 @@ export class Paginator<
 
 	public async fetchNewer(options: {
 		toQueue?: boolean;
+		suppressInfinityFetch?: boolean;
 	} = {}): Promise<void> {
+		if (options.suppressInfinityFetch) {
+			this.limiterCount = this.lastFetchTime - Date.now() < AUTO_FETCH_INTERVAL ? this.limiterCount + 1 : 0;
+			if (this.limiterCount >= AUTO_FETCH_LIMIT) return;
+		}
+
 		this.fetchingNewer.value = true;
 
 		const data: E['req'] = {
@@ -312,6 +332,7 @@ export class Paginator<
 		})) as T[] | null;
 
 		this.fetchingNewer.value = false;
+		this.lastFetchTime = Date.now();
 
 		if (apiRes == null || apiRes.length === 0) return; // これやらないと余計なre-renderが走る
 
