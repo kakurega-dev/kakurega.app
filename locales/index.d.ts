@@ -5651,7 +5651,7 @@ export interface Locale extends ILocale {
      */
     "prohibitedWordsForNameOfUser": string;
     /**
-     * このリストに含まれる文字列がユーザーの名前に含まれる場合、ユーザーの名前の変更を拒否します。モデレーター権限を持つユーザーはこの制限の影響を受けません。
+     * このリストに含まれる文字列がユーザーの名前に含まれる場合、ユーザーの名前の変更を拒否します。モデレーター権限を持つユーザーはこの制限の影響を受けません。ユーザー名(username)に対しても全て小文字に置き換えて検査します。
      */
     "prohibitedWordsForNameOfUserDescription": string;
     /**
@@ -5690,6 +5690,10 @@ export interface Locale extends ILocale {
      * このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。
      */
     "federationDisabled": string;
+    /**
+     * 下書き
+     */
+    "draft": string;
     /**
      * リアクションする際に確認する
      */
@@ -5921,6 +5925,20 @@ export interface Locale extends ILocale {
      * 低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。
      */
     "defaultImageCompressionLevel_description": string;
+    /**
+     * 絞り込み
+     */
+    "narrowDown": string;
+    "_order": {
+        /**
+         * 新しい順
+         */
+        "newest": string;
+        /**
+         * 古い順
+         */
+        "oldest": string;
+    };
     "_chat": {
         /**
          * まだメッセージはありません
@@ -8209,6 +8227,14 @@ export interface Locale extends ILocale {
              * ファイルによっては種別を判定できないことがあります。そのようなファイルを許可する場合は {x} を指定に追加してください。
              */
             "uploadableFileTypes_caption2": ParameterizedString<"x">;
+            /**
+             * サーバーサイドのノートの下書きの作成可能数
+             */
+            "noteDraftLimit": string;
+            /**
+             * ウォーターマーク機能の使用可否
+             */
+            "watermarkAvailable": string;
         };
         "_condition": {
             /**
@@ -8753,7 +8779,7 @@ export interface Locale extends ILocale {
          */
         "featured": string;
         /**
-         * 検索 (チャンネル一覧)
+         * チャンネル一覧と検索
          */
         "listAndSearch": string;
         /**
@@ -8934,6 +8960,10 @@ export interface Locale extends ILocale {
          * テーマコード
          */
         "code": string;
+        /**
+         * テーマコードをコピー
+         */
+        "copyThemeCode": string;
         /**
          * 説明
          */
@@ -11441,6 +11471,10 @@ export interface Locale extends ILocale {
          */
         "attachedNotes": string;
         /**
+         * 利用
+         */
+        "usage": string;
+        /**
          * このページは、このファイルをアップロードしたユーザーしか閲覧できません。
          */
         "thisPageCanBeSeenFromTheAuthor": string;
@@ -12570,6 +12604,10 @@ export interface Locale extends ILocale {
     };
     "_uploader": {
         /**
+         * 画像の編集
+         */
+        "editImage": string;
+        /**
          * {x}に圧縮
          */
         "compressedToX": ParameterizedString<"x">;
@@ -12829,6 +12867,132 @@ export interface Locale extends ILocale {
              */
             "tearing": string;
         };
+    };
+    "_drafts": {
+        /**
+         * 下書きを選択
+         */
+        "select": string;
+        /**
+         * 下書きの作成可能数を超えています。
+         */
+        "cannotCreateDraftAnymore": string;
+        /**
+         * この内容では下書きを作成できません。
+         */
+        "cannotCreateDraft": string;
+        /**
+         * 下書きを削除
+         */
+        "delete": string;
+        /**
+         * 下書きを削除しますか？
+         * サーバーに保存されている場合はサーバーからも削除されます。
+         */
+        "deleteAreYouSure": string;
+        /**
+         * 下書きはありません
+         */
+        "noDrafts": string;
+        /**
+         * {user}への返信
+         */
+        "replyTo": ParameterizedString<"user">;
+        /**
+         * {user}のノートへの引用
+         */
+        "quoteOf": ParameterizedString<"user">;
+        /**
+         * {channel}への投稿
+         */
+        "postTo": ParameterizedString<"channel">;
+        /**
+         * 下書きへ保存
+         */
+        "saveToDraft": string;
+        /**
+         * 下書きから復元
+         */
+        "restoreFromDraft": string;
+        /**
+         * 復元
+         */
+        "restore": string;
+        /**
+         * 下書き一覧
+         */
+        "listDrafts": string;
+        /**
+         * 下書きをサーバーと同期
+         */
+        "sync": string;
+        /**
+         * サーバーにアップロードされている下書き
+         */
+        "uploadRemainingCount": string;
+        /**
+         * 下書きをサーバーにアップロード
+         */
+        "uploadToServer": string;
+        /**
+         * サーバーから下書きを削除
+         */
+        "removeFromServer": string;
+        /**
+         * サーバーから下書きを削除しますか？
+         * この端末に保存されている現在の下書きは削除されません。
+         */
+        "removeFromServerQuestion": string;
+        /**
+         * 端末から下書きを削除
+         */
+        "removeFromDevice": string;
+        /**
+         * この端末から下書きを削除しますか？
+         * サーバー側に保存されている下書きは削除されません。
+         */
+        "removeFromDeviceQuestion": string;
+        /**
+         * アップロード済み
+         */
+        "uploaded": string;
+        /**
+         * この下書きはアップロードできません
+         */
+        "cannotUploadThisDraft": string;
+        /**
+         * 最新の下書きがアップロードされています
+         */
+        "latestDraftUploaded": string;
+        /**
+         * この端末に保存されている下書き
+         */
+        "localDraftCount": string;
+        /**
+         * サーバーと下書きを同期しますか？
+         */
+        "syncQuestion": string;
+        /**
+         * 同期には時間がかかる場合があります。同期を行うと、以下の処理が行われます。
+         * 1. サーバー側に保存されている下書きをこの端末にダウンロードします。
+         * 2. サーバー側に保存されている下書きがこの端末よりも古い場合に、サーバー側の下書きを更新します。
+         * 3. サーバー側に保存されている下書きがこの端末に保存されている下書きより新しい場合、端末側の下書きは上書きされます。
+         * 4. サーバー側にアップロード済みの下書きで、サーバー側から対象の下書きが削除されている場合(この端末から削除を行った場合を除く)は、この端末の下書きが削除されます。
+         */
+        "syncQuestionDescription": string;
+        /**
+         * 一括アップロード
+         */
+        "uploadAllDrafts": string;
+        /**
+         * サーバー側に保存されていない下書きをサーバーにアップロードしますか？
+         */
+        "uploadAllDraftsQuestion": string;
+        /**
+         * アップロードされていない{count}件をアップロードします (アップロードには時間がかかる場合があります)
+         * サーバー側に保存できる上限を超える場合は、新しい下書きから順に上限分までアップロードを行います。
+         */
+        "uploadAllDraftsDescription": ParameterizedString<"count">;
     };
 }
 declare const locales: {
