@@ -12883,6 +12883,7 @@ export interface Locale extends ILocale {
         "delete": string;
         /**
          * 下書きを削除しますか？
+         * サーバーに保存されている場合はサーバーからも削除されます。
          */
         "deleteAreYouSure": string;
         /**
@@ -12917,6 +12918,77 @@ export interface Locale extends ILocale {
          * 下書き一覧
          */
         "listDrafts": string;
+        /**
+         * 下書きをサーバーと同期
+         */
+        "sync": string;
+        /**
+         * サーバーにアップロードされている下書き
+         */
+        "uploadRemainingCount": string;
+        /**
+         * 下書きをサーバーにアップロード
+         */
+        "uploadToServer": string;
+        /**
+         * サーバーから下書きを削除
+         */
+        "removeFromServer": string;
+        /**
+         * サーバーから下書きを削除しますか？
+         * この端末に保存されている現在の下書きは削除されません。
+         */
+        "removeFromServerQuestion": string;
+        /**
+         * 端末から下書きを削除
+         */
+        "removeFromDevice": string;
+        /**
+         * この端末から下書きを削除しますか？
+         * サーバー側に保存されている下書きは削除されません。
+         */
+        "removeFromDeviceQuestion": string;
+        /**
+         * アップロード済み
+         */
+        "uploaded": string;
+        /**
+         * この下書きはアップロードできません
+         */
+        "cannotUploadThisDraft": string;
+        /**
+         * 最新の下書きがアップロードされています
+         */
+        "latestDraftUploaded": string;
+        /**
+         * この端末に保存されている下書き
+         */
+        "localDraftCount": string;
+        /**
+         * サーバーと下書きを同期しますか？
+         */
+        "syncQuestion": string;
+        /**
+         * 同期には時間がかかる場合があります。同期を行うと、以下の処理が行われます。
+         * 1. サーバー側に保存されている下書きをこの端末にダウンロードします。
+         * 2. サーバー側に保存されている下書きがこの端末よりも古い場合に、サーバー側の下書きを更新します。
+         * 3. サーバー側に保存されている下書きがこの端末に保存されている下書きより新しい場合、端末側の下書きは上書きされます。
+         * 4. サーバー側にアップロード済みの下書きで、サーバー側から対象の下書きが削除されている場合(この端末から削除を行った場合を除く)は、この端末の下書きが削除されます。
+         */
+        "syncQuestionDescription": string;
+        /**
+         * 一括アップロード
+         */
+        "uploadAllDrafts": string;
+        /**
+         * サーバー側に保存されていない下書きをサーバーにアップロードしますか？
+         */
+        "uploadAllDraftsQuestion": string;
+        /**
+         * アップロードされていない{count}件をアップロードします (アップロードには時間がかかる場合があります)
+         * サーバー側に保存できる上限を超える場合は、新しい下書きから順に上限分までアップロードを行います。
+         */
+        "uploadAllDraftsDescription": ParameterizedString<"count">;
     };
 }
 declare const locales: {

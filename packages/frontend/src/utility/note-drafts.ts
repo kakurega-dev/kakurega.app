@@ -1,10 +1,17 @@
+import { isReactive, toRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { PollEditorModelValue } from '@/components/MkPollEditor.vue';
 import type { DeleteScheduleEditorModelValue } from '@/components/MkDeleteScheduleEditor.vue';
+import * as os from '@/os.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { get as idbGet, set as idbSet } from '@/utility/idb-proxy.js';
+import { get as idbGet, set as idbSet, del as idbDel } from '@/utility/idb-proxy.js';
+import { genId } from '@/utility/id.js';
 
-export type NoteDraft = {
+/**
+ * Deprecated. Please use `NoteDraftV2` instead.
+ * @deprecated
+ */
+export type NoteDraftV1 = {
 	updatedAt: Date;
 	type: keyof NoteKeys;
 	uniqueId: string;
@@ -22,6 +29,31 @@ export type NoteDraft = {
 	};
 };
 
+export type NoteDraftV2 = {
+	updatedAt: Date;
+	uploadedAt?: Date;
+	localId: string;
+	serverId: string | null;
+	data: {
+		text?: string | null;
+		cw?: string | null;
+		visibility: (typeof Misskey.noteVisibilities)[number];
+		visibleUserIds?: string[];
+		hashtag?: string | null;
+		localOnly?: boolean;
+		reactionAcceptance?: Misskey.entities.Note['reactionAcceptance'] | null;
+		replyId?: string | null;
+		renoteId?: string | null;
+		channelId?: string | null;
+		scheduledDelete?: Omit<DeleteScheduleEditorModelValue, 'isValid'> | null;
+		files?: Misskey.entities.DriveFile[];
+		poll?: PollEditorModelValue | null;
+	};
+}
+
+/**
+ * @deprecated
+*/
 type NoteKeys = {
 	note: () => unknown,
 	reply: (replyId: string) => unknown,
@@ -30,12 +62,17 @@ type NoteKeys = {
 };
 
 export async function migrate(userId: string) {
+	await migrateV1(userId);
+	await migrateV2(userId);
+}
+
+async function migrateV1(userId: string) {
 	const raw = miLocalStorage.getItem('drafts');
 	if (!raw) return;
 
-	const drafts = JSON.parse(raw) as Record<string, NoteDraft>;
+	const drafts = JSON.parse(raw) as Record<string, NoteDraftV1>;
 	const keys = Object.keys(drafts);
-	const newDrafts: Record<string, NoteDraft> = {};
+	const newDrafts: Record<string, NoteDraftV1> = {};
 
 	for (let i = 0; i < keys.length; i++) {
 		const key = keys[i];
@@ -59,6 +96,47 @@ export async function migrate(userId: string) {
 	miLocalStorage.setItem('drafts', JSON.stringify(drafts));
 }
 
+async function migrateV2(userId: string) {
+	const oldDrafts = await idbGet(`drafts::${userId}`) as Record<string, NoteDraftV1>;
+	if (!oldDrafts) return;
+
+	const newDrafts: Array<NoteDraftV2> = [];
+	for (const key in oldDrafts) {
+		const draft = oldDrafts[key];
+		const newDraft = {
+			updatedAt: draft.updatedAt,
+			localId: draft.uniqueId,
+			serverId: null,
+			data: {
+				text: draft.data.text,
+				cw: draft.data.useCw ? draft.data.cw : undefined,
+				visibility: draft.data.visibility,
+				visibleUserIds: draft.data.visibleUserIds,
+				hashtag: undefined,
+				localOnly: draft.data.localOnly,
+				reactionAcceptance: undefined,
+				replyId: draft.type === 'reply' ? draft.auxId : undefined,
+				renoteId: draft.type === 'quote' ? draft.auxId : undefined,
+				channelId: draft.type === 'channel' ? draft.auxId : undefined,
+				scheduledDelete: draft.data.scheduledNoteDelete ? {
+					deleteAt: draft.data.scheduledNoteDelete.deleteAt,
+					deleteAfter: draft.data.scheduledNoteDelete.deleteAfter,
+				} : undefined,
+				files: draft.data.files.length > 0 ? draft.data.files : undefined,
+				poll: draft.data.poll,
+			},
+		} satisfies NoteDraftV2;
+
+		newDrafts.push(newDraft);
+	}
+
+	await idbSet(`draftsV2::${userId}`, newDrafts);
+	await idbDel(`drafts::${userId}`);
+}
+
+/**
+ * @deprecated
+ */
 function getKey<T extends keyof NoteKeys>(type: T, uniqueId: string, ...args: Parameters<NoteKeys[T]>) {
 	let key = `${type}:${uniqueId}`;
 	for (const arg of args) {
@@ -68,33 +146,236 @@ function getKey<T extends keyof NoteKeys>(type: T, uniqueId: string, ...args: Pa
 }
 
 export async function getAll(userId: string) {
-	const drafts = await idbGet(`drafts::${userId}`);
-	return (drafts ?? {}) as Record<string, NoteDraft | undefined>;
+	const drafts = await idbGet(`draftsV2::${userId}`);
+	return (drafts ?? []) as NoteDraftV2[];
 }
 
-export async function get<T extends keyof NoteKeys>(type: T, userId: string, uniqueId: string, ...args: Parameters<NoteKeys[T]>) {
-	const key = getKey(type, uniqueId, ...args);
-	const draft = await getAll(userId);
-	return draft[key] ?? null;
-}
-
-export async function set<T extends keyof NoteKeys>(type: T, userId: string, uniqueId: string, draft: NoteDraft['data'], ...args: Parameters<NoteKeys[T]>) {
+export async function get(userId: string, localDraftId: string, query?: {
+	replyId?: string,
+	renoteId?: string,
+	channelId?: string
+}) {
 	const drafts = await getAll(userId);
-	const key = getKey(type, uniqueId, ...args);
-	drafts[key] = {
-		updatedAt: new Date(),
-		type,
-		uniqueId,
-		auxId: args[0] ?? null,
-		data: JSON.parse(JSON.stringify(draft)) as NoteDraft['data'],
+	return drafts.find(draft => {
+		if (draft.localId !== localDraftId) return false;
+		if (draft.data.replyId !== query?.replyId) return false;
+		if (draft.data.renoteId !== query?.renoteId) return false;
+		if (draft.data.channelId !== query?.channelId) return false;
+		return true;
+	}) ?? null;
+}
+
+export async function set(userId: string, draft: NoteDraftV2) {
+	const drafts = await getAll(userId);
+	const existingDraft = drafts.find(d => {
+		return d.localId === draft.localId &&
+			d.data.replyId === draft.data.replyId &&
+			d.data.renoteId === draft.data.renoteId &&
+			d.data.channelId === draft.data.channelId;
+	});
+
+	if (existingDraft) {
+		Object.assign(existingDraft, draft, {
+			localId: existingDraft.localId,
+			serverId: draft.serverId || existingDraft.serverId,
+		});
+	} else {
+		drafts.push(draft);
+	}
+
+	await idbSet(`draftsV2::${userId}`, toDeepRaw(drafts));
+}
+
+export async function remove(
+	userId: string,
+	draft: NoteDraftV2 | {
+		localId: string,
+		replyId?: string,
+		renoteId?: string,
+		channelId?: string,
+	},
+	deleteFrom: 'server' | 'local' | 'both' = 'both'
+) {
+	let drafts = await getAll(userId);
+
+	if (deleteFrom === 'server') {
+		const target = drafts.find(d => d.localId === draft.localId);
+		if (target && target.serverId) {
+			await os.apiWithDialog('notes/drafts/delete', {
+				draftId: target.serverId,
+			});
+			target.serverId = null;
+			target.uploadedAt = undefined;
+		}
+	} else {
+		let replyId = 'replyId' in draft ? draft.replyId : 'data' in draft ? draft.data.replyId : undefined;
+		let renoteId = 'renoteId' in draft ? draft.renoteId : 'data' in draft ? draft.data.renoteId : undefined;
+		let channelId = 'channelId' in draft ? draft.channelId : 'data' in draft ? draft.data.channelId : undefined;
+
+		const newDrafts: NoteDraftV2[] = [];
+		for (const x of drafts) {
+				if (
+					x.localId !== draft.localId ||
+					x.data.replyId !== replyId ||
+					x.data.renoteId !== renoteId ||
+					x.data.channelId !== channelId
+				) {
+					newDrafts.push(x);
+					continue;
+				};
+
+				if (x.serverId && deleteFrom !== 'local') {
+					// remove from server
+					await os.apiWithDialog('notes/drafts/delete', {
+						draftId: x.serverId,
+					});
+				}
+		}
+
+		drafts = newDrafts;
+	}
+
+	await idbSet(`draftsV2::${userId}`, drafts);
+}
+
+export async function sync(userId: string) {
+	// Step 1: Get all drafts from server
+	const serverDrafts: Misskey.entities.NoteDraft[] = [];
+	while (true) {
+		const response = await os.apiWithDialog('notes/drafts/list', {
+			detail: false,
+			untilId: serverDrafts.at(-1)?.id ?? undefined,
+		})
+
+		if (response.length === 0) break;
+		serverDrafts.push(...response);
+
+		await new Promise(resolve => setTimeout(resolve, 250));
+	}
+
+	// Step 2: Remove drafts that are not in the server (only if the draft has a serverSideId)
+	const localDrafts = await getAll(userId);
+	for (const localDraft of localDrafts) {
+		if (localDraft.serverId) {
+			const existsOnServer = serverDrafts.some(serverDraft => serverDraft.id === localDraft.serverId);
+			if (!existsOnServer) {
+				await remove(userId, localDraft, 'local');
+			}
+		}
+	}
+
+	// Step 3: Add or overwrite local drafts from server
+	// Step 4: Update server drafts if local draft is newer
+	for (const serverDraft of serverDrafts) {
+		const localDraft = localDrafts.find(d => d.serverId === serverDraft.id);
+		if (localDraft && localDraft.updatedAt > new Date(serverDraft.updatedAt)) {
+			// update server-side draft
+			await updateServerDraft(userId, localDraft);
+			await new Promise(resolve => setTimeout(resolve, 250));
+			continue;
+		}
+
+		const newDraft = await serverDraftToLocalDraft(serverDraft, localDraft?.localId);
+		await set(userId, newDraft);
+	}
+}
+
+export async function uploadAllDrafts(userId: string, noteDraftLimit: number) {
+	const drafts = await getAll(userId);
+	const draftsToUpload = drafts.filter(draft => draft.serverId == null && draft.localId !== 'default');
+	let uploadableDraftsCount = noteDraftLimit - await os.apiWithDialog('notes/drafts/count', {});
+
+	draftsToUpload.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+
+	for (const draft of draftsToUpload) {
+		if (uploadableDraftsCount <= 0) break;
+		const result = await uploadToServer(userId, draft);
+		if (result) uploadableDraftsCount--;
+	}
+}
+
+export async function uploadToServer(userId: string, draft: NoteDraftV2) {
+	if (draft.serverId || draft.localId === "default") return false;
+
+	const { createdDraft } = await os.apiWithDialog('notes/drafts/create', {
+		...draft.data,
+		fileIds: draft.data.files && draft.data.files.length > 0 ? draft.data.files.map(file => file.id) : undefined,
+	})
+
+	draft.serverId = createdDraft.id;
+	draft.updatedAt = new Date(createdDraft.updatedAt);
+	draft.uploadedAt = new Date(createdDraft.updatedAt);
+	await set(userId, draft);
+
+	return true;
+}
+
+export async function updateServerDraft(userId: string, draft: NoteDraftV2) {
+	if (!draft.serverId) return;
+
+	const { updatedDraft } = await os.apiWithDialog('notes/drafts/update', {
+		draftId: draft.serverId!,
+		...draft.data,
+		fileIds: draft.data.files && draft.data.files.length > 0 ? draft.data.files.map(file => file.id) : undefined,
+	});
+
+	draft.updatedAt = new Date(updatedDraft.updatedAt);
+	draft.uploadedAt = new Date(updatedDraft.updatedAt);
+	await set(userId, draft);
+}
+
+export async function serverDraftToLocalDraft(draft: Misskey.entities.NoteDraft, localDraftId?: string): Promise<NoteDraftV2> {
+	return {
+		updatedAt: new Date(draft.updatedAt),
+		uploadedAt: new Date(draft.updatedAt),
+		localId: localDraftId ?? genId(),
+		serverId: draft.id,
+		data: {
+			visibility: draft.visibility,
+			visibleUserIds: draft.visibleUserIds,
+			cw: draft.cw ?? undefined,
+			hashtag: draft.hashtag ?? undefined,
+			localOnly: draft.localOnly ?? undefined,
+			reactionAcceptance: draft.reactionAcceptance ?? null,
+			replyId: draft.replyId ?? undefined,
+			renoteId: draft.renoteId ?? undefined,
+			channelId: draft.channelId ?? undefined,
+			scheduledDelete: draft.scheduledDelete ? {
+				deleteAt: draft.scheduledDelete.deleteAt ? new Date(draft.scheduledDelete.deleteAt).getTime() : null,
+				deleteAfter: draft.scheduledDelete.deleteAfter ?? null,
+			} : null,
+			text: draft.text ?? undefined,
+			files: draft.files,
+			poll: draft.poll ? {
+				expiresAt: draft.poll.expiresAt ? new Date(draft.poll.expiresAt).getTime() : null,
+				expiredAfter: draft.poll.expiredAfter ?? null,
+				choices: draft.poll.choices,
+				multiple: draft.poll.multiple ?? false,
+			} : null,
+		},
 	};
-	console.log(drafts);
-	await idbSet(`drafts::${userId}`, drafts);
 }
 
-export async function remove<T extends keyof NoteKeys>(type: T, userId: string, uniqueId: string, ...args: Parameters<NoteKeys[T]>) {
-	const drafts = await getAll(userId);
-	const key = getKey(type, uniqueId, ...args);
-	delete drafts[key];
-	await idbSet(`drafts::${userId}`, drafts);
+function isObject(value: unknown): boolean {
+	return value !== null && !Array.isArray(value) && typeof value === 'object'
+}
+
+function getRawData<T>(data: T): T {
+	return isReactive(data) ? toRaw(data) : data
+}
+
+function toDeepRaw<T>(data: T): T {
+	const rawData = getRawData<T>(data)
+
+	for (const key in rawData) {
+		const value = rawData[key]
+
+		if (!isObject(value) && !Array.isArray(value)) {
+			continue
+		}
+
+		rawData[key] = toDeepRaw<typeof value>(value)
+	}
+
+	return rawData
 }

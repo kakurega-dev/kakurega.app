@@ -29904,7 +29904,7 @@ export interface operations {
         requestBody: {
             content: {
                 'application/json': {
-                    /** @default 30 */
+                    /** @default 50 */
                     limit?: number;
                     /** Format: misskey:id */
                     sinceId?: string;
@@ -29912,6 +29912,7 @@ export interface operations {
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
+                    detail?: boolean;
                 };
             };
         };
