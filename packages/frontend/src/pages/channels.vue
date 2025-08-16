@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 1200px;">
 		<div v-if="tab === 'list'" class="_gaps_m">
 			<MkFolder :expanded="false">
-				<template #label>{{ i18n.ts.search }}</template>
+				<template #label>{{ i18n.ts.narrowDown }}</template>
 				<div class="_gaps_m">
 					<MkInput v-model="searchQuery" :large="true" type="search">
 						<template #label>{{ i18n.ts.channelSearch }}</template>
@@ -25,9 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.excludeNonActiveChannels }}</template>
 					</MkSwitch>
 				</div>
-				<MkButton class="search" @click="search"><i class="ti ti-search"></i> {{ i18n.ts.search }}</MkButton>
 			</MkFolder>
-			<MkPagination v-slot="{items}" :pagination="listPaginator">
+			<MkPagination v-slot="{items}" :paginator="listPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
 				</div>
@@ -84,7 +83,7 @@ import type { entities } from 'misskey-js';
 const router = useRouter();
 
 const props = defineProps<{
-	query: string;
+	query?: string;
 	type?: string;
 }>();
 
@@ -95,12 +94,20 @@ const searchQuery = ref('');
 const excludeNonActiveChannels = ref(false);
 const includeDescription = ref(false);
 
-const listPaginator = shallowRef<Raw<Paginator<'channels/list'>>>();
-
 onMounted(() => {
 	searchQuery.value = props.query ?? '';
 });
 
+const listPaginator = markRaw(new Paginator('channels/list', {
+	limit: 10,
+	offsetMode: true,
+	computedParams: computed(() => ({
+		sort: sortType.value as entities.ChannelsListRequest['sort'],
+		search: searchQuery.value,
+		excludeNonActiveChannels: excludeNonActiveChannels.value,
+		includeDescription: includeDescription.value,
+	})),
+}));
 const featuredPaginator = markRaw(new Paginator('channels/featured', {
 	limit: 10,
 	noPaging: true,
@@ -126,22 +133,6 @@ const sortOptions = [
 	{ value: '+name', displayName: i18n.ts._sortType.nameDesc },
 	{ value: '-name', displayName: i18n.ts._sortType.nameAsc },
 ];
-
-async function search() {
-	listPaginator.value = markRaw(new Paginator('channels/list', {
-		limit: 10,
-		offsetMode: true,
-		params: {
-			sort: sortType.value as entities.ChannelsListRequest['sort'],
-			search: searchQuery.value,
-			excludeNonActiveChannels: excludeNonActiveChannels.value,
-			includeDescription: includeDescription.value,
-		},
-	}));
-}
-
-// 初期化
-search();
 
 function create() {
 	router.push('/channels/new');

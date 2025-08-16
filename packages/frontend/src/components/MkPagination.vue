@@ -71,6 +71,27 @@ const props = withDefaults(defineProps<{
 function onContextmenu(ev: MouseEvent) {
 	if (ev.target && isLink(ev.target as HTMLElement)) return;
 	if (window.getSelection()?.toString() !== '') return;
+
+	// TODO: 並び順設定
+	os.contextMenu([{
+		icon: 'ti ti-refresh',
+		text: i18n.ts.reload,
+		action: () => {
+			props.paginator.reload();
+		},
+	}], ev);
+}
+
+if (props.autoLoad) {
+	onMounted(() => {
+		props.paginator.init();
+	});
+}
+
+if (props.paginator.computedParams) {
+	watch(props.paginator.computedParams, () => {
+		props.paginator.reload();
+	}, { immediate: false, deep: true });
 }
 
 // FIXME 「自動でもっと見る」が無効化されているため一時的にコメントアウト
