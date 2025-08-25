@@ -10347,7 +10347,7 @@ export interface operations {
             content: {
                 'application/json': {
                     /** @enum {string} */
-                    queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                    queue: 'system' | 'endedPollNotification' | 'scheduledNoteDelete' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
                     jobId: string;
                 };
             };
