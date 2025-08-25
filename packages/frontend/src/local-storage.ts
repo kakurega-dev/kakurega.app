@@ -22,9 +22,8 @@ export type Keys = (
 	'fontSize' |
 	'ui' |
 	'ui_temp' |
-	'locale' |
-	'localeVersion' |
 	'builtAt' |
+	'bootloaderLocales' |
 	'theme' |
 	'themeId' |
 	'customCss' |
@@ -35,6 +34,7 @@ export type Keys = (
 	'preferences' |
 	'latestPreferencesUpdate' |
 	'hidePreferencesRestoreSuggestion' |
+	'isSafeMode' |
 	`miux:${string}` |
 	`ui:folder:${string}` |
 	`themes:${string}` | // DEPRECATED

@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-	<div v-if="stats" :class="$style.stats">
+	<div v-if="stats && instance.clientOptions.showActivityiesForVisitor !== false" :class="$style.stats">
 		<div :class="[$style.statsItem, $style.panel]">
 			<div :class="$style.statsItemLabel">{{ i18n.ts.users }}</div>
 			<div :class="$style.statsItemCount"><MkNumber :value="stats.originalUsersCount"/></div>
@@ -41,13 +41,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.statsItemCount"><MkNumber :value="stats.originalNotesCount"/></div>
 		</div>
 	</div>
-	<div v-if="instance.policies.ltlAvailable" :class="[$style.tl, $style.panel]">
+	<div v-if="instance.policies.ltlAvailable && instance.clientOptions.showTimelineForVisitor !== false" :class="[$style.tl, $style.panel]">
 		<div :class="$style.tlHeader">{{ i18n.ts.letsLookAtTimeline }}</div>
 		<div :class="$style.tlBody">
 			<MkStreamingNotesTimeline src="local"/>
 		</div>
 	</div>
-	<div :class="$style.panel">
+	<div v-if="instance.clientOptions.showActivityiesForVisitor !== false" :class="$style.panel">
 		<XActiveUsersChart/>
 	</div>
 </div>
@@ -73,9 +73,11 @@ import { openInstanceMenu } from '@/ui/_common_/common.js';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
-misskeyApi('stats', {}).then((res) => {
-	stats.value = res;
-});
+if (instance.clientOptions.showActivityiesForVisitor !== false) {
+	misskeyApi('stats', {}).then((res) => {
+		stats.value = res;
+	});
+}
 
 function signin() {
 	const { dispose } = os.popup(XSigninDialog, {

@@ -584,6 +584,15 @@ export type paths = {
          */
         post: operations['admin___queue___show-job'];
     };
+    '/admin/queue/show-job-logs': {
+        /**
+         * admin/queue/show-job-logs
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *read:admin:queue*
+         */
+        post: operations['admin___queue___show-job-logs'];
+    };
     '/admin/queue/stats': {
         /**
          * admin/queue/stats
@@ -5324,6 +5333,7 @@ export type components = {
             canManageCustomEmojis: boolean;
             canManageAvatarDecorations: boolean;
             canSearchNotes: boolean;
+            canSearchUsers: boolean;
             canUseTranslator: boolean;
             canHideAds: boolean;
             driveCapacityMb: number;
@@ -5442,6 +5452,7 @@ export type components = {
             feedbackUrl: string | null;
             defaultDarkTheme: string | null;
             defaultLightTheme: string | null;
+            clientOptions: Record<string, never>;
             disableRegistration: boolean;
             enableRegistrationLimit: boolean;
             registrationLimit: number;
@@ -9484,6 +9495,7 @@ export interface operations {
                         deeplIsPro: boolean;
                         defaultDarkTheme: string | null;
                         defaultLightTheme: string | null;
+                        clientOptions: Record<string, never>;
                         description: string | null;
                         impressumUrl: string | null;
                         maintainerEmail: string | null;
@@ -9524,6 +9536,9 @@ export interface operations {
                         proxyRemoteFiles: boolean;
                         signToActivityPubGet: boolean;
                         allowExternalApRedirect: boolean;
+                        enableRemoteNotesCleaning: boolean;
+                        remoteNotesCleaningExpiryDaysForEachNotes: number;
+                        remoteNotesCleaningMaxProcessingDurationInMinutes: number;
                     };
                 };
             };
@@ -10269,6 +10284,73 @@ export interface operations {
                 };
                 content: {
                     'application/json': components['schemas']['QueueJob'];
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'admin___queue___show-job-logs': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @enum {string} */
+                    queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                    jobId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': string[];
                 };
             };
             /** @description Client error */
@@ -11962,7 +12044,8 @@ export interface operations {
                     name: string;
                     on: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
                     url: string;
-                    secret: string;
+                    /** @default  */
+                    secret?: string;
                 };
             };
         };
@@ -12306,7 +12389,8 @@ export interface operations {
                     name: string;
                     on: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
                     url: string;
-                    secret: string;
+                    /** @default  */
+                    secret?: string;
                 };
             };
         };
@@ -12650,6 +12734,7 @@ export interface operations {
                     description?: string | null;
                     defaultLightTheme?: string | null;
                     defaultDarkTheme?: string | null;
+                    clientOptions?: Record<string, never>;
                     cacheRemoteFiles?: boolean;
                     cacheRemoteSensitiveFiles?: boolean;
                     emailRequiredForSignup?: boolean;
@@ -12772,6 +12857,9 @@ export interface operations {
                     proxyRemoteFiles?: boolean;
                     signToActivityPubGet?: boolean;
                     allowExternalApRedirect?: boolean;
+                    enableRemoteNotesCleaning?: boolean;
+                    remoteNotesCleaningExpiryDaysForEachNotes?: number;
+                    remoteNotesCleaningMaxProcessingDurationInMinutes?: number;
                 };
             };
         };

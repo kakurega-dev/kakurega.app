@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_panel _shadow" :class="$style.root">
 	<div :class="$style.main">
 		<div :class="$style.title">✨ {{ i18n.ts.misskeyUpdated }}</div>
+		<div v-if="isBeta" :class="$style.beta">{{ i18n.ts.thankYouForTestingBeta }}</div>
 		<div :class="$style.text">
 			Misskey: {{ misskeyVersion }}
 			<br>
@@ -32,6 +33,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
+const isBeta = version.includes('-beta') || version.includes('-alpha') || version.includes('-rc');
 const zIndex = os.claimZIndex('low');
 
 const misskeyVersion = version.split('-')[0];
@@ -82,5 +84,9 @@ function whatIsNewKakurega() {
 
 .text {
 	margin: 0.7em 0 1em 0;
+}
+
+.beta {
+	margin: 1em 0;
 }
 </style>

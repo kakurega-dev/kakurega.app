@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Locale } from '../../../locales/index.js';
-
 const overrideAddress = localStorage.getItem('overrideAddress');
 
 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -19,13 +17,8 @@ export const apiUrl = (overrideAddress ? address.origin : location.origin) + '/a
 export const wsOrigin = (overrideAddress ? address.origin : location.origin);
 export const lang = localStorage.getItem('lang') ?? 'en-US';
 export const langs = _LANGS_;
-const preParseLocale = localStorage.getItem('locale');
-export let locale: Locale = preParseLocale ? JSON.parse(preParseLocale) : null;
 export const version = _VERSION_;
 export const instanceName = (siteName === 'Misskey' || siteName == null) ? host : siteName;
 export const ui = localStorage.getItem('ui');
 export const debug = localStorage.getItem('debug') === 'true';
-
-export function updateLocale(newLocale: Locale): void {
-	locale = newLocale;
-}
+export const isSafeMode = localStorage.getItem('isSafeMode') === 'true';

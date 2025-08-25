@@ -444,6 +444,9 @@ export const PREF_DEF = definePreferences({
 	showAvailableReactionsFirstInNote: {
 		default: false,
 	},
+	showPageTabBarBottom: {
+		default: false,
+	},
 	plugins: {
 		default: [] as Plugin[],
 		mergeStrategy: (a, b) => {
@@ -560,6 +563,9 @@ export const PREF_DEF = definePreferences({
 		default: false,
 	},
 	'experimental.enableFolderPageView': {
+		default: false,
+	},
+	'experimental.enableHapticFeedback': {
 		default: false,
 	},
 });
