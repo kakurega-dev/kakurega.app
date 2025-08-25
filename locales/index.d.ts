@@ -5937,7 +5937,7 @@ export interface Locale extends ILocale {
      * 絞り込み
      */
     "narrowDown": string;
-		/**
+    /**
      * 分
      */
     "inMinutes": string;
