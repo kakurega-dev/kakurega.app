@@ -454,7 +454,7 @@ if (!props.mock) {
 			showing,
 			users,
 			count: appearNote.renoteCount,
-			targetElement: renoteButton.value,
+			anchorElement: renoteButton.value,
 		}, {
 			closed: () => dispose(),
 		});
@@ -477,7 +477,7 @@ if (!props.mock) {
 				reaction: '❤️',
 				users,
 				count: $appearNote.reactionCount,
-				targetElement: reactButton.value!,
+				anchorElement: reactButton.value!,
 			}, {
 				closed: () => dispose(),
 			});
@@ -485,14 +485,12 @@ if (!props.mock) {
 	}
 }
 
-function renote(viaKeyboard = false) {
+function renote() {
 	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	showMovedDialog();
 
 	const { menu } = getRenoteMenu({ note: note, renoteButton, mock: props.mock });
-	os.popupMenu(menu, renoteButton.value, {
-		viaKeyboard,
-	});
+	os.popupMenu(menu, renoteButton.value);
 
 	subscribeManuallyToNoteCapture();
 }
@@ -681,7 +679,7 @@ function showRenoteMenu(): void {
 			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
 			{ type: 'divider' },
 			getAbuseNoteMenu(note, i18n.ts.reportAbuseRenote),
-			($i?.isModerator || $i?.isAdmin) ? getUnrenote() : undefined,
+			...(($i?.isModerator || $i?.isAdmin) ? [getUnrenote()] : []),
 		], renoteTime.value);
 	}
 }

@@ -208,8 +208,8 @@ import { computed, ref, watch } from 'vue';
 import JSON5 from 'json5';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
-import type { Theme } from '@/theme.js';
 import { isSafeMode } from '@@/js/config.js';
+import type { Theme } from '@/theme.js';
 import * as os from '@/os.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -285,7 +285,7 @@ async function toggleDarkMode() {
 	const value = !store.r.darkMode.value;
 	if (syncDarkMode.value != null) {
 		const { canceled } = await os.confirm({
-			type: 'warning',
+			type: 'question',
 			text: i18n.tsx.switchDarkModeManuallyWhenSyncEnabledConfirm({ x: i18n.ts.syncDarkMode }),
 		});
 		if (canceled) return;

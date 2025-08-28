@@ -1304,7 +1304,6 @@ function testNotification(): void {
 	const notification: Misskey.entities.Notification = {
 		id: genId(),
 		createdAt: new Date().toUTCString(),
-		isRead: false,
 		type: 'test',
 	};
 
