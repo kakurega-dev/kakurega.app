@@ -584,6 +584,15 @@ export type paths = {
          */
         post: operations['admin___queue___show-job'];
     };
+    '/admin/queue/show-job-logs': {
+        /**
+         * admin/queue/show-job-logs
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *read:admin:queue*
+         */
+        post: operations['admin___queue___show-job-logs'];
+    };
     '/admin/queue/stats': {
         /**
          * admin/queue/stats
@@ -3994,6 +4003,15 @@ export type paths = {
          */
         post: operations['v2___admin___emoji___list'];
     };
+    '/verify-email': {
+        /**
+         * verify-email
+         * @description No description provided.
+         *
+         *     **Credential required**: *No*
+         */
+        post: operations['verify-email'];
+    };
 };
 export type webhooks = Record<string, never>;
 export type components = {
@@ -4028,7 +4046,7 @@ export type components = {
              */
             host: string | null;
             /** Format: url */
-            avatarUrl: string | null;
+            avatarUrl: string;
             avatarBlurhash: string | null;
             avatarDecorations: {
                 /** Format: id */
@@ -4138,8 +4156,8 @@ export type components = {
             /** Format: id */
             bannerId: string | null;
             followedMessage: string | null;
-            isModerator: boolean | null;
-            isAdmin: boolean | null;
+            isModerator: boolean;
+            isAdmin: boolean;
             injectFeaturedNote: boolean;
             receiveAnnouncementEmail: boolean;
             alwaysMarkNsfw: boolean;
@@ -4167,7 +4185,7 @@ export type components = {
             unreadNotificationsCount: number;
             mutedWords: string[][];
             hardMutedWords: string[][];
-            mutedInstances: string[] | null;
+            mutedInstances: string[];
             notificationRecieveConfig: {
                 note?: {
                     /** @enum {string} */
@@ -4545,15 +4563,21 @@ export type components = {
             } | null;
         };
         NoteReaction: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
+            /** Format: id */
             id: string;
             /** Format: date-time */
             createdAt: string;
             user: components['schemas']['UserLite'];
             type: string;
+        };
+        NoteReactionWithNote: {
+            /** Format: id */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            user: components['schemas']['UserLite'];
+            type: string;
+            note: components['schemas']['Note'];
         };
         NoteFavorite: {
             /**
@@ -5324,6 +5348,7 @@ export type components = {
             canManageCustomEmojis: boolean;
             canManageAvatarDecorations: boolean;
             canSearchNotes: boolean;
+            canSearchUsers: boolean;
             canUseTranslator: boolean;
             canHideAds: boolean;
             driveCapacityMb: number;
@@ -5442,6 +5467,7 @@ export type components = {
             feedbackUrl: string | null;
             defaultDarkTheme: string | null;
             defaultLightTheme: string | null;
+            clientOptions: Record<string, never>;
             disableRegistration: boolean;
             enableRegistrationLimit: boolean;
             registrationLimit: number;
@@ -5551,6 +5577,20 @@ export type components = {
             cacheRemoteSensitiveFiles: boolean;
         };
         MetaDetailed: components['schemas']['MetaLite'] & components['schemas']['MetaDetailedOnly'];
+        UserWebhook: {
+            /** Format: id */
+            id: string;
+            /** Format: id */
+            userId: string;
+            name: string;
+            on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
+            url: string;
+            secret: string;
+            active: boolean;
+            /** Format: date-time */
+            latestSentAt: string | null;
+            latestStatus: number | null;
+        };
         SystemWebhook: {
             id: string;
             isActive: boolean;
@@ -6808,6 +6848,13 @@ export interface operations {
                         updatedAt: string | null;
                         text: string;
                         title: string;
+                        icon: string | null;
+                        display: string;
+                        isActive: boolean;
+                        forExistingUsers: boolean;
+                        silence: boolean;
+                        needConfirmationToRead: boolean;
+                        userId: string | null;
                         imageUrl: string | null;
                         reads: number;
                     }[];
@@ -7769,6 +7816,10 @@ export interface operations {
                         folderId: string | null;
                         isSensitive: boolean;
                         isLink: boolean;
+                        maybeSensitive: boolean;
+                        maybePorn: boolean;
+                        requestIp: string | null;
+                        requestHeaders: Record<string, never> | null;
                     };
                 };
             };
@@ -9418,8 +9469,10 @@ export interface operations {
                         mcaptchaSecretKey: string | null;
                         recaptchaSecretKey: string | null;
                         turnstileSecretKey: string | null;
-                        sensitiveMediaDetection: string;
-                        sensitiveMediaDetectionSensitivity: string;
+                        /** @enum {string} */
+                        sensitiveMediaDetection: 'none' | 'all' | 'local' | 'remote';
+                        /** @enum {string} */
+                        sensitiveMediaDetectionSensitivity: 'medium' | 'low' | 'high' | 'veryLow' | 'veryHigh';
                         setSensitiveFlagAutomatically: boolean;
                         enableSensitiveMediaDetectionForVideos: boolean;
                         /** Format: id */
@@ -9484,6 +9537,7 @@ export interface operations {
                         deeplIsPro: boolean;
                         defaultDarkTheme: string | null;
                         defaultLightTheme: string | null;
+                        clientOptions: Record<string, never>;
                         description: string | null;
                         impressumUrl: string | null;
                         maintainerEmail: string | null;
@@ -9494,6 +9548,7 @@ export interface operations {
                         privacyPolicyUrl: string | null;
                         inquiryUrl: string | null;
                         repositoryUrl: string | null;
+                        feedbackUrl: string | null;
                         /**
                          * @deprecated
                          * @description [Deprecated] Use "urlPreviewSummaryProxyUrl" instead.
@@ -9524,6 +9579,9 @@ export interface operations {
                         proxyRemoteFiles: boolean;
                         signToActivityPubGet: boolean;
                         allowExternalApRedirect: boolean;
+                        enableRemoteNotesCleaning: boolean;
+                        remoteNotesCleaningExpiryDaysForEachNotes: number;
+                        remoteNotesCleaningMaxProcessingDurationInMinutes: number;
                     };
                 };
             };
@@ -10269,6 +10327,73 @@ export interface operations {
                 };
                 content: {
                     'application/json': components['schemas']['QueueJob'];
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'admin___queue___show-job-logs': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @enum {string} */
+                    queue: 'system' | 'endedPollNotification' | 'scheduledNoteDelete' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                    jobId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': string[];
                 };
             };
             /** @description Client error */
@@ -11962,7 +12087,8 @@ export interface operations {
                     name: string;
                     on: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
                     url: string;
-                    secret: string;
+                    /** @default  */
+                    secret?: string;
                 };
             };
         };
@@ -12306,7 +12432,8 @@ export interface operations {
                     name: string;
                     on: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
                     url: string;
-                    secret: string;
+                    /** @default  */
+                    secret?: string;
                 };
             };
         };
@@ -12650,6 +12777,7 @@ export interface operations {
                     description?: string | null;
                     defaultLightTheme?: string | null;
                     defaultDarkTheme?: string | null;
+                    clientOptions?: Record<string, never>;
                     cacheRemoteFiles?: boolean;
                     cacheRemoteSensitiveFiles?: boolean;
                     emailRequiredForSignup?: boolean;
@@ -12772,6 +12900,9 @@ export interface operations {
                     proxyRemoteFiles?: boolean;
                     signToActivityPubGet?: boolean;
                     allowExternalApRedirect?: boolean;
+                    enableRemoteNotesCleaning?: boolean;
+                    remoteNotesCleaningExpiryDaysForEachNotes?: number;
+                    remoteNotesCleaningMaxProcessingDurationInMinutes?: number;
                 };
             };
         };
@@ -18414,6 +18545,20 @@ export interface operations {
         };
     };
     clips___list: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @default 10 */
+                    limit?: number;
+                    /** Format: misskey:id */
+                    sinceId?: string;
+                    /** Format: misskey:id */
+                    untilId?: string;
+                    sinceDate?: number;
+                    untilDate?: number;
+                };
+            };
+        };
         responses: {
             /** @description OK (with results) */
             200: {
@@ -24538,6 +24683,8 @@ export interface operations {
                         /** Format: date-time */
                         lastUsedAt?: string;
                         permission: string[];
+                        iconUrl?: string | null;
+                        description?: string | null;
                     }[];
                 };
             };
@@ -27778,20 +27925,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        /** Format: misskey:id */
-                        id: string;
-                        /** Format: misskey:id */
-                        userId: string;
-                        name: string;
-                        on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
-                        url: string;
-                        secret: string;
-                        active: boolean;
-                        /** Format: date-time */
-                        latestSentAt: string | null;
-                        latestStatus: number | null;
-                    }[];
+                    'application/json': components['schemas']['UserWebhook'][];
                 };
             };
             /** @description Client error */
@@ -27857,20 +27991,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        /** Format: misskey:id */
-                        id: string;
-                        /** Format: misskey:id */
-                        userId: string;
-                        name: string;
-                        on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
-                        url: string;
-                        secret: string;
-                        active: boolean;
-                        /** Format: date-time */
-                        latestSentAt: string | null;
-                        latestStatus: number | null;
-                    };
+                    'application/json': components['schemas']['UserWebhook'];
                 };
             };
             /** @description Client error */
@@ -36489,7 +36610,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['NoteReaction'][];
+                    'application/json': components['schemas']['NoteReactionWithNote'][];
                 };
             };
             /** @description Client error */
@@ -37098,6 +37219,68 @@ export interface operations {
                         allCount: number;
                         allPages: number;
                     };
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'verify-email': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    code: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (without any results) */
+            204: {
+                headers: {
+                    [name: string]: unknown;
                 };
             };
             /** @description Client error */

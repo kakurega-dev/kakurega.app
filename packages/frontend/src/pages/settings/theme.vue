@@ -38,7 +38,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<div class="_gaps">
+		<MkInfo v-if="isSafeMode" warn>{{ i18n.ts.themeIsDefaultBecauseSafeMode }}</MkInfo>
+
+		<div v-else class="_gaps">
 			<template v-if="!store.r.darkMode.value">
 				<SearchMarker :keywords="['light', 'theme']">
 					<MkFolder :defaultOpen="true" :max-height="500">
@@ -206,6 +208,7 @@ import { computed, ref, watch } from 'vue';
 import JSON5 from 'json5';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
+import { isSafeMode } from '@@/js/config.js';
 import type { Theme } from '@/theme.js';
 import * as os from '@/os.js';
 import MkSelect from '@/components/MkSelect.vue';
@@ -214,6 +217,7 @@ import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkThemePreview from '@/components/MkThemePreview.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { getBuiltinThemesRef, getThemesRef, removeTheme } from '@/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { isTimeDarkmode } from '@/utility/is-time-darkmode.js';
@@ -281,7 +285,7 @@ async function toggleDarkMode() {
 	const value = !store.r.darkMode.value;
 	if (syncDarkMode.value != null) {
 		const { canceled } = await os.confirm({
-			type: 'warning',
+			type: 'question',
 			text: i18n.tsx.switchDarkModeManuallyWhenSyncEnabledConfirm({ x: i18n.ts.syncDarkMode }),
 		});
 		if (canceled) return;
