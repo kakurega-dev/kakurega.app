@@ -222,6 +222,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</MkInput>
 								</SearchMarker>
 
+								<SearchMarker :keywords="['secretKey']">
+									<MkInput v-model="urlPreviewForm.state.urlPreviewSecretKey" type="text">
+										<template #label>
+											<SearchLabel>{{ i18n.ts._urlPreviewSetting.secretKey }}</SearchLabel>
+											<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+											<span v-if="urlPreviewForm.modifiedStates.urlPreviewSecretKey" class="_modified">{{ i18n.ts.modified }}</span>
+										</template>
+										<template #caption>{{ i18n.ts._urlPreviewSetting.secretKeyDescription }}</template>
+									</MkInput>
+								</SearchMarker>
+
 								<div>
 									<SearchMarker :keywords="['proxy']">
 										<MkInput v-model="urlPreviewForm.state.urlPreviewSummaryProxyUrl" type="text">
@@ -237,6 +248,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											<li>{{ i18n.ts._urlPreviewSetting.maximumContentLength }} / key:contentLengthLimit</li>
 											<li>{{ i18n.ts._urlPreviewSetting.requireContentLength }} / key:contentLengthRequired</li>
 											<li>{{ i18n.ts._urlPreviewSetting.userAgent }} / key:userAgent</li>
+											<li>{{ i18n.ts._urlPreviewSetting.secretKey }} / key:secretKey</li>
 										</ul>
 									</div>
 								</div>
@@ -460,6 +472,7 @@ const urlPreviewForm = useForm({
 	urlPreviewMaximumContentLength: meta.urlPreviewMaximumContentLength,
 	urlPreviewRequireContentLength: meta.urlPreviewRequireContentLength,
 	urlPreviewUserAgent: meta.urlPreviewUserAgent ?? '',
+	urlPreviewSecretKey: meta.urlPreviewSecretKey ?? '',
 	urlPreviewSummaryProxyUrl: meta.urlPreviewSummaryProxyUrl ?? '',
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
@@ -469,6 +482,7 @@ const urlPreviewForm = useForm({
 		urlPreviewMaximumContentLength: state.urlPreviewMaximumContentLength,
 		urlPreviewRequireContentLength: state.urlPreviewRequireContentLength,
 		urlPreviewUserAgent: state.urlPreviewUserAgent,
+		urlPreviewSecretKey: state.urlPreviewSecretKey,
 		urlPreviewSummaryProxyUrl: state.urlPreviewSummaryProxyUrl,
 	});
 	fetchInstance(true);

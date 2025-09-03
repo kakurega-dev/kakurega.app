@@ -3197,6 +3197,8 @@ _urlPreviewSetting:
   requireContentLengthDescription: "相手サーバがContent-Lengthを返さない場合、プレビューは生成されません。"
   userAgent: "User-Agent"
   userAgentDescription: "プレビュー取得時に使用されるUser-Agentを設定します。空欄の場合、デフォルトのUser-Agentが使用されます。"
+  secretKey: "シークレットキー (サマリープロキシ用)"
+  secretKeyDescription: "サマリープロキシ側でシークレットキーを設定している場合は、設定したシークレットキーをここに入力してください。"
   summaryProxy: "プレビューを生成するプロキシのエンドポイント"
   summaryProxyDescription: "Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。"
   summaryProxyDescription2: "プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。"

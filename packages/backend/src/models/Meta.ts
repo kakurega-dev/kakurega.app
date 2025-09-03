@@ -754,6 +754,13 @@ export class MiMeta {
 	public urlPreviewUserAgent: string | null;
 
 	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+		default: null,
+	})
+	public urlPreviewSecretKey: string | null;
+
+	@Column('varchar', {
 		length: 128,
 		default: 'none',
 	})

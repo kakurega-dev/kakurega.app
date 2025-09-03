@@ -311,11 +311,11 @@ if (!mock) {
 
 	&.canToggleFallback:not(.canToggle):not(.reacted) {
 		box-sizing: border-box;
-		border: 2px dashed var(--MI_THEME-switchBg);
+		border: 2px dashed var(--MI_THEME-buttonBg);
 
 		&.small {
 			border-width: 1px;
-			border-color: var(--MI_THEME-buttonBgSub);
+			border-color: rgb(from var(--MI_THEME-fg) r g b / 40%);
 		}
 
 		&:hover {

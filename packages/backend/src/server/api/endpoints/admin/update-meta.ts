@@ -197,6 +197,7 @@ export const paramDef = {
 		urlPreviewMaximumContentLength: { type: 'integer' },
 		urlPreviewRequireContentLength: { type: 'boolean' },
 		urlPreviewUserAgent: { type: 'string', nullable: true },
+		urlPreviewSecretKey: { type: 'string', nullable: true },
 		urlPreviewSummaryProxyUrl: { type: 'string', nullable: true },
 		federation: {
 			type: 'string',
@@ -789,6 +790,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.urlPreviewUserAgent !== undefined) {
 				const value = (ps.urlPreviewUserAgent ?? '').trim();
 				set.urlPreviewUserAgent = value === '' ? null : ps.urlPreviewUserAgent;
+			}
+
+			if (ps.urlPreviewSecretKey !== undefined) {
+				const value = (ps.urlPreviewSecretKey ?? '').trim();
+				set.urlPreviewSecretKey = value === '' ? null : ps.urlPreviewSecretKey;
 			}
 
 			if (ps.summalyProxy !== undefined || ps.urlPreviewSummaryProxyUrl !== undefined) {

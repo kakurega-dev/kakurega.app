@@ -609,6 +609,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			urlPreviewSecretKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			urlPreviewSummaryProxyUrl: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -839,6 +843,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				urlPreviewMaximumContentLength: instance.urlPreviewMaximumContentLength,
 				urlPreviewRequireContentLength: instance.urlPreviewRequireContentLength,
 				urlPreviewUserAgent: instance.urlPreviewUserAgent,
+				urlPreviewSecretKey: instance.urlPreviewSecretKey,
 				urlPreviewSummaryProxyUrl: instance.urlPreviewSummaryProxyUrl,
 				federation: instance.federation,
 				federationHosts: instance.federationHosts,
