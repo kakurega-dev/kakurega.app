@@ -139,6 +139,7 @@ export class UrlPreviewService {
 			lang: lang ?? 'ja-JP',
 			followRedirects: this.meta.urlPreviewAllowRedirect,
 			userAgent: meta.urlPreviewUserAgent ?? undefined,
+			secretKey: meta.urlPreviewSecretKey ?? undefined,
 			operationTimeout: meta.urlPreviewTimeout,
 			contentLengthLimit: meta.urlPreviewMaximumContentLength,
 			contentLengthRequired: meta.urlPreviewRequireContentLength,

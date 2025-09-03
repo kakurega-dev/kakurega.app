@@ -9565,6 +9565,7 @@ export interface operations {
                         urlPreviewMaximumContentLength: number;
                         urlPreviewRequireContentLength: boolean;
                         urlPreviewUserAgent: string | null;
+                        urlPreviewSecretKey: string | null;
                         urlPreviewSummaryProxyUrl: string | null;
                         /** @enum {string} */
                         federation: 'all' | 'specified' | 'none';
@@ -12886,6 +12887,7 @@ export interface operations {
                     urlPreviewMaximumContentLength?: number;
                     urlPreviewRequireContentLength?: boolean;
                     urlPreviewUserAgent?: string | null;
+                    urlPreviewSecretKey?: string | null;
                     urlPreviewSummaryProxyUrl?: string | null;
                     /** @enum {string} */
                     federation?: 'all' | 'none' | 'specified';

@@ -12019,6 +12019,14 @@ export interface Locale extends ILocale {
          */
         "userAgentDescription": string;
         /**
+         * シークレットキー
+         */
+        "secretKey": string;
+        /**
+         * サマリープロキシ側でシークレットキーを設定している場合は、設定したシークレットキーをここに入力してください。
+         */
+        "secretKeyDescription": string;
+        /**
          * プレビューを生成するプロキシのエンドポイント
          */
         "summaryProxy": string;
