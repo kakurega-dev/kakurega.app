@@ -12019,7 +12019,7 @@ export interface Locale extends ILocale {
          */
         "userAgentDescription": string;
         /**
-         * シークレットキー
+         * シークレットキー (サマリープロキシ用)
          */
         "secretKey": string;
         /**
