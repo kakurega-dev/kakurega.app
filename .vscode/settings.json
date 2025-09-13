@@ -16,5 +16,7 @@
 		"source.fixAll": "explicit"
 	},
 	"editor.formatOnSave": false,
-	"editor.formatOnPaste": false
+	"editor.formatOnPaste": false,
+	"editor.formatOnType": false,
+	"files.trimTrailingWhitespace": false
 }
