@@ -1,7 +1,7 @@
 services:
   web:
     build: .
-    image: ghcr.io/hideki0403/kakurega.app:latest
+    image: ghcr.io/kakurega-dev/kakurega.app:latest
     restart: always
     links:
       - db

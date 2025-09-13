@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - create-tag
-    if: github.repository_owner == 'hideki0403' && (github.event_name == 'workflow_dispatch' || needs.create-tag.outputs.exists == 'false')
+    if: github.repository_owner == 'kakurega-dev' && (github.event_name == 'workflow_dispatch' || needs.create-tag.outputs.exists == 'false')
     strategy:
       fail-fast: false
       matrix:
