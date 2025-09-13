@@ -4,7 +4,7 @@
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/hideki0403/misskey.git"
+		"url": "https://github.com/kakurega-dev/kakurega.app.git"
 	},
 	"packageManager": "pnpm@10.15.1",
 	"workspaces": [
