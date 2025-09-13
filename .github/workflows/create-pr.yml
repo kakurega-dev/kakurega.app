@@ -1,4 +1,8 @@
 name: Create Pull Request
+
+permissions:
+  pull-requests: write
+
 on:
   workflow_dispatch:
     inputs:
