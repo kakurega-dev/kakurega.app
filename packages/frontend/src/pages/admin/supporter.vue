@@ -1,7 +1,7 @@
 <template>
 <PageWithHeader :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
-		<FormSuspense :p="init">
+		<MkSuspense :p="init">
 			<div class="_gaps_m">
 				<MkSwitch v-model="enableSupporterPage">{{ i18n.ts.enableSupporterPage }}</MkSwitch>
 
@@ -22,7 +22,7 @@
 					</MkInput>
 				</template>
 			</div>
-		</FormSuspense>
+		</MkSuspense>
 	</div>
 	<template #footer>
 		<div :class="$style.footer">
@@ -40,7 +40,6 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
