@@ -1,7 +1,7 @@
 <template>
 <PageWithHeader>
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
-		<FormSuspense :p="init">
+		<MkSuspense :p="init">
 			<div class="_gaps_m">
 				<MkFolder>
 					<template #icon><i class="ti ti-brand-patreon"></i></template>
@@ -17,7 +17,7 @@
 					<XFanbox/>
 				</MkFolder>
 			</div>
-		</FormSuspense>
+		</MkSuspense>
 	</div>
 </PageWithHeader>
 </template>
@@ -26,7 +26,6 @@
 import { ref } from 'vue';
 import XPatreon from './integrations.patreon.vue';
 import XFanbox from './integrations.fanbox.vue';
-import FormSuspense from '@/components/form/suspense.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';

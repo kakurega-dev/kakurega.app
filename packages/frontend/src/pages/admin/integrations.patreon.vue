@@ -1,5 +1,5 @@
 <template>
-	<FormSuspense :p="init">
+	<MkSuspense :p="init">
 		<div class="_gaps_m">
 			<MkSwitch v-model="enablePatreonIntegration">
 				<template #label>{{ i18n.ts.enable }}</template>
@@ -31,7 +31,7 @@
 
 			<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 		</div>
-	</FormSuspense>
+	</MkSuspense>
 </template>
 
 <script lang="ts" setup>
@@ -40,7 +40,6 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormInfo from '@/components/MkInfo.vue';
-import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
