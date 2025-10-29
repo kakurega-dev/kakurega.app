@@ -13331,7 +13331,7 @@ export interface Locale extends ILocale {
          */
         "sync": string;
         /**
-         * サーバーにアップロードされている下書き
+         * サーバーにアップロードされている下書きと予約投稿
          */
         "uploadRemainingCount": string;
         /**
@@ -13356,6 +13356,11 @@ export interface Locale extends ILocale {
          * サーバー側に保存されている下書きは削除されません。
          */
         "removeFromDeviceQuestion": string;
+        /**
+         * この予約投稿を削除しますか？
+         * 削除した予約投稿は復元できません。
+         */
+        "deleteScheduledNoteAreYouSure": string;
         /**
          * アップロード済み
          */

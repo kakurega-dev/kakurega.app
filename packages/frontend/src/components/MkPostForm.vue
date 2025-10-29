@@ -1051,8 +1051,8 @@ async function post(ev?: MouseEvent) {
 			}
 		}
 
-		await postAsScheduled();
-		clear();
+		const result = await postAsScheduled();
+		if (result) clear();
 		return;
 	}
 
@@ -1229,7 +1229,7 @@ async function postAsScheduled() {
 
 	const result = await saveDraft();
 	if (result == null) return;
-	draft.createScheduledNote($i.id, result);
+	return draft.createScheduledNote($i.id, result);
 }
 
 function cancel() {

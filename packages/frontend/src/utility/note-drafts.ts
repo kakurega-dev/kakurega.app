@@ -48,6 +48,7 @@ export type NoteDraftV2 = {
 		scheduledDelete?: Omit<DeleteScheduleEditorModelValue, 'isValid'> | null;
 		files?: Misskey.entities.DriveFile[];
 		poll?: PollEditorModelValue | null;
+		scheduledAt?: number | null;
 	};
 }
 
@@ -184,6 +185,7 @@ export async function set(userId: string, draft: NoteDraftV2) {
 	}
 
 	await idbSet(`draftsV2::${userId}`, toDeepRaw(drafts));
+	return draft;
 }
 
 export async function remove(
@@ -194,8 +196,20 @@ export async function remove(
 		renoteId?: string,
 		channelId?: string,
 	},
-	deleteFrom: 'server' | 'local' | 'both' = 'both'
+	deleteFrom: 'server' | 'local' | 'scheduled' | 'both' = 'both'
 ) {
+	if (deleteFrom === 'scheduled') {
+		if ('serverId' in draft && draft.serverId) {
+			await os.apiWithDialog('notes/drafts/delete', {
+				draftId: draft.serverId,
+			});
+		} else {
+			throw new Error('Cannot delete scheduled draft that is not uploaded to server.');
+		}
+
+		return;
+	}
+
 	let drafts = await getAll(userId);
 
 	if (deleteFrom === 'server') {
@@ -245,6 +259,7 @@ export async function sync(userId: string) {
 		const response = await os.apiWithDialog('notes/drafts/list', {
 			detail: false,
 			untilId: serverDrafts.at(-1)?.id ?? undefined,
+			scheduled: false,
 		})
 
 		if (response.length === 0) break;
@@ -267,6 +282,9 @@ export async function sync(userId: string) {
 	// Step 3: Add or overwrite local drafts from server
 	// Step 4: Update server drafts if local draft is newer
 	for (const serverDraft of serverDrafts) {
+		// skip scheduled drafts
+		if (serverDraft.isActuallyScheduled) continue;
+
 		const localDraft = localDrafts.find(d => d.serverId === serverDraft.id);
 		if (localDraft && localDraft.updatedAt > new Date(serverDraft.updatedAt)) {
 			// update server-side draft
@@ -275,9 +293,24 @@ export async function sync(userId: string) {
 			continue;
 		}
 
-		const newDraft = await serverDraftToLocalDraft(serverDraft, localDraft?.localId);
+		const newDraft = serverDraftToLocalDraft(serverDraft, localDraft?.localId);
 		await set(userId, newDraft);
 	}
+}
+
+export async function createScheduledNote(userId: string, draft: NoteDraftV2) {
+	if (!draft.data.scheduledAt) return;
+
+	const result = await os.apiWithDialog('notes/drafts/create', {
+		...draft.data,
+		fileIds: draft.data.files && draft.data.files.length > 0 ? draft.data.files.map(file => file.id) : undefined,
+		isActuallyScheduled: true,
+	}).then(x => x.createdDraft).catch(() => null);
+
+	if (!result) return false;
+
+	remove(userId, draft);
+	return true;
 }
 
 export async function uploadAllDrafts(userId: string, noteDraftLimit: number) {
@@ -324,7 +357,7 @@ export async function updateServerDraft(userId: string, draft: NoteDraftV2) {
 	await set(userId, draft);
 }
 
-export async function serverDraftToLocalDraft(draft: Misskey.entities.NoteDraft, localDraftId?: string): Promise<NoteDraftV2> {
+export function serverDraftToLocalDraft(draft: Misskey.entities.NoteDraft, localDraftId?: string): NoteDraftV2 {
 	return {
 		updatedAt: new Date(draft.updatedAt),
 		uploadedAt: new Date(draft.updatedAt),
@@ -352,6 +385,7 @@ export async function serverDraftToLocalDraft(draft: Misskey.entities.NoteDraft,
 				choices: draft.poll.choices,
 				multiple: draft.poll.multiple ?? false,
 			} : null,
+			scheduledAt: draft.scheduledAt ?? null,
 		},
 	};
 }
