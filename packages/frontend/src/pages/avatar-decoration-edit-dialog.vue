@@ -99,8 +99,12 @@ watch(roleIdsThatCanBeUsedThisDecoration, async () => {
 	rolesThatCanBeUsedThisDecoration.value = (await Promise.all(roleIdsThatCanBeUsedThisDecoration.value.map((id) => misskeyApi('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 
-async function selectImage(ev) {
-	const file = await selectFile(ev.currentTarget ?? ev.target, null);
+async function selectImage(ev: MouseEvent) {
+	const file = await selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	});
+
 	name.value = file.name.replace(/\.(.+)$/, '');
 	url.value = file.url;
 }
