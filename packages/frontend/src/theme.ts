@@ -247,3 +247,9 @@ export async function installTheme(code: string): Promise<void> {
 	if (!theme) return;
 	await addTheme(theme);
 }
+
+export function clearAppliedThemeCache() {
+	miLocalStorage.removeItem('theme');
+	miLocalStorage.removeItem('themeId');
+	miLocalStorage.removeItem('themeCachedVersion');
+}
