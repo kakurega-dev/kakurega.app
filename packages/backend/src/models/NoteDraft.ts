@@ -131,7 +131,7 @@ export class MiNoteDraft {
 	@JoinColumn()
 	public channel: MiChannel | null;
 
-	// 以下、Pollについて追加
+	//#region 以下、Pollについて追加
 
 	@Column('boolean', {
 		default: false,
@@ -156,7 +156,7 @@ export class MiNoteDraft {
 	})
 	public pollExpiredAfter: number | null;
 
-	// ここまで追加
+	//#endregion
 
 	// 時限ノート用
 	@Column('timestamp with time zone', {
@@ -169,11 +169,16 @@ export class MiNoteDraft {
 	})
 	public deleteAfter: number | null;
 
-	constructor(data: Partial<MiNoteDraft>) {
-		if (data == null) return;
+	// 予約日時
+	// これがあるだけでは実際に予約されているかどうかはわからない
+	@Column('timestamp with time zone', {
+		nullable: true,
+	})
+	public scheduledAt: Date | null;
 
-		for (const [k, v] of Object.entries(data)) {
-			(this as any)[k] = v;
-		}
-	}
+	// scheduledAtに基づいて実際にスケジュールされているか
+	@Column('boolean', {
+		default: false,
+	})
+	public isActuallyScheduled: boolean;
 }

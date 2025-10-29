@@ -5,7 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <SearchMarker path="/settings/theme" :label="i18n.ts.theme" :keywords="['theme']" icon="ti ti-palette">
-	<div class="_gaps_m">
+	<div
+		class="_gaps_m"
+		@dragover.prevent.stop="onDragover"
+		@drop.prevent.stop="onDrop"
+	>
 		<div v-adaptive-border class="rfqxtzch _panel">
 			<div class="toggle">
 				<div class="toggleWrapper">
@@ -28,11 +32,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div class="sync">
 				<SearchMarker :keywords="['sync', 'device', 'time', 'dark', 'light', 'mode']">
-					<MkSelect v-model="syncDarkMode">
+					<MkSelect v-model="syncDarkMode" :items="[
+						{ value: null, label: i18n.ts.none },
+						{ value: 'device', label: i18n.ts.syncDeviceDarkMode },
+						{ value: 'time', label: i18n.ts.syncTimeDarkMode },
+					]">
 						<template #label><SearchLabel>{{ i18n.ts.syncDarkMode }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-						<option :value="null">{{ i18n.ts.none }}</option>
-						<option value="device">{{ i18n.ts.syncDeviceDarkMode }}</option>
-						<option value="time">{{ i18n.ts.syncTimeDarkMode }}</option>
 					</MkSelect>
 				</SearchMarker>
 			</div>
@@ -61,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="instanceLightTheme.id"
 										/>
-										<label :for="`themeRadio_${instanceLightTheme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(instanceLightTheme, $event)">
+										<label :for="`themeRadio_${instanceLightTheme.id}`" :class="$style.themeItemRoot" class="_button" draggable="true" @dragstart="onThemeDragstart($event, instanceLightTheme)" @contextmenu.prevent.stop="onThemeContextmenu(instanceLightTheme, $event)">
 											<MkThemePreview :theme="instanceLightTheme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ instanceLightTheme.name }}</div>
 										</label>
@@ -81,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" draggable="true" @dragstart="onThemeDragstart($event, theme)" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -101,7 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" draggable="true" @dragstart="onThemeDragstart($event, theme)" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -132,7 +137,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="instanceDarkTheme.id"
 										/>
-										<label :for="`themeRadio_${instanceDarkTheme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(instanceDarkTheme, $event)">
+										<label :for="`themeRadio_${instanceDarkTheme.id}`" :class="$style.themeItemRoot" class="_button" draggable="true" @dragstart="onThemeDragstart($event, instanceDarkTheme)" @contextmenu.prevent.stop="onThemeContextmenu(instanceDarkTheme, $event)">
 											<MkThemePreview :theme="instanceDarkTheme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ instanceDarkTheme.name }}</div>
 										</label>
@@ -152,7 +157,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" draggable="true" @dragstart="onThemeDragstart($event, theme)" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -172,7 +177,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" draggable="true" @dragstart="onThemeDragstart($event, theme)" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -218,7 +223,7 @@ import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkThemePreview from '@/components/MkThemePreview.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { getBuiltinThemesRef, getThemesRef, removeTheme } from '@/theme.js';
+import { getBuiltinThemesRef, getThemesRef, installTheme, parseThemeCode, removeTheme } from '@/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { isTimeDarkmode } from '@/utility/is-time-darkmode.js';
 import { store } from '@/store.js';
@@ -228,6 +233,7 @@ import { uniqueBy } from '@/utility/array.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { checkDragDataType, getDragData, getPlainDragData, setDragData, setPlainDragData } from '@/drag-and-drop.js';
 
 const installedThemes = getThemesRef();
 const builtinThemes = getBuiltinThemesRef();
@@ -329,6 +335,38 @@ function onThemeContextmenu(theme: Theme, ev: MouseEvent) {
 			removeTheme(theme);
 		},
 	}], ev);
+}
+
+function onThemeDragstart(ev: DragEvent, theme: Theme) {
+	if (!ev.dataTransfer) return;
+
+	ev.dataTransfer.effectAllowed = 'copy';
+	setPlainDragData(ev, JSON5.stringify(theme, null, '\t'));
+}
+
+function onDragover(ev: DragEvent) {
+	if (!ev.dataTransfer) return;
+
+	if (ev.dataTransfer.types[0] === 'text/plain') {
+		ev.dataTransfer.dropEffect = 'copy';
+	} else {
+		ev.dataTransfer.dropEffect = 'none';
+	}
+
+	return false;
+}
+
+async function onDrop(ev: DragEvent) {
+	if (!ev.dataTransfer) return;
+
+	const code = getPlainDragData(ev);
+	if (code != null) {
+		try {
+			await installTheme(code);
+		} catch (err) {
+			// nop
+		}
+	}
 }
 
 const headerActions = computed(() => []);

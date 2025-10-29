@@ -106,6 +106,8 @@ export class NoteDraftEntityService implements OnModuleInit {
 			id: noteDraft.id,
 			createdAt: this.idService.parse(noteDraft.id).date.toISOString(),
 			updatedAt: noteDraft.updatedAt.toISOString(),
+			scheduledAt: noteDraft.scheduledAt?.getTime() ?? null,
+			isActuallyScheduled: noteDraft.isActuallyScheduled,
 			userId: noteDraft.userId,
 			user: packedUsers?.get(noteDraft.userId) ?? this.userEntityService.pack(noteDraft.user ?? noteDraft.userId, me),
 			text: text,
@@ -113,13 +115,13 @@ export class NoteDraftEntityService implements OnModuleInit {
 			visibility: noteDraft.visibility,
 			localOnly: noteDraft.localOnly,
 			reactionAcceptance: noteDraft.reactionAcceptance,
-			visibleUserIds: noteDraft.visibility === 'specified' ? noteDraft.visibleUserIds : undefined,
-			hashtag: noteDraft.hashtag ?? undefined,
+			visibleUserIds: noteDraft.visibleUserIds,
+			hashtag: noteDraft.hashtag,
 			fileIds: noteDraft.fileIds,
 			files: packedFiles != null ? this.packAttachedFiles(noteDraft.fileIds, packedFiles) : this.driveFileEntityService.packManyByIds(noteDraft.fileIds),
 			replyId: noteDraft.replyId,
 			renoteId: noteDraft.renoteId,
-			channelId: noteDraft.channelId ?? undefined,
+			channelId: noteDraft.channelId,
 			channel: channel ? {
 				id: channel.id,
 				name: channel.name,
@@ -132,6 +134,12 @@ export class NoteDraftEntityService implements OnModuleInit {
 				deleteAt: noteDraft.deleteAt ? noteDraft.deleteAt.toISOString() : null,
 				deleteAfter: noteDraft.deleteAt ? undefined : noteDraft.deleteAfter ?? null,
 			} : undefined,
+			poll: noteDraft.hasPoll ? {
+				choices: noteDraft.pollChoices,
+				multiple: noteDraft.pollMultiple,
+				expiresAt: noteDraft.pollExpiresAt?.toISOString(),
+				expiredAfter: noteDraft.pollExpiredAfter,
+			} : null,
 
 			...(opts.detail ? {
 				reply: noteDraft.replyId ? nullIfEntityNotFound(this.noteEntityService.pack(noteDraft.replyId, me, {
@@ -143,13 +151,6 @@ export class NoteDraftEntityService implements OnModuleInit {
 					detail: true,
 					skipHide: opts.skipHide,
 				})) : undefined,
-
-				poll: noteDraft.hasPoll ? {
-					choices: noteDraft.pollChoices,
-					multiple: noteDraft.pollMultiple,
-					expiresAt: noteDraft.pollExpiresAt?.toISOString(),
-					expiredAfter: noteDraft.pollExpiredAfter,
-				} : undefined,
 			} : {} ),
 		});
 

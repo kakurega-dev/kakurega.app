@@ -99,8 +99,12 @@ watch(roleIdsThatCanBeUsedThisDecoration, async () => {
 	rolesThatCanBeUsedThisDecoration.value = (await Promise.all(roleIdsThatCanBeUsedThisDecoration.value.map((id) => misskeyApi('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 
-async function selectImage(ev) {
-	const file = await selectFile(ev.currentTarget ?? ev.target, null);
+async function selectImage(ev: MouseEvent) {
+	const file = await selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	});
+
 	name.value = file.name.replace(/\.(.+)$/, '');
 	url.value = file.url;
 }
@@ -109,12 +113,12 @@ async function addRole() {
 	const roles = await misskeyApi('admin/roles/list');
 	const currentRoleIds = rolesThatCanBeUsedThisDecoration.value.map(x => x.id);
 
-	const { canceled, result: role } = await os.select({
-		items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ text: r.name, value: r })),
+	const { canceled, result: roleId } = await os.select({
+		items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ label: r.name, value: r.id })),
 	});
-	if (canceled || role == null) return;
+	if (canceled || roleId == null) return;
 
-	rolesThatCanBeUsedThisDecoration.value.push(role);
+	rolesThatCanBeUsedThisDecoration.value.push(roles.find(r => r.id === roleId)!);
 }
 
 async function removeRole(role, ev) {

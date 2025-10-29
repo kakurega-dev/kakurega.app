@@ -4,29 +4,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<div :class="[$style.root, { [$style.modal]: modal, _popup: modal }]" @dragover.stop="onDragover"
-		@dragenter="onDragenter" @dragleave="onDragleave" @drop.stop="onDrop">
+<div
+	:class="[$style.root, { [$style.modal]: modal, _popup: modal }]"
+	@dragover.stop="onDragover"
+	@dragenter="onDragenter"
+	@dragleave="onDragleave"
+	@drop.stop="onDrop"
+>
 		<header :class="$style.header">
 			<div :class="$style.headerLeft">
 				<button v-if="!fixed" :class="$style.cancel" class="_button" @click="cancel"><i class="ti ti-x"></i></button>
-				<button v-click-anime v-tooltip="i18n.ts.switchAccount" :class="$style.account" class="_button"
-					@click="openAccountMenu">
-					<MkAvatar :user="postAccount ?? $i" :class="$style.avatar" />
+				<button v-click-anime v-tooltip="i18n.ts.switchAccount" :class="$style.account" class="_button" @click="openAccountMenu">
+					<img :class="$style.avatar" :src="(postAccount ?? $i).avatarUrl" style="border-radius: 100%;"/>
 				</button>
-				<button v-if="$i.policies.noteDraftLimit > 0"
-					v-tooltip="(postAccount != null && postAccount.id !== $i.id) ? null : i18n.ts.draft" class="_button"
-					:class="$style.draftButton" :disabled="postAccount != null && postAccount.id !== $i.id"
-					@click="showDraftMenu"><i class="ti ti-pencil-minus"></i></button>
+				<button v-if="$i.policies.noteDraftLimit > 0" v-tooltip="(postAccount != null && postAccount.id !== $i.id) ? null : i18n.ts.draftsAndScheduledNotes" class="_button" :class="$style.draftButton" :disabled="postAccount != null && postAccount.id !== $i.id" @click="showDraftMenu"><i class="ti ti-list"></i></button>
 			</div>
-			<div :class="$style.headerRight">
-				<template v-if="!(targetChannel != null && fixed)">
-					<button v-if="targetChannel == null" ref="visibilityButton" v-tooltip="i18n.ts.visibility"
-						:class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
-						<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
-						<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
-						<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
-						<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
-						<span :class="$style.headerRightButtonText">{{ i18n.ts._visibility[visibility] }}</span>
+		<div :class="$style.headerRight">
+			<template v-if="!(targetChannel != null && fixed)">
+				<button v-if="targetChannel == null" ref="visibilityButton" v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
+					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
+					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
+					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
+					<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
+					<span :class="$style.headerRightButtonText">{{ i18n.ts._visibility[visibility] }}</span>
 					</button>
 					<button v-else class="_button" :class="[$style.headerRightItem, $style.visibility]" disabled>
 						<span><i class="ti ti-device-tv"></i></span>
@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</template>
 						<template v-else>{{ submitText }}</template>
 						<i style="margin-left: 6px;"
-							:class="posted ? 'ti ti-check' : replyTargetNote ? 'ti ti-arrow-back-up' : renoteTargetNote ? 'ti ti-quote' : 'ti ti-send'"></i>
+							:class="submitIcon"></i>
 					</div>
 				</button>
 			</div>
@@ -73,51 +73,44 @@ SPDX-License-Identifier: AGPL-3.0-only
 						class="ti ti-plus ti-fw"></i></button>
 			</div>
 		</div>
-		<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{
-			i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add
-				}}</button></MkInfo>
+		<MkInfo v-if="scheduledAt != null" :class="$style.scheduledAt">
+		<I18n :src="i18n.ts.scheduleToPostOnX" tag="span">
+			<template #x>
+				<MkTime :time="scheduledAt" :mode="'detail'" style="font-weight: bold;"/>
+			</template>
+		</I18n> - <button class="_textButton" @click="cancelSchedule()">{{ i18n.ts.cancel }}</button>
+	</MkInfo>
+		<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 		<div v-show="useCw" :class="$style.cwOuter">
-			<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown"
-				@keyup="onKeyup" @compositionend="onCompositionEnd">
-			<div v-if="maxCwTextLength - cwTextLength < 20"
-				:class="['_acrylic', $style.cwTextCount, { [$style.cwTextOver]: cwTextLength > maxCwTextLength }]">{{
-				maxCwTextLength - cwTextLength }}</div>
+			<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
+			<div v-if="maxCwTextLength - cwTextLength < 20" :class="['_acrylic', $style.cwTextCount, { [$style.cwTextOver]: cwTextLength > maxCwTextLength }]">
+				{{ maxCwTextLength - cwTextLength }}
+			</div>
 		</div>
 		<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
 			<div v-if="targetChannel" :class="$style.colorBar" :style="{ background: targetChannel.color }"></div>
-			<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted"
-				:readonly="textAreaReadOnly" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown"
-				@keyup="onKeyup" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd" />
-			<div v-if="maxTextLength - textLength < 100"
-				:class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength -
-				textLength }}</div>
+			<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @keyup="onKeyup" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd" />
+			<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">
+				{{ maxTextLength - textLength }}
+			</div>
 		</div>
-		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags"
-			:placeholder="i18n.ts.hashtags" list="hashtags">
-		<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive"
-			@changeName="updateFileName" />
+		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
+		<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" />
 		<div v-if="uploader.items.value.length > 0" style="padding: 12px;">
 			<MkTip k="postFormUploader">
 				{{ i18n.ts._postForm.uploaderTip }}
 			</MkTip>
-			<MkUploaderItems :items="uploader.items.value" @showMenu="(item, ev) => showPerUploadItemMenu(item, ev)"
-				@showMenuViaContextmenu="(item, ev) => showPerUploadItemMenuViaContextmenu(item, ev)" />
+			<MkUploaderItems :items="uploader.items.value" @showMenu="(item, ev) => showPerUploadItemMenu(item, ev)" @showMenuViaContextmenu="(item, ev) => showPerUploadItemMenuViaContextmenu(item, ev)" />
 		</div>
 		<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null" />
-		<MkDeleteScheduleEditor v-if="scheduledNoteDelete" v-model="scheduledNoteDelete"
-			@destroyed="scheduledNoteDelete = null" />
-		<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined"
-			:useCw="useCw" :cw="cw" :user="postAccount ?? $i" />
+		<MkDeleteScheduleEditor v-if="scheduledNoteDelete" v-model="scheduledNoteDelete" @destroyed="scheduledNoteDelete = null" />
+		<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i" />
 		<div v-if="showingOptions" style="padding: 8px 16px;">
 		</div>
 		<footer :class="$style.footer">
 			<div :class="$style.footerLeft">
 				<template v-for="item in prefer.s.postFormActions">
-					<button v-if="!bottomItemActionDef[item].hide" :key="item" v-tooltip="bottomItemDef[item].title"
-						class="_button"
-						:class="[$style.footerButton, { [$style.footerButtonActive]: bottomItemActionDef[item].active }]"
-						v-on="bottomItemActionDef[item].action ? { click: bottomItemActionDef[item].action } : {}"><i class="ti"
-							:class="bottomItemDef[item].icon"></i></button>
+					<button v-if="!bottomItemActionDef[item].hide" :key="item" v-tooltip="bottomItemDef[item].title" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: bottomItemActionDef[item].active }]" v-on="bottomItemActionDef[item].action ? { click: bottomItemActionDef[item].action } : {}"><i class="ti" :class="bottomItemDef[item].icon"></i></button>
 				</template>
 			</div>
 			<div :class="$style.footerRight">
@@ -131,7 +124,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, reactive, useTemplateRef } from 'vue';
+import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, reactive, useTemplateRef, onUnmounted } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -231,6 +224,7 @@ if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(u => pushVisibleUser(u));
 }
 const reactionAcceptance = ref(store.s.reactionAcceptance);
+const scheduledAt = ref<number | null>(null);
 const draghover = ref(false);
 const quoteId = ref<string | null>(null);
 const hasNotSpecifiedMentions = ref(false);
@@ -248,6 +242,10 @@ const postFormActions = getPluginHandlers('post_form_action');
 
 const uploader = useUploader({
 	multiple: true,
+});
+
+onUnmounted(() => {
+	uploader.dispose();
 });
 
 uploader.events.on('itemUploaded', ctx => {
@@ -276,11 +274,17 @@ const placeholder = computed((): string => {
 });
 
 const submitText = computed((): string => {
-	return renoteTargetNote.value
-		? i18n.ts.quote
-		: replyTargetNote.value
-			? i18n.ts.reply
-			: i18n.ts.note;
+	return scheduledAt.value != null
+		? i18n.ts.schedule
+		: renoteTargetNote.value
+			? i18n.ts.quote
+			: replyTargetNote.value
+				? i18n.ts.reply
+				: i18n.ts.note;
+});
+
+const submitIcon = computed((): string => {
+	return posted.value ? 'ti ti-check' : scheduledAt.value != null ? 'ti ti-calendar-time' : replyTargetNote.value ? 'ti ti-arrow-back-up' : renoteTargetNote.value ? 'ti ti-quote' : 'ti ti-send';
 });
 
 const textLength = computed((): number => {
@@ -379,6 +383,18 @@ const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
 		active: showPreview,
 		action: () => showPreview.value = !showPreview.value,
 	},
+	schedule: {
+		action: () => {
+			if ($i.policies.scheduledNoteLimit > 0) {
+				schedule();
+			} else {
+				os.alert({
+					type: 'error',
+					text: i18n.ts.scheduledNoteNotAvailable,
+				});
+			}
+		},
+	}
 });
 
 watch(text, () => {
@@ -483,6 +499,7 @@ function watchForDraft() {
 	watch(localOnly, () => saveDraft());
 	watch(quoteId, () => saveDraft());
 	watch(reactionAcceptance, () => saveDraft());
+	watch(scheduledAt, () => saveDraft());
 }
 
 function checkMissingMention() {
@@ -652,11 +669,11 @@ async function toggleReactionAcceptance() {
 	const select = await os.select({
 		title: i18n.ts.reactionAcceptance,
 		items: [
-			{ value: null, text: i18n.ts.all },
-			{ value: 'likeOnlyForRemote' as const, text: i18n.ts.likeOnlyForRemote },
-			{ value: 'nonSensitiveOnly' as const, text: i18n.ts.nonSensitiveOnly },
-			{ value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' as const, text: i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote },
-			{ value: 'likeOnly' as const, text: i18n.ts.likeOnly },
+			{ value: null, label: i18n.ts.all },
+			{ value: 'likeOnlyForRemote' as const, label: i18n.ts.likeOnlyForRemote },
+			{ value: 'nonSensitiveOnly' as const, label: i18n.ts.nonSensitiveOnly },
+			{ value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' as const, label: i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote },
+			{ value: 'likeOnly' as const, label: i18n.ts.likeOnly },
 		],
 		default: reactionAcceptance.value,
 	});
@@ -691,7 +708,13 @@ function showOtherSettings() {
 		action: () => {
 			toggleReactionAcceptance();
 		},
-	}, {
+	}, ...($i.policies.scheduledNoteLimit > 0 ? [{
+		icon: 'ti ti-calendar-time',
+		text: i18n.ts.schedulePost + '...',
+		action: () => {
+			schedule();
+		},
+	}] : []), { type: 'divider' }, {
 		type: 'link',
 		icon: 'ti ti-settings',
 		text: i18n.ts.settings,
@@ -745,6 +768,7 @@ function clear() {
 	files.value = [];
 	poll.value = null;
 	quoteId.value = null;
+	scheduledAt.value = null;
 }
 
 function onKeydown(ev: KeyboardEvent) {
@@ -897,7 +921,7 @@ async function saveDraft(manual = false) {
 		});
 	}
 
-	await draft.set($i.id, {
+	const result = await draft.set($i.id, {
 		updatedAt: new Date(),
 		localId: resetLocalDraft ? genId() : localDraftId.value,
 		serverId: null,
@@ -915,12 +939,15 @@ async function saveDraft(manual = false) {
 			scheduledDelete: scheduledNoteDelete.value,
 			files: files.value.length > 0 ? files.value : undefined,
 			poll: poll.value,
+			scheduledAt: scheduledAt.value,
 		},
 	});
 
 	if (manual) {
 		clear();
 	}
+
+	return result;
 }
 
 function deleteDraft() {
@@ -991,6 +1018,8 @@ async function applyDraft(draftId: string, draft: draft.NoteDraftV2['data'], fet
 			};
 		});
 	}
+
+	scheduledAt.value = draft.scheduledAt ?? null;
 }
 
 function isAnnoying(text: string): boolean {
@@ -1022,6 +1051,21 @@ async function post(ev?: MouseEvent) {
 				end: () => dispose(),
 			});
 		}
+	}
+
+	if (scheduledAt.value != null) {
+		if (uploader.items.value.some(x => x.uploaded == null)) {
+			await uploadFiles();
+
+			// アップロード失敗したものがあったら中止
+			if (uploader.items.value.some(x => x.uploaded == null)) {
+				return;
+			}
+		}
+
+		const result = await postAsScheduled();
+		if (result) clear();
+		return;
 	}
 
 	if (props.mock) return;
@@ -1192,6 +1236,14 @@ async function post(ev?: MouseEvent) {
 	});
 }
 
+async function postAsScheduled() {
+	if (props.mock) return;
+
+	const result = await saveDraft();
+	if (result == null) return;
+	return draft.createScheduledNote($i.id, result);
+}
+
 function cancel() {
 	emit('cancel');
 }
@@ -1298,8 +1350,10 @@ function showPerUploadItemMenuViaContextmenu(item: UploaderItem, ev: MouseEvent)
 }
 
 function showDraftMenu(ev: MouseEvent) {
-	function showDraftsDialog() {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkNoteDraftsDialog.vue')), {}, {
+	function showDraftsDialog(showScheduled: boolean) {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkNoteDraftsDialog.vue')), {
+			scheduled: showScheduled,
+		}, {
 			restore: async (draft: draft.NoteDraftV2) => applyDraft(draft.localId, draft.data),
 			// cancel: () => {},
 			closed: () => dispose(),
@@ -1313,14 +1367,35 @@ function showDraftMenu(ev: MouseEvent) {
 		action: async () => {
 			saveDraft(true);
 		},
-	}, {
+	}, { type: 'divider' }, {
 		type: 'button',
 		text: i18n.ts._drafts.listDrafts,
 		icon: 'ti ti-list',
 		action: () => {
-			showDraftsDialog();
+			showDraftsDialog(false);
+		},
+	}, {
+		type: 'button',
+		text: i18n.ts._drafts.listScheduledNotes,
+		icon: 'ti ti-calendar-clock',
+		action: () => {
+			showDraftsDialog(true);
 		},
 	}], (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+}
+
+async function schedule() {
+	const { canceled, result } = await os.inputDatetime({
+		title: i18n.ts.schedulePost,
+	});
+	if (canceled) return;
+	if (result.getTime() <= Date.now()) return;
+
+	scheduledAt.value = result.getTime();
+}
+
+function cancelSchedule() {
+	scheduledAt.value = null;
 }
 
 onMounted(() => {
@@ -1406,6 +1481,7 @@ async function canClose() {
 defineExpose({
 	clear,
 	closed,
+	abortUploader: () => uploader.abortAll(),
 	canClose,
 });
 </script>
@@ -1623,6 +1699,10 @@ html[data-color-scheme=light] .preview {
 }
 
 .hasNotSpecifiedMentions {
+	margin: 0 20px 16px 20px;
+}
+
+.scheduledAt {
 	margin: 0 20px 16px 20px;
 }
 
