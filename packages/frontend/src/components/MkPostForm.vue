@@ -1529,6 +1529,25 @@ defineExpose({
 	margin: auto;
 }
 
+.account {
+	display: flex;
+	align-items: center;
+}
+
+.draftButton {
+	padding: 8px;
+	font-size: 90%;
+	border-radius: 6px;
+
+	&:hover {
+		background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
+	}
+
+	&:disabled {
+		background: none;
+	}
+}
+
 .headerRight {
 	display: flex;
 	min-height: 48px;
