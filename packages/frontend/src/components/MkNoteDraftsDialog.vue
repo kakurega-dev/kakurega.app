@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkModalWindow ref="dialogEl" :width="600" :height="650" :withOkButton="false" @click="cancel()" @close="cancel()"
 		@closed="emit('closed')" @esc="cancel()">
 		<template #header>
-			{{ i18n.ts.drafts }}
+			{{ i18n.ts.draftsAndScheduledNotes }}
 		</template>
 		<template #footer>
 			<div>
@@ -24,77 +24,88 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkButton>
 			</div>
 		</template>
-		<div class="_spacer">
-			<MkResult v-if="draftsList.length <= 0" type="empty" :text="i18n.ts._drafts.noDrafts" />
-			<div v-else class="_gaps_s">
-				<div v-for="draft in draftsList" :key="draft.localId" v-panel :class="[$style.draft]">
-					<div :class="$style.draftBody" class="_gaps_s">
-						<div :class="$style.draftInfo">
-							<div v-if="draft.data.replyId" class="_nowrap">
-								<i class="ti ti-arrow-back-up"></i>
-								{{ i18n.ts.reply }}
-							</div>
-							<div v-else-if="draft.data.renoteId" class="_nowrap">
-								<i class="ti ti-quote"></i>
-								{{ i18n.ts.renote }}
-							</div>
-							<div v-if="draft.data.channelId" class="_nowrap">
-								<i class="ti ti-device-tv"></i>
-								{{ i18n.ts.channel }}
-							</div>
-						</div>
-						<div v-if="draft.data.text" :class="$style.draftContent">
-							<Mfm :text="draft.data.text" :plain="true" :author="$i!" />
-						</div>
-						<div :class="$style.draftFooter">
-							<div :class="$style.draftVisibility">
-								<span :title="i18n.ts._visibility[draft.data.visibility]">
-									<i v-if="draft.data.visibility === 'public'" class="ti ti-world"></i>
-									<i v-else-if="draft.data.visibility === 'home'" class="ti ti-home"></i>
-									<i v-else-if="draft.data.visibility === 'followers'" class="ti ti-lock"></i>
-									<i v-else-if="draft.data.visibility === 'specified'" class="ti ti-mail"></i>
-								</span>
-								<span v-if="draft.data.localOnly" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
-							</div>
-							<div v-if="draft.data.files?.length"><i class="ti ti-photo-plus" :class="$style.icon"></i> {{ draft.data.files.length }}</div>
-							<MkTime :time="draft.updatedAt" mode="detail" colored />
-						</div>
-					</div>
-					<div :class="$style.draftActions" class="_buttons">
-						<MkButton v-tooltip="i18n.ts._drafts.delete" danger small :iconOnly="true" :class="$style.itemButton"
-							@click="(ev) => draft.serverId == null ? deleteDraft(draft) : deleteMenu(ev, draft)">
-							<i class="ti ti-trash"></i>
-						</MkButton>
-						<MkButton v-tooltip="getUploadTooltipText(draft)" small :iconOnly="true" :class="$style.itemButton"
-							:disabled="draft.localId === 'default'" @click="() => syncSingleDraft(draft)">
-							<i v-if="draft.localId === 'default'" class="ti ti-cloud-x"></i>
-							<i v-else-if="draft.serverId == null" class="ti ti-cloud-up"></i>
-							<i v-else-if="draft.uploadedAt == null || draft.uploadedAt < draft.updatedAt"
-								class="ti ti-cloud-exclamation" :class="$style.outdated"></i>
-							<i v-else class="ti ti-cloud-check" :class="$style.uploaded"></i>
-						</MkButton>
-						<div :class="$style.expand"></div>
-						<MkButton :class="$style.itemButton" small @click="() => restoreDraft(draft)">
-							<i class="ti ti-corner-up-left"></i>
-							{{ i18n.ts._drafts.restore }}
-						</MkButton>
+
+		<MkStickyContainer>
+			<template #header>
+				<MkTabs
+					v-model:tab="tab"
+					centered
+					:class="$style.tabs"
+					:tabs="[
+						{
+							key: 'drafts',
+							title: i18n.ts.drafts,
+							icon: 'ti ti-list',
+						},
+						{
+							key: 'scheduled',
+							title: i18n.ts.scheduled,
+							icon: 'ti ti-calendar-clock',
+						},
+					]"
+				/>
+			</template>
+
+			<div class="_spacer">
+				<div v-if="tab === 'drafts'">
+					<MkResult v-if="draftsList.length <= 0" type="empty" :text="i18n.ts._drafts.noDrafts" />
+					<div v-else class="_gaps_s">
+						<template v-for="draft in draftsList" :key="draft.localId">
+							<XDraft
+								v-if="draft.localId !== 'default' || draft.data.text || draft.data.files?.length"
+								:draft="draft"
+								@deleteDraft="deleteDraft"
+								@deleteDraftFromDevice="deleteDraftFromDevice"
+								@deleteDraftFromServer="deleteDraftFromServer"
+								@restoreDraft="restoreDraft"
+								@syncSingleDraft="syncSingleDraft"
+							/>
+						</template>
 					</div>
 				</div>
+
+				<!-- Scheduled -->
+				<MkPagination v-else-if="tab === 'scheduled'" :key="tab" :paginator="scheduledPaginator" withControl>
+					<template #empty>
+						<MkResult type="empty" :text="i18n.ts._drafts.noDrafts"/>
+					</template>
+
+					<template #default="{ items }">
+						<div class="_gaps_s">
+							<XDraft
+								v-for="draft in (items as unknown as Misskey.entities.NoteDraft[])"
+								:key="draft.id"
+								:draft="drafts.serverDraftToLocalDraft(draft)"
+								scheduled
+								@deleteScheduledNote="deleteScheduledNote"
+								@cancelSchedule="cancelSchedule"
+							/>
+						</div>
+					</template>
+				</MkPagination>
 			</div>
-		</div>
+		</MkStickyContainer>
 	</MkModalWindow>
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef } from 'vue';
+import { markRaw, ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { $i } from '@/i.js';
 import * as drafts from '@/utility/note-drafts.js';
 import { misskeyApi } from '@/utility/misskey-api';
+import { Paginator } from '@/utility/paginator.js';
+import MkTabs from '@/components/MkTabs.vue';
+import XDraft from '@/components/MkNoteDraftsDialog.Draft.vue';
+
+const props = defineProps<{
+	scheduled?: boolean;
+}>();
 
 const emit = defineEmits<{
 	(ev: 'restore', draft: drafts.NoteDraftV2): void;
@@ -104,6 +115,21 @@ const emit = defineEmits<{
 
 const draftsList = ref<drafts.NoteDraftV2[]>([]);
 const serverSideDraftsCount = ref(0);
+
+const tab = ref<'drafts' | 'scheduled'>(props.scheduled ? 'scheduled' : 'drafts');
+
+const scheduledPaginator = markRaw(new Paginator('notes/drafts/list', {
+	limit: 10,
+	params: {
+		scheduled: true,
+	},
+}));
+
+const currentDraftsCount = ref(0);
+misskeyApi('notes/drafts/count').then((count) => {
+	currentDraftsCount.value = count;
+});
+
 const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 function cancel() {
@@ -161,29 +187,35 @@ async function deleteDraftFromServer(draft: drafts.NoteDraftV2) {
 	refreshDrafts();
 }
 
-async function deleteMenu(ev: MouseEvent, draft: drafts.NoteDraftV2) {
-	os.popupMenu([{
-		type: 'button',
-		text: i18n.ts._drafts.delete,
-		icon: 'ti ti-trash',
-		action: async () => {
-			await deleteDraft(draft);
-		},
-	}, {
-		type: 'button',
-		text: i18n.ts._drafts.removeFromDevice,
-		icon: 'ti ti-device-mobile-x',
-		action: () => {
-			deleteDraftFromDevice(draft);
-		},
-	}, {
-		type: 'button',
-		text: i18n.ts._drafts.removeFromServer,
-		icon: 'ti ti-cloud-x',
-		action: () => {
-			deleteDraftFromServer(draft);
-		},
-	}], (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+async function deleteScheduledNote(draft: drafts.NoteDraftV2) {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts._drafts.deleteScheduledNoteAreYouSure,
+	});
+
+	if (canceled) return;
+	await drafts.remove($i!.id, draft, 'scheduled');
+	scheduledPaginator.reload();
+	refreshDrafts();
+}
+
+async function cancelSchedule(draft: drafts.NoteDraftV2) {
+	if (draft.serverId == null) {
+		throw new Error('Cannot cancel schedule for draft that is not uploaded to server.');
+	}
+
+	const result = await os.apiWithDialog('notes/drafts/update', {
+		draftId: draft.serverId,
+		isActuallyScheduled: false,
+		scheduledAt: null,
+	}).then(x => x.updatedDraft).catch(() => null);
+	if (result == null) return;
+
+	scheduledPaginator.reload();
+
+	const newDraft = drafts.serverDraftToLocalDraft(result);
+	await drafts.set($i!.id, newDraft);
+	refreshDrafts();
 }
 
 async function syncDrafts() {
@@ -229,18 +261,6 @@ async function syncSingleDraft(draft: drafts.NoteDraftV2) {
 			type: 'info',
 			text: i18n.ts._drafts.latestDraftUploaded,
 		});
-	}
-}
-
-function getUploadTooltipText(draft: drafts.NoteDraftV2): string {
-	if (draft.localId === 'default') {
-		return i18n.ts._drafts.cannotUploadThisDraft;
-	}
-
-	if (draft.serverId == null || draft.uploadedAt == null || draft.uploadedAt < draft.updatedAt) {
-		return i18n.ts._drafts.uploadToServer;
-	} else {
-		return i18n.ts._drafts.uploaded;
 	}
 }
 </script>
@@ -314,5 +334,12 @@ function getUploadTooltipText(draft: drafts.NoteDraftV2): string {
 
 .outdated {
 	color: var(--MI_THEME-warn);
+}
+
+.tabs {
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.75);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
 }
 </style>

@@ -154,7 +154,27 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	}
 	//#endregion
 
+	//#region Sync dark mode
+	switch (prefer.s.syncDarkMode) {
+		case 'device':
+			store.set('darkMode', isDeviceDarkmode());
+			break;
+		case 'time':
+			store.set('darkMode', isTimeDarkmode());
+			initializeTimeBasedDarkmode();
+			break;
+	}
+
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (mql) => {
+		if (prefer.s.syncDarkMode === 'device') {
+			store.set('darkMode', mql.matches);
+		}
+	});
+	//#endregion
+
 	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
+	// NOTE: この処理は必ずダークモード判定処理より後に来ること(初回のテーマ適用のため)
+	// see: https://github.com/misskey-dev/misskey/issues/16562
 	watch(store.r.darkMode, (darkMode) => {
 		const theme = (() => {
 			if (darkMode) {
@@ -186,39 +206,6 @@ export async function common(createVue: () => Promise<App<Element>>) {
 		});
 	}
 
-	//#region Sync dark mode
-	switch (prefer.s.syncDarkMode) {
-		case 'device':
-			store.set('darkMode', isDeviceDarkmode());
-			break;
-		case 'time':
-			store.set('darkMode', isTimeDarkmode());
-			initializeTimeBasedDarkmode();
-			break;
-	}
-
-	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (mql) => {
-		if (prefer.s.syncDarkMode === 'device') {
-			store.set('darkMode', mql.matches);
-		}
-	});
-	//#endregion
-
-	//#region Auto data saver
-	if (store.s.autoDataSaver) {
-		store.set('enableDataSaverMode', isMobileData());
-		initializeDetectNetworkChange();
-	}
-	//#endregion
-
-	if (prefer.s.customFont) {
-		applyFont(prefer.s.customFont);
-	}
-
-	watch(prefer.r.customFont, (font) => {
-		applyFont(font);
-	});
-
 	if (!isSafeMode) {
 		if (prefer.s.darkTheme && store.s.darkMode) {
 			if (miLocalStorage.getItem('themeId') !== prefer.s.darkTheme.id) applyTheme(prefer.s.darkTheme);
@@ -230,6 +217,23 @@ export async function common(createVue: () => Promise<App<Element>>) {
 			// TODO: instance.defaultLightTheme/instance.defaultDarkThemeが不正な形式だった場合のケア
 			if (prefer.s.lightTheme == null && instance.defaultLightTheme != null) prefer.commit('lightTheme', JSON.parse(instance.defaultLightTheme));
 			if (prefer.s.darkTheme == null && instance.defaultDarkTheme != null) prefer.commit('darkTheme', JSON.parse(instance.defaultDarkTheme));
+		});
+	}
+
+	if (!isSafeMode) {
+		//#region Auto data saver
+		if (store.s.autoDataSaver) {
+			store.set('enableDataSaverMode', isMobileData());
+			initializeDetectNetworkChange();
+		}
+		//#endregion
+
+		if (prefer.s.customFont) {
+			applyFont(prefer.s.customFont);
+		}
+
+		watch(prefer.r.customFont, (font) => {
+			applyFont(font);
 		});
 	}
 

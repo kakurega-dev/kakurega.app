@@ -63,7 +63,7 @@ async function getPeriod(title: string, text?: string) {
 		text,
 		items: period.map(x => ({
 			value: x.key,
-			text: x.text,
+			label: x.text,
 		})),
 		default: 'indefinitely',
 	});
@@ -267,16 +267,31 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		});
 	}
 
+	if ($i && meId === user.id) {
+		menuItems.push({
+			icon: 'ti ti-qrcode',
+			text: i18n.ts.qr,
+			action: () => {
+				router.push('/qr');
+			},
+		});
+	}
+
 	if (notesSearchAvailable && (user.host == null || canSearchNonLocalNotes)) {
 		menuItems.push({
 			icon: 'ti ti-search',
 			text: i18n.ts.searchThisUsersNotes,
 			action: () => {
-				router.push('/search', {
-					query: {
+				const query = {
 						username: user.username,
-						host: user.host ?? undefined,
-					},
+					} as { username: string, host?: string };
+
+				if (user.host !== null) {
+					query.host = user.host;
+				}
+
+				router.push('/search', {
+					query
 				});
 			},
 		});
@@ -341,7 +356,6 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 							caseSensitive: antenna.caseSensitive,
 							withReplies: antenna.withReplies,
 							withFile: antenna.withFile,
-							notify: antenna.notify,
 						});
 						antennasCache.delete();
 					},
@@ -398,8 +412,8 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		//}
 
 		menuItems.push({ type: 'divider' }, {
-			icon: 'ti ti-mail',
-			text: i18n.ts.sendMessage,
+			icon: 'ti ti-pencil-heart',
+			text: i18n.ts.createUserSpecifiedNote,
 			action: () => {
 				const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${user.host}`;
 				os.post({ specified: user, initialText: `${canonical} ` });

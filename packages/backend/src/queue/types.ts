@@ -113,9 +113,13 @@ export type ScheduledNoteDeleteJobData = {
 	noteId: MiNote['id'];
 };
 
-export type SystemWebhookDeliverJobData = {
-	type: string;
-	content: unknown;
+export type PostScheduledNoteJobData = {
+	noteDraftId: string;
+};
+
+export type SystemWebhookDeliverJobData<T extends SystemWebhookEventType = SystemWebhookEventType> = {
+	type: T;
+	content: SystemWebhookPayload<T>;
 	webhookId: MiWebhook['id'];
 	to: string;
 	secret: string;
