@@ -53,4 +53,8 @@ export const bottomItemDef = {
 		title: i18n.ts.preview,
 		icon: 'ti-eye',
 	},
+	schedule: {
+		title: i18n.ts._drafts.schedule,
+		icon: 'ti-calendar-time',
+	}
 };

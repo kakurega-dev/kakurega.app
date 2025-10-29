@@ -383,6 +383,18 @@ const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
 		active: showPreview,
 		action: () => showPreview.value = !showPreview.value,
 	},
+	schedule: {
+		action: () => {
+			if ($i.policies.scheduledNoteLimit > 0) {
+				schedule();
+			} else {
+				os.alert({
+					type: 'error',
+					text: i18n.ts.scheduledNoteNotAvailable,
+				});
+			}
+		},
+	}
 });
 
 watch(text, () => {
