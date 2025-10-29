@@ -32,11 +32,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div class="sync">
 				<SearchMarker :keywords="['sync', 'device', 'time', 'dark', 'light', 'mode']">
-					<MkSelect v-model="syncDarkMode">
+					<MkSelect v-model="syncDarkMode" :items="[
+						{ value: null, label: i18n.ts.none },
+						{ value: 'device', label: i18n.ts.syncDeviceDarkMode },
+						{ value: 'time', label: i18n.ts.syncTimeDarkMode },
+					]">
 						<template #label><SearchLabel>{{ i18n.ts.syncDarkMode }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-						<option :value="null">{{ i18n.ts.none }}</option>
-						<option value="device">{{ i18n.ts.syncDeviceDarkMode }}</option>
-						<option value="time">{{ i18n.ts.syncTimeDarkMode }}</option>
 					</MkSelect>
 				</SearchMarker>
 			</div>

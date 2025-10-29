@@ -14,9 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.channelSearch }}</template>
 						<template #prefix><i class="ti ti-search"></i></template>
 					</MkInput>
-					<MkSelect v-model="sortType">
+					<MkSelect v-model="sortType" :items="sortTypeSelectDef">
 						<template #label>{{ i18n.ts.sort }}</template>
-						<option v-for="x in sortOptions" :key="x.value" :value="x.value">{{ x.displayName }}</option>
 					</MkSelect>
 					<MkSwitch v-model="includeDescription" :large="true">
 						<template #label>{{ i18n.ts.includeDescription }}</template>
@@ -78,6 +77,7 @@ import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import type { entities } from 'misskey-js';
 
 const router = useRouter();
@@ -88,11 +88,27 @@ const props = defineProps<{
 }>();
 
 const tab = ref('featured');
-const searchType = ref('')
-const sortType = ref('+notesCount');
+const searchType = ref('');
 const searchQuery = ref('');
 const excludeNonActiveChannels = ref(false);
 const includeDescription = ref(false);
+
+const {
+	model: sortType,
+	def: sortTypeSelectDef,
+} = useMkSelect({
+	items: [
+		{ value: '+notesCount', label: i18n.ts._sortType.notesCountDesc },
+		{ value: '-notesCount', label: i18n.ts._sortType.notesCountAsc },
+		{ value: '+usersCount', label: i18n.ts._sortType.usersCountDesc },
+		{ value: '-usersCount', label: i18n.ts._sortType.usersCountAsc },
+		{ value: '+lastNotedAt', label: i18n.ts._sortType.lastNotedAtDesc },
+		{ value: '-lastNotedAt', label: i18n.ts._sortType.lastNotedAtAsc },
+		{ value: '+name', label: i18n.ts._sortType.nameDesc },
+		{ value: '-name', label: i18n.ts._sortType.nameAsc },
+	],
+	initialValue: '+notesCount',
+});
 
 onMounted(() => {
 	searchQuery.value = props.query ?? '';
@@ -122,17 +138,6 @@ const followingPaginator = markRaw(new Paginator('channels/followed', {
 const ownedPaginator = markRaw(new Paginator('channels/owned', {
 	limit: 10,
 }));
-
-const sortOptions = [
-	{ value: '+notesCount', displayName: i18n.ts._sortType.notesCountDesc },
-	{ value: '-notesCount', displayName: i18n.ts._sortType.notesCountAsc },
-	{ value: '+usersCount', displayName: i18n.ts._sortType.usersCountDesc },
-	{ value: '-usersCount', displayName: i18n.ts._sortType.usersCountAsc },
-	{ value: '+lastNotedAt', displayName: i18n.ts._sortType.lastNotedAtDesc },
-	{ value: '-lastNotedAt', displayName: i18n.ts._sortType.lastNotedAtAsc },
-	{ value: '+name', displayName: i18n.ts._sortType.nameDesc },
-	{ value: '-name', displayName: i18n.ts._sortType.nameAsc },
-];
 
 function create() {
 	router.push('/channels/new');

@@ -134,10 +134,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<SearchMarker :keywords="['font', 'custom', 'style']">
 							<MkPreferenceContainer k="customFont">
-								<MkSelect v-model="customFont">
+								<MkSelect v-model="customFont" :items="[
+									{ label: i18n.ts.default, value: null },
+									...Object.entries(fontList).map(([name, font]) => ({ label: font.name, value: name })),
+								]">
 									<template #label><SearchLabel>{{ i18n.ts.customFont }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-									<option :value="null">{{ i18n.ts.default }}</option>
-									<option v-for="[name, font] of Object.entries(fontList)" :key="name" :value="name">{{ font.name }}</option>
 								</MkSelect>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -181,11 +182,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkDisableSection :disabled="!collapseRenotes">
 							<SearchMarker :keywords="['renote']">
 								<MkPreferenceContainer k="collapseRenotesTrigger">
-									<MkSelect v-model="collapseRenotesTrigger">
+									<MkSelect v-model="collapseRenotesTrigger" :items="[
+										{ label: i18n.ts._collapseRenotesTrigger.action, value: 'action' },
+										{ label: i18n.ts._collapseRenotesTrigger.see, value: 'see' },
+										{ label: i18n.ts._collapseRenotesTrigger.all, value: 'all' },
+									]">
 										<template #label><SearchLabel>{{ i18n.ts.collapseRenotesTrigger }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span><span class="_beta">{{ i18n.ts.beta }}</span></template>
-										<option value="action">{{ i18n.ts._collapseRenotesTrigger.action }}</option>
-										<option value="see">{{ i18n.ts._collapseRenotesTrigger.see }}</option>
-										<option value="all">{{ i18n.ts._collapseRenotesTrigger.all }}</option>
 									</MkSelect>
 								</MkPreferenceContainer>
 							</SearchMarker>
@@ -245,12 +247,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 							<SearchMarker :keywords="['reaction']">
 								<MkPreferenceContainer k="hideReactionCount">
-									<MkSelect v-model="hideReactionCount">
+									<MkSelect v-model="hideReactionCount" :items="[
+										{ label: i18n.ts._hideReactionCount.none, value: 'none' },
+										{ label: i18n.ts._hideReactionCount.self, value: 'self' },
+										{ label: i18n.ts._hideReactionCount.others, value: 'others' },
+										{ label: i18n.ts._hideReactionCount.all, value: 'all' },
+									]">
 										<template #label><SearchLabel>{{ i18n.ts.hideReactionCount }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-										<option value="none">{{ i18n.ts._hideReactionCount.none }}</option>
-										<option value="self">{{ i18n.ts._hideReactionCount.self }}</option>
-										<option value="others">{{ i18n.ts._hideReactionCount.others }}</option>
-										<option value="all">{{ i18n.ts._hideReactionCount.all }}</option>
 									</MkSelect>
 								</MkPreferenceContainer>
 							</SearchMarker>
@@ -348,11 +351,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 							<SearchMarker :keywords="['ticker', 'style']">
 								<MkPreferenceContainer k="instanceTickerStyle">
-									<MkSelect v-model="instanceTickerStyle">
+									<MkSelect v-model="instanceTickerStyle" :items="[
+										{ label: i18n.ts._instanceTickerStyle.default, value: 'default' },
+										{ label: i18n.ts._instanceTickerStyle.minimal, value: 'minimal' },
+										{ label: i18n.ts._instanceTickerStyle.icon, value: 'icon' },
+									]">
 										<template #label><SearchLabel>{{ i18n.ts.instanceTickerStyle }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-										<option value="default">{{ i18n.ts._instanceTickerStyle.default }}</option>
-										<option value="minimal">{{ i18n.ts._instanceTickerStyle.minimal }}</option>
-										<option value="icon">{{ i18n.ts._instanceTickerStyle.icon }}</option>
 									</MkSelect>
 								</MkPreferenceContainer>
 							</SearchMarker>
@@ -412,10 +416,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps_m">
 							<SearchMarker :keywords="['postform', 'draft', 'save']">
 								<MkPreferenceContainer k="draftSavingBehavior">
-									<MkSelect v-model="draftSavingBehavior">
+									<MkSelect v-model="draftSavingBehavior" :items="[
+										{ label: i18n.ts._draftSavingBehavior.auto, value: 'auto' },
+										{ label: i18n.ts._draftSavingBehavior.manual, value: 'manual' },
+									]">
 										<template #label><SearchLabel>{{ i18n.ts.draftSavingBehavior }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-										<option value="auto">{{ i18n.ts._draftSavingBehavior.auto }}</option>
-										<option value="manual">{{ i18n.ts._draftSavingBehavior.manual }}</option>
 									</MkSelect>
 								</MkPreferenceContainer>
 							</SearchMarker>
@@ -1194,7 +1199,8 @@ async function addItemPostform() {
 	const { canceled, result: item } = await os.select({
 		title: i18n.ts.addItem,
 		items: bottomItem.map(k => ({
-			value: k, text: postformBottomItemDef[k].title,
+			value: k,
+			label: postformBottomItemDef[k].title,
 		})),
 	});
 	if (canceled || item == null) return;
