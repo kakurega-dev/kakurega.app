@@ -11,14 +11,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@dragleave="onDragleave"
 	@drop.stop="onDrop"
 >
-		<header :class="$style.header">
-			<div :class="$style.headerLeft">
-				<button v-if="!fixed" :class="$style.cancel" class="_button" @click="cancel"><i class="ti ti-x"></i></button>
-				<button v-click-anime v-tooltip="i18n.ts.switchAccount" :class="$style.account" class="_button" @click="openAccountMenu">
-					<img :class="$style.avatar" :src="(postAccount ?? $i).avatarUrl" style="border-radius: 100%;"/>
-				</button>
-				<button v-if="$i.policies.noteDraftLimit > 0" v-tooltip="(postAccount != null && postAccount.id !== $i.id) ? null : i18n.ts.draftsAndScheduledNotes" class="_button" :class="$style.draftButton" :disabled="postAccount != null && postAccount.id !== $i.id" @click="showDraftMenu"><i class="ti ti-list"></i></button>
-			</div>
+	<header :class="$style.header">
+		<div :class="$style.headerLeft">
+			<button v-if="!fixed" :class="$style.cancel" class="_button" @click="cancel"><i class="ti ti-x"></i></button>
+			<button v-click-anime v-tooltip="i18n.ts.switchAccount" :class="$style.account" class="_button" @click="openAccountMenu">
+				<img :class="$style.avatar" :src="(postAccount ?? $i).avatarUrl" style="border-radius: 100%;"/>
+			</button>
+			<button v-if="$i.policies.noteDraftLimit > 0" v-tooltip="(postAccount != null && postAccount.id !== $i.id) ? null : i18n.ts.draftsAndScheduledNotes" class="_button" :class="$style.draftButton" :disabled="postAccount != null && postAccount.id !== $i.id" @click="showDraftMenu"><i class="ti ti-list"></i></button>
+		</div>
 		<div :class="$style.headerRight">
 			<template v-if="!(targetChannel != null && fixed)">
 				<button v-if="targetChannel == null" ref="visibilityButton" v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
@@ -156,7 +156,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { ensureSignin, notesCount, incNotesCount } from '@/i.js';
-import { getAccounts, openAccountMenu as openAccountMenu_ } from '@/accounts.js';
+import { getAccounts, getAccountMenu } from '@/accounts.js';
 import { deepClone } from '@/utility/clone.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { miLocalStorage } from '@/local-storage.js';
@@ -708,13 +708,7 @@ function showOtherSettings() {
 		action: () => {
 			toggleReactionAcceptance();
 		},
-	}, ...($i.policies.scheduledNoteLimit > 0 ? [{
-		icon: 'ti ti-calendar-time',
-		text: i18n.ts.schedulePost + '...',
-		action: () => {
-			schedule();
-		},
-	}] : []), { type: 'divider' }, {
+	}, { type: 'divider' }, {
 		type: 'link',
 		icon: 'ti ti-settings',
 		text: i18n.ts.settings,
@@ -1322,10 +1316,10 @@ function showActions(ev: MouseEvent) {
 
 const postAccount = ref<Misskey.entities.UserDetailed | null>(null);
 
-function openAccountMenu(ev: MouseEvent) {
+async function openAccountMenu(ev: MouseEvent) {
 	if (props.mock) return;
 
-	openAccountMenu_({
+	const items = await getAccountMenu({
 		withExtraOperation: false,
 		includeCurrentAccount: true,
 		active: postAccount.value != null ? postAccount.value.id : $i.id,
@@ -1336,17 +1330,9 @@ function openAccountMenu(ev: MouseEvent) {
 				postAccount.value = account;
 			}
 		},
-	}, ev);
-}
+	});
 
-function showPerUploadItemMenu(item: UploaderItem, ev: MouseEvent) {
-	const menu = uploader.getMenu(item);
-	os.popupMenu(menu, ev.currentTarget ?? ev.target);
-}
-
-function showPerUploadItemMenuViaContextmenu(item: UploaderItem, ev: MouseEvent) {
-	const menu = uploader.getMenu(item);
-	os.contextMenu(menu, ev);
+	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
 function showDraftMenu(ev: MouseEvent) {
@@ -1367,7 +1353,13 @@ function showDraftMenu(ev: MouseEvent) {
 		action: async () => {
 			saveDraft(true);
 		},
-	}, { type: 'divider' }, {
+	}, ...($i.policies.scheduledNoteLimit > 0 ? [{
+		icon: 'ti ti-calendar-time',
+		text: i18n.ts.schedulePost + '...',
+		action: () => {
+			schedule();
+		},
+	}] : []), { type: 'divider' }, {
 		type: 'button',
 		text: i18n.ts._drafts.listDrafts,
 		icon: 'ti ti-list',
@@ -1382,6 +1374,16 @@ function showDraftMenu(ev: MouseEvent) {
 			showDraftsDialog(true);
 		},
 	}], (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+}
+
+function showPerUploadItemMenu(item: UploaderItem, ev: MouseEvent) {
+	const menu = uploader.getMenu(item);
+	os.popupMenu(menu, ev.currentTarget ?? ev.target);
+}
+
+function showPerUploadItemMenuViaContextmenu(item: UploaderItem, ev: MouseEvent) {
+	const menu = uploader.getMenu(item);
+	os.contextMenu(menu, ev);
 }
 
 async function schedule() {
@@ -1525,20 +1527,6 @@ defineExpose({
 	width: 28px;
 	height: 28px;
 	margin: auto;
-}
-
-.draftButton {
-	padding: 8px;
-	font-size: 90%;
-	border-radius: 6px;
-
-	&:hover {
-		background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
-	}
-
-	&:disabled {
-		background: none;
-	}
 }
 
 .headerRight {

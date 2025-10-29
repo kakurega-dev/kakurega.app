@@ -637,6 +637,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkPreferenceContainer k="disableShowingAnimatedImages">
 									<MkSwitch v-model="disableShowingAnimatedImages">
 										<template #label><SearchLabel>{{ i18n.ts.disableShowingAnimatedImages }}</SearchLabel></template>
+										<template #caption>{{ i18n.ts.disableShowingAnimatedImages_caption }}</template>
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
