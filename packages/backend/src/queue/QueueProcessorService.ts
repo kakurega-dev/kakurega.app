@@ -89,6 +89,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 	private objectStorageQueueWorker: Bull.Worker;
 	private endedPollNotificationQueueWorker: Bull.Worker;
 	private scheduledNoteDeleteQueueWorker: Bull.Worker;
+	private cleanRemoteNotesQueueWorker: Bull.Worker;
 	private postScheduledNoteQueueWorker: Bull.Worker;
 
 	constructor(
@@ -175,7 +176,6 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					case 'checkModeratorsActivity': return this.checkModeratorsActivityProcessorService.process();
 					case 'clean': return this.cleanProcessorService.process();
 					case 'integrationDaemon': return this.integrationDaemonProcessorService.process();
-					case 'cleanRemoteNotes': return this.cleanRemoteNotesProcessorService.process(job);
 					default: throw new Error(`unrecognized job type ${job.name} for system`);
 				}
 			};
@@ -545,6 +545,20 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		}
 		//#endregion
 
+		//#region clean remote notes
+		{
+			this.cleanRemoteNotesQueueWorker = new Bull.Worker(QUEUE.CLEAN_REMOTE_NOTES, (job) => {
+				if (this.config.sentryForBackend) {
+					return Sentry.startSpan({ name: 'Queue: CleanRemoteNotes' }, () => this.cleanRemoteNotesProcessorService.process(job));
+				} else {
+					return this.cleanRemoteNotesProcessorService.process(job);
+				}
+			}, {
+				...baseWorkerOptions(this.config, QUEUE.CLEAN_REMOTE_NOTES),
+				autorun: false,
+			});
+		}
+
 		//#region post scheduled note
 		{
 			this.postScheduledNoteQueueWorker = new Bull.Worker(QUEUE.POST_SCHEDULED_NOTE, async (job) => {
@@ -574,6 +588,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			this.objectStorageQueueWorker.run(),
 			this.endedPollNotificationQueueWorker.run(),
 			this.scheduledNoteDeleteQueueWorker.run(),
+			this.cleanRemoteNotesQueueWorker.run(),
 			this.postScheduledNoteQueueWorker.run(),
 		]);
 	}
@@ -591,6 +606,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			this.objectStorageQueueWorker.close(),
 			this.endedPollNotificationQueueWorker.close(),
 			this.scheduledNoteDeleteQueueWorker.close(),
+			this.cleanRemoteNotesQueueWorker.close(),
 			this.postScheduledNoteQueueWorker.close(),
 		]);
 	}

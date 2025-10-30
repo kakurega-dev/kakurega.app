@@ -113,6 +113,8 @@ export type ScheduledNoteDeleteJobData = {
 	noteId: MiNote['id'];
 };
 
+export type CleanRemoteNotesJobData = Record<string, unknown>;
+
 export type PostScheduledNoteJobData = {
 	noteDraftId: string;
 };

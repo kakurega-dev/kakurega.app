@@ -32,6 +32,7 @@ import type {
 	DeliverQueue,
 	EndedPollNotificationQueue,
 	ScheduledNoteDeleteQueue,
+	CleanRemoteNotesQueue,
 	PostScheduledNoteQueue,
 	InboxQueue,
 	ObjectStorageQueue,
@@ -47,6 +48,7 @@ export const QUEUE_TYPES = [
 	'system',
 	'endedPollNotification',
 	'scheduledNoteDelete',
+	'cleanRemoteNotes',
 	'postScheduledNote',
 	'deliver',
 	'inbox',
@@ -86,10 +88,6 @@ const REPEATABLE_SYSTEM_JOB_DEF = [{
 	name: 'checkModeratorsActivity',
 	// 毎時30分に起動
 	pattern: '30 * * * *',
-}, {
-	name: 'cleanRemoteNotes',
-	// 毎日午前4時に起動(最も人の少ない時間帯)
-	pattern: '0 4 * * *',
 }];
 
 @Injectable()
@@ -101,6 +99,7 @@ export class QueueService {
 		@Inject('queue:system') public systemQueue: SystemQueue,
 		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
 		@Inject('queue:scheduledNoteDelete') public scheduledNoteDeleteQueue: ScheduledNoteDeleteQueue,
+		@Inject('queue:cleanRemoteNotes') public cleanRemoteNotesQueue: CleanRemoteNotesQueue,
 		@Inject('queue:postScheduledNote') public postScheduledNoteQueue: PostScheduledNoteQueue,
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
@@ -127,6 +126,23 @@ export class QueueService {
 				},
 			});
 		}
+
+		// SystemJobで動かしていたが長時間実行すると目詰まりするので専用のQueueに切り分け (隠れ家フォーク)
+		this.cleanRemoteNotesQueue.upsertJobScheduler('cleanRemoteNotes', {
+			// 毎日午前4時に起動(最も人の少ない時間帯)
+			pattern: '0 4 * * *',
+			immediately: false,
+		}, {
+			name: 'cleanRemoteNotes',
+			opts: {
+				removeOnComplete: {
+					age: 3600 * 24 * 7, // keep up to 7 days
+				},
+				removeOnFail: {
+					age: 3600 * 24 * 7, // keep up to 7 days
+				},
+			},
+		});
 
 		// 古いバージョンで作成され現在使われなくなったrepeatableジョブをクリーンアップ
 		this.systemQueue.getJobSchedulers().then(schedulers => {
@@ -728,6 +744,7 @@ export class QueueService {
 			case 'system': return this.systemQueue;
 			case 'endedPollNotification': return this.endedPollNotificationQueue;
 			case 'scheduledNoteDelete': return this.scheduledNoteDeleteQueue;
+			case 'cleanRemoteNotes': return this.cleanRemoteNotesQueue;
 			case 'postScheduledNote': return this.postScheduledNoteQueue;
 			case 'deliver': return this.deliverQueue;
 			case 'inbox': return this.inboxQueue;
