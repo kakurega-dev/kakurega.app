@@ -13,6 +13,7 @@ import {
 	DeliverJobData,
 	EndedPollNotificationJobData,
 	ScheduledNoteDeleteJobData,
+	CleanRemoteNotesJobData,
 	InboxJobData,
 	RelationshipJobData,
 	UserWebhookDeliverJobData,
@@ -24,6 +25,7 @@ import type { Provider } from '@nestjs/common';
 export type SystemQueue = Bull.Queue<Record<string, unknown>>;
 export type EndedPollNotificationQueue = Bull.Queue<EndedPollNotificationJobData>;
 export type ScheduledNoteDeleteQueue = Bull.Queue<ScheduledNoteDeleteJobData>;
+export type CleanRemoteNotesQueue = Bull.Queue<CleanRemoteNotesJobData>;
 export type PostScheduledNoteQueue = Bull.Queue<PostScheduledNoteJobData>;
 export type DeliverQueue = Bull.Queue<DeliverJobData>;
 export type InboxQueue = Bull.Queue<InboxJobData>;
@@ -48,6 +50,12 @@ const $endedPollNotification: Provider = {
 const $scheduledNoteDelete: Provider = {
 	provide: 'queue:scheduledNoteDelete',
 	useFactory: (config: Config) => new Bull.Queue(QUEUE.SCHEDULED_NOTE_DELETE, baseQueueOptions(config, QUEUE.SCHEDULED_NOTE_DELETE)),
+	inject: [DI.config],
+};
+
+const $cleanRemoteNotes: Provider = {
+	provide: 'queue:cleanRemoteNotes',
+	useFactory: (config: Config) => new Bull.Queue(QUEUE.CLEAN_REMOTE_NOTES, baseQueueOptions(config, QUEUE.CLEAN_REMOTE_NOTES)),
 	inject: [DI.config],
 };
 
@@ -106,6 +114,7 @@ const $systemWebhookDeliver: Provider = {
 		$system,
 		$endedPollNotification,
 		$scheduledNoteDelete,
+		$cleanRemoteNotes,
 		$postScheduledNote,
 		$deliver,
 		$inbox,
@@ -119,6 +128,7 @@ const $systemWebhookDeliver: Provider = {
 		$system,
 		$endedPollNotification,
 		$scheduledNoteDelete,
+		$cleanRemoteNotes,
 		$postScheduledNote,
 		$deliver,
 		$inbox,
@@ -134,6 +144,7 @@ export class QueueModule implements OnApplicationShutdown {
 		@Inject('queue:system') public systemQueue: SystemQueue,
 		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
 		@Inject('queue:scheduledNoteDelete') public scheduledNoteDeleteQueue: ScheduledNoteDeleteQueue,
+		@Inject('queue:cleanRemoteNotes') public cleanRemoteNotesQueue: CleanRemoteNotesQueue,
 		@Inject('queue:postScheduledNote') public postScheduledNoteQueue: PostScheduledNoteQueue,
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
@@ -152,6 +163,7 @@ export class QueueModule implements OnApplicationShutdown {
 			this.systemQueue.close(),
 			this.endedPollNotificationQueue.close(),
 			this.scheduledNoteDeleteQueue.close(),
+			this.cleanRemoteNotesQueue.close(),
 			this.postScheduledNoteQueue.close(),
 			this.deliverQueue.close(),
 			this.inboxQueue.close(),
