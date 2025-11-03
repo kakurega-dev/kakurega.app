@@ -174,6 +174,8 @@ export class PatreonManagementService implements OnApplicationShutdown {
 		}
 
 		this.globalEventService.publishInternalEvent('patreonMembersUpdated', Object.fromEntries(usersList));
+
+		return usersList.size;
 	}
 
 	@bindThis

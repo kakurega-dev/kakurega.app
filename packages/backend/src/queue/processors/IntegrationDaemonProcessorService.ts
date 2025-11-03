@@ -5,6 +5,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { PatreonManagementService } from '@/core/integrations/PatreonManagementService.js';
 import { FanboxManagementService } from '@/core/integrations/FanboxManagementService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
+import type * as Bull from 'bullmq';
 
 @Injectable()
 export class IntegrationDaemonProcessorService {
@@ -20,15 +21,25 @@ export class IntegrationDaemonProcessorService {
 	}
 
 	@bindThis
-	public async process(): Promise<void> {
+	public async process(job: Bull.Job): Promise<void> {
 		const meta = await this.metaService.fetch();
 
 		if (meta.enableFanboxIntegration) {
-			this.fanboxManagementService.update();
+			const result = this.fanboxManagementService.update();
+			if (result != null) {
+				job.log(`Found ${result} Fanbox supporters.`);
+			} else {
+				job.log('Failed to fetch Fanbox supporters.');
+			}
 		}
 
 		if (meta.enablePatreonIntegration) {
-			this.patreonManagementService.update();
+			const result = this.patreonManagementService.update();
+			if (result != null) {
+				job.log(`Found ${result} Patreon supporters.`);
+			} else {
+				job.log('Failed to fetch Patreon supporters.');
+			}
 		}
 	}
 }

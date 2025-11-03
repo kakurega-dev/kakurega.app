@@ -136,6 +136,8 @@ export class FanboxManagementService implements OnApplicationShutdown {
 		}
 
 		this.globalEventService.publishInternalEvent('fanboxMembersUpdated', Object.fromEntries(usersList));
+
+		return usersList.size;
 	}
 
 	@bindThis
