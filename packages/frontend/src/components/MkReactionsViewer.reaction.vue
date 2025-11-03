@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="buttonEl"
 	v-ripple="canToggle"
 	class="_button"
-	:class="[$style.root, { [$style.reacted]: myReaction == reaction, [$style.canToggle]: (isLocal && canToggle), [$style.canToggleFallback]: (!isLocal && isAvailable), [$style.small]: prefer.s.reactionsDisplaySize === 'small', [$style.large]: prefer.s.reactionsDisplaySize === 'large' }]"
+	:class="[$style.root, { [$style.reacted]: myReaction != null && myReaction == plainReaction, [$style.canToggle]: canToggle, [$style.remoteEmoji]: !isLocalCustomEmoji && unicodeEmoji == null, [$style.small]: prefer.s.reactionsDisplaySize === 'small', [$style.large]: prefer.s.reactionsDisplaySize === 'large' }]"
 	@click="toggleReaction()"
 	@contextmenu.prevent.stop="menu"
 >
@@ -58,27 +58,20 @@ const emit = defineEmits<{
 
 const buttonEl = useTemplateRef('buttonEl');
 
-const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
-
-function getReactionName(reaction: string, formated = false) {
-	const r = reaction.replaceAll(':', '').replace(/@.*/, '');
-	return formated ? `:${r}:` : r;
-}
-
-const isLocal = computed(() => !props.reaction.match(/@\w/));
-const isAvailable = computed(() => isLocal.value ? true : customEmojisMap.has(getReactionName(props.reaction)));
+const emojiName = computed(() => props.reaction.replaceAll(':', '').replace(/@.*/, ''));
+const unicodeEmoji = computed(() => getUnicodeEmojiOrNull(props.reaction)?.char);
 
 const canToggle = computed(() => {
-	const emoji = customEmojisMap.get(emojiName.value) ?? getUnicodeEmojiOrNull(props.reaction);
+	const emoji = customEmojisMap.get(emojiName.value) ?? unicodeEmoji.value;
 
 	// TODO
-	// return isAvailable.value && $i && emoji && checkReactionPermissions($i, props.note, emoji);
-	return isAvailable.value && $i != null && emoji != null;
+	//return $i && emoji && checkReactionPermissions($i, props.note, emoji);
+	return $i != null && emoji != null;
 });
 const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
 const isLocalCustomEmoji = props.reaction[0] === ':' && props.reaction.includes('@.');
 
-const plainReaction = computed(() => customEmojisMap.has(emojiName.value) ? getReactionName(props.reaction, true) : props.reaction);
+const plainReaction = computed(() => customEmojisMap.has(emojiName.value) ? `:${emojiName.value}@.:` : unicodeEmoji.value);
 
 const hideReactionCount = computed(() => {
 	if (props.userId === undefined) return false;
@@ -95,11 +88,12 @@ async function toggleReaction() {
 	if (!canToggle.value) return;
 	if ($i == null) return;
 
+	const reaction = plainReaction.value;
+	if (reaction == null) return;
+
 	const me = $i;
 
-	const reaction = getReactionName(props.reaction, true);
-	const oldReaction = props.myReaction ? getReactionName(props.myReaction, true) : null;
-
+	const oldReaction = props.myReaction ? getUnicodeEmojiOrNull(props.myReaction)?.char ?? props.myReaction : null;
 	if (oldReaction) {
 		const confirm = await os.confirm({
 			type: 'warning',
@@ -197,7 +191,8 @@ async function menu(ev) {
 		});
 	}
 
-	if (isAvailable.value && reactionEmojiPalette != null && !reactionEmojiPalette.emojis.includes(plainReaction.value)) {
+	const targetReaction = plainReaction.value?.replace('@.', '');
+	if (canToggle.value && reactionEmojiPalette != null && targetReaction != null && !reactionEmojiPalette.emojis.includes(targetReaction)) {
 		menuItems.push({
 			text: i18n.ts.addToEmojiPicker,
 			icon: 'ti ti-plus',
@@ -206,7 +201,7 @@ async function menu(ev) {
 					if (palette.id !== reactionEmojiPalette.id) return palette;
 					return {
 						...palette,
-						emojis: [...palette.emojis, plainReaction.value],
+						emojis: [...palette.emojis, targetReaction],
 					};
 				}));
 			},
@@ -300,30 +295,28 @@ if (!mock) {
 	border-radius: 6px;
 	align-items: center;
 	justify-content: center;
+	box-sizing: border-box;
 
 	&.canToggle {
-		background: var(--MI_THEME-buttonBg);
-
-		&:hover {
-			background: rgba(0, 0, 0, 0.1);
-		}
-	}
-
-	&.canToggleFallback:not(.canToggle):not(.reacted) {
-		box-sizing: border-box;
-		border: 2px dashed var(--MI_THEME-buttonBg);
-
-		&.small {
-			border-width: 1px;
-			border-color: rgb(from var(--MI_THEME-fg) r g b / 40%);
+		&:not(.remoteEmoji) {
+			background: var(--MI_THEME-buttonBg);
 		}
 
 		&:hover {
 			background: rgba(0, 0, 0, 0.1);
 		}
+
+		&.remoteEmoji {
+			border: 2px dashed var(--MI_THEME-buttonBg);
+
+			&.small {
+				border-width: 1px;
+				border-color: rgb(from var(--MI_THEME-fg) r g b / 40%);
+			}
+		}
 	}
 
-	&:not(.canToggle):not(.canToggleFallback) {
+	&:not(.canToggle) {
 		cursor: default;
 	}
 
@@ -349,12 +342,16 @@ if (!mock) {
 		}
 	}
 
-	&.reacted, &.reacted:hover {
-		background: var(--MI_THEME-accentedBg);
-		color: var(--MI_THEME-accent);
-		box-shadow: 0 0 0 1px var(--MI_THEME-accent) inset;
+	&.reacted {
+		border-style: solid;
+		border-width: 1px;
+		border-color: var(--MI_THEME-accent) !important;
 
-		> .count {
+		&:hover {
+			background: var(--MI_THEME-accentedBg);
+		}
+
+		&:not(.remoteEmoji) > .count {
 			color: var(--MI_THEME-accent);
 		}
 
