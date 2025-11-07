@@ -62,6 +62,7 @@ describe('NoteCreateService', () => {
 			renoteUserId: null,
 			renoteUserHost: null,
 			deleteAt: null,
+			renoteChannelId: null,
 		};
 
 		const poll: IPoll = {
