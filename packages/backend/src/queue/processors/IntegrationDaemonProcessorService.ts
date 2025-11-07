@@ -25,7 +25,7 @@ export class IntegrationDaemonProcessorService {
 		const meta = await this.metaService.fetch();
 
 		if (meta.enableFanboxIntegration) {
-			const result = this.fanboxManagementService.update();
+			const result = await this.fanboxManagementService.update();
 			if (result != null) {
 				job.log(`Found ${result} Fanbox supporters.`);
 			} else {
@@ -34,7 +34,7 @@ export class IntegrationDaemonProcessorService {
 		}
 
 		if (meta.enablePatreonIntegration) {
-			const result = this.patreonManagementService.update();
+			const result = await this.patreonManagementService.update();
 			if (result != null) {
 				job.log(`Found ${result} Patreon supporters.`);
 			} else {
