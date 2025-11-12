@@ -6627,6 +6627,10 @@ export interface Locale extends ILocale {
          * 絵文字ピッカーに固定表示するプリセットをパレットとして登録したり、ピッカーの表示方法をカスタマイズしたりできます。
          */
         "emojiPaletteBanner": string;
+        /**
+         * アニメーション画像を有効にする
+         */
+        "enableAnimatedImages": string;
         "_chat": {
             /**
              * 送信者の名前を表示
@@ -10606,6 +10610,60 @@ export interface Locale extends ILocale {
          * チャンネルに投稿...
          */
         "channelPlaceholder": string;
+        /**
+         * フォームの説明を表示
+         */
+        "showHowToUse": string;
+        "_howToUse": {
+            /**
+             * 本文
+             */
+            "content_title": string;
+            /**
+             * 投稿する内容を入力します。
+             */
+            "content_description": string;
+            /**
+             * ツールバー
+             */
+            "toolbar_title": string;
+            /**
+             * ファイルやアンケートの添付、注釈やハッシュタグの設定、絵文字やメンションの挿入などが行えます。
+             */
+            "toolbar_description": string;
+            /**
+             * アカウントメニュー
+             */
+            "account_title": string;
+            /**
+             * 投稿するアカウントを切り替えたり、アカウントに保存した下書き・予約投稿を一覧できます。
+             */
+            "account_description": string;
+            /**
+             * 公開範囲
+             */
+            "visibility_title": string;
+            /**
+             * ノートを公開する範囲の設定が行えます。
+             */
+            "visibility_description": string;
+            /**
+             * メニュー
+             */
+            "menu_title": string;
+            /**
+             * 下書きへの保存、投稿の予約、リアクションの設定など、その他のアクションが行えます。
+             */
+            "menu_description": string;
+            /**
+             * 投稿ボタン
+             */
+            "submit_title": string;
+            /**
+             * ノートを投稿します。Ctrl + Enter / Cmd + Enter でも投稿できます。
+             */
+            "submit_description": string;
+        };
         "_placeholders": {
             /**
              * いまどうしてる？
