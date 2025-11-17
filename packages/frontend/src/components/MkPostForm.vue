@@ -1573,6 +1573,7 @@ defineExpose({
 	width: 28px;
 	height: 28px;
 	margin: auto;
+	object-fit: cover;
 }
 
 .account {
