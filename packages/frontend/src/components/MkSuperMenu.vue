@@ -90,19 +90,19 @@ export type SuperMenuDef = {
 		active?: boolean;
 		action: (ev: MouseEvent) => Awaitable<void>;
 	} | {
+		type: 'switch';
+		ref: Ref<boolean>;
+		text: string;
+		icon?: string;
+		active?: boolean;
+		action: () => void | Promise<void>;
+	} | {
 		type?: 'link';
 		to: string;
 		icon?: string;
 		text: string;
 		danger?: boolean;
 		active?: boolean;
-	} | {
-		type?: 'switch';
-		ref: Ref<boolean>;
-		text: string;
-		icon?: string;
-		active?: boolean;
-		action: () => void | Promise<void>;
 	})[];
 };
 </script>

@@ -14,11 +14,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts._drafts.uploadRemainingCount }}: {{ serverSideDraftsCount }}/{{ $i?.policies.noteDraftLimit }}
 			</div>
 			<div :class="$style.controller">
-				<MkButton :class="$style.noShrink" @click="syncDrafts" primary>
+				<MkButton :class="$style.noShrink" primary @click="syncDrafts">
 					<i class="ti ti-refresh"></i>
 					{{ i18n.ts._drafts.sync }}
 				</MkButton>
-				<MkButton :class="$style.noShrink" @click="uploadAllDrafts" :disabled="draftsList.filter(d => d.serverId == null && d.localId !== 'default').length <= 0">
+				<MkButton :class="$style.noShrink" :disabled="draftsList.filter(d => d.serverId == null && d.localId !== 'default').length <= 0" @click="uploadAllDrafts">
 					<i class="ti ti-cloud-upload"></i>
 					{{ i18n.ts._drafts.uploadAllDrafts }}
 				</MkButton>

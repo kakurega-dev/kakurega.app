@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="buttonEl"
 	v-ripple="canToggle"
 	class="_button"
-	:class="[$style.root, { [$style.reacted]: myReaction != null && myReaction == plainReaction, [$style.canToggle]: canToggle, [$style.remoteEmoji]: !isLocalCustomEmoji && unicodeEmoji == null, [$style.small]: prefer.s.reactionsDisplaySize === 'small', [$style.large]: prefer.s.reactionsDisplaySize === 'large' }]"
+	:class="[$style.root, { [$style.reacted]: plainMyReaction != null && plainMyReaction == plainReaction, [$style.canToggle]: canToggle, [$style.remoteEmoji]: !isLocalCustomEmoji && unicodeEmoji == null, [$style.small]: prefer.s.reactionsDisplaySize === 'small', [$style.large]: prefer.s.reactionsDisplaySize === 'large' }]"
 	@click="toggleReaction()"
 	@contextmenu.prevent.stop="menu"
 >
@@ -72,6 +72,7 @@ const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction
 const isLocalCustomEmoji = props.reaction[0] === ':' && props.reaction.includes('@.');
 
 const plainReaction = computed(() => customEmojisMap.has(emojiName.value) ? `:${emojiName.value}@.:` : unicodeEmoji.value);
+const plainMyReaction = computed(() => props.myReaction ? getUnicodeEmojiOrNull(props.myReaction)?.char ?? props.myReaction : null);
 
 const hideReactionCount = computed(() => {
 	if (props.userId === undefined) return false;
@@ -93,7 +94,7 @@ async function toggleReaction() {
 
 	const me = $i;
 
-	const oldReaction = props.myReaction ? getUnicodeEmojiOrNull(props.myReaction)?.char ?? props.myReaction : null;
+	const oldReaction = plainMyReaction.value;
 	if (oldReaction) {
 		const confirm = await os.confirm({
 			type: 'warning',

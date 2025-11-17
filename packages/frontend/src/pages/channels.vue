@@ -52,8 +52,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkPagination>
 		</div>
-		<div v-else-if="tab === 'owned'">
-			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
+		<div v-else-if="tab === 'owned'" class="_gaps">
+			<MkButton link primary rounded to="/channels/new"><i class="ti ti-plus"></i> {{ i18n.ts.createNew }}</MkButton>
 			<MkPagination v-slot="{items}" :paginator="ownedPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
@@ -65,7 +65,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, onMounted, ref, shallowRef, type Raw } from 'vue';
+import { computed, markRaw, onMounted, ref, shallowRef } from 'vue';
+import type { Raw } from 'vue';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -139,16 +140,7 @@ const ownedPaginator = markRaw(new Paginator('channels/owned', {
 	limit: 10,
 }));
 
-function create() {
-	router.push('/channels/new');
-}
-
-const headerActions = computed(() => [{
-	icon: 'ti ti-plus',
-	text: i18n.ts.create,
-	handler: create,
-}]);
-
+const headerActions = computed(() => []);
 const headerTabs = computed(() => [{
 	key: 'list',
 	title: i18n.ts._channel.listAndSearch,

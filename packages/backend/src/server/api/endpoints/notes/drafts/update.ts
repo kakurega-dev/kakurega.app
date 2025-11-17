@@ -258,10 +258,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				visibility: ps.visibility,
 				visibleUserIds: ps.visibleUserIds,
 				channelId: ps.channelId,
-				scheduledDelete: ps.scheduledDelete ? {
-					deleteAt: ps.scheduledDelete.deleteAt ? new Date(ps.scheduledDelete.deleteAt) : null,
-					deleteAfter: ps.scheduledDelete.deleteAfter ?? null,
-				} : undefined,
+				deleteAt: ps.scheduledDelete?.deleteAt ? new Date(ps.scheduledDelete.deleteAt) : null,
+				deleteAfter: ps.scheduledDelete?.deleteAfter ?? null,
 				scheduledAt: ps.scheduledAt ? new Date(ps.scheduledAt) : null,
 				isActuallyScheduled: ps.isActuallyScheduled,
 			}).catch((err) => {

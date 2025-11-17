@@ -292,11 +292,11 @@ const {
 	def: enableGTLDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts._enableGTL.default, value: null },
-		{ label: i18n.ts._enableGTL._true, value: true },
-		{ label: i18n.ts._enableGTL._false, value: false },
+		{ label: i18n.ts._enableGTL.default, value: 'default' },
+		{ label: i18n.ts._enableGTL._true, value: 'yes' },
+		{ label: i18n.ts._enableGTL._false, value: 'no' },
 	],
-	initialValue: $i.enableGTL,
+	initialValue: $i.enableGTL == null ? 'default' : $i.enableGTL ? 'yes' : 'no',
 });
 const {
 	model: followingVisibility,
@@ -480,7 +480,7 @@ function save() {
 		hideSearchResult: !!hideSearchResult.value,
 		publicReactions: !!publicReactions.value,
 		hideActivity: !!hideActivity.value,
-		enableGTL: !!enableGTL.value,
+		enableGTL: enableGTL.value === 'default' ? null : enableGTL.value === 'yes' ? true : false,
 		hideFromSupporterPage: !!hideFromSupporterPage.value,
 		followingVisibility: followingVisibility.value,
 		followersVisibility: followersVisibility.value,
