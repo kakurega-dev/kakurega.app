@@ -499,6 +499,10 @@ export const packedMeDetailedOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
+		autoRejectFollowRequest: {
+			type: 'boolean',
+			nullable: false, optional: false,
+		},
 		noCrawle: {
 			type: 'boolean',
 			nullable: false, optional: false,
@@ -527,6 +531,14 @@ export const packedMeDetailedOnlySchema = {
 		hideSearchResult: {
 			type: 'boolean',
 			nullable: false, optional: false,
+		},
+		hideFromSupporterPage: {
+			type: 'boolean',
+			nullable: false, optional: false,
+		},
+		enableGTL: {
+			type: 'boolean',
+			nullable: true, optional: false,
 		},
 		hasUnreadSpecifiedNotes: {
 			type: 'boolean',

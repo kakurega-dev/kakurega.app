@@ -281,6 +281,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host: enti
 		followingCount: 16,
 		hasPendingFollowRequestFromYou: false,
 		hasPendingFollowRequestToYou: false,
+		hideActivity: false,
 		isAdmin: false,
 		isBlocked: false,
 		isBlocking: false,

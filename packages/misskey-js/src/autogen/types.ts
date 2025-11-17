@@ -4191,6 +4191,7 @@ export type components = {
             autoSensitive: boolean;
             carefulBot: boolean;
             autoAcceptFollowed: boolean;
+            autoRejectFollowRequest: boolean;
             noCrawle: boolean;
             preventAiLearning: boolean;
             isExplorable: boolean;
@@ -4199,6 +4200,8 @@ export type components = {
             twoFactorBackupCodesStock: 'full' | 'partial' | 'none';
             hideOnlineStatus: boolean;
             hideSearchResult: boolean;
+            hideFromSupporterPage: boolean;
+            enableGTL: boolean | null;
             hasUnreadSpecifiedNotes: boolean;
             hasUnreadMentions: boolean;
             hasUnreadAnnouncement: boolean;

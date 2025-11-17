@@ -72,7 +72,7 @@ const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction
 const isLocalCustomEmoji = props.reaction[0] === ':' && props.reaction.includes('@.');
 
 const plainReaction = computed(() => customEmojisMap.has(emojiName.value) ? `:${emojiName.value}@.:` : unicodeEmoji.value);
-const plainMyReaction = computed(() => props.myReaction ? getUnicodeEmojiOrNull(props.myReaction)?.char ?? props.myReaction : null)
+const plainMyReaction = computed(() => props.myReaction ? getUnicodeEmojiOrNull(props.myReaction)?.char ?? props.myReaction : null);
 
 const hideReactionCount = computed(() => {
 	if (props.userId === undefined) return false;

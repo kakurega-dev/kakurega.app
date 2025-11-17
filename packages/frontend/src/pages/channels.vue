@@ -65,7 +65,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, onMounted, ref, shallowRef, type Raw } from 'vue';
+import { computed, markRaw, onMounted, ref, shallowRef } from 'vue';
+import type { Raw } from 'vue';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';

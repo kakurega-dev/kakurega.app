@@ -50,7 +50,7 @@ export type NoteDraftV2 = {
 		poll?: PollEditorModelValue | null;
 		scheduledAt?: number | null;
 	};
-}
+};
 
 /**
  * @deprecated
@@ -222,9 +222,9 @@ export async function remove(
 			target.uploadedAt = undefined;
 		}
 	} else {
-		let replyId = 'replyId' in draft ? draft.replyId : 'data' in draft ? draft.data.replyId : undefined;
-		let renoteId = 'renoteId' in draft ? draft.renoteId : 'data' in draft ? draft.data.renoteId : undefined;
-		let channelId = 'channelId' in draft ? draft.channelId : 'data' in draft ? draft.data.channelId : undefined;
+		const replyId = 'replyId' in draft ? draft.replyId : 'data' in draft ? draft.data.replyId : undefined;
+		const renoteId = 'renoteId' in draft ? draft.renoteId : 'data' in draft ? draft.data.renoteId : undefined;
+		const channelId = 'channelId' in draft ? draft.channelId : 'data' in draft ? draft.data.channelId : undefined;
 
 		const newDrafts: NoteDraftV2[] = [];
 		for (const x of drafts) {
@@ -260,12 +260,12 @@ export async function sync(userId: string) {
 			detail: false,
 			untilId: serverDrafts.at(-1)?.id ?? undefined,
 			scheduled: false,
-		})
+		});
 
 		if (response.length === 0) break;
 		serverDrafts.push(...response);
 
-		await new Promise(resolve => setTimeout(resolve, 250));
+		await new Promise(resolve => window.setTimeout(resolve, 250));
 	}
 
 	// Step 2: Remove drafts that are not in the server (only if the draft has a serverSideId)
@@ -289,7 +289,7 @@ export async function sync(userId: string) {
 		if (localDraft && localDraft.updatedAt > new Date(serverDraft.updatedAt)) {
 			// update server-side draft
 			await updateServerDraft(userId, localDraft);
-			await new Promise(resolve => setTimeout(resolve, 250));
+			await new Promise(resolve => window.setTimeout(resolve, 250));
 			continue;
 		}
 
@@ -333,7 +333,7 @@ export async function uploadToServer(userId: string, draft: NoteDraftV2) {
 	const { createdDraft } = await os.apiWithDialog('notes/drafts/create', {
 		...draft.data,
 		fileIds: draft.data.files && draft.data.files.length > 0 ? draft.data.files.map(file => file.id) : undefined,
-	})
+	});
 
 	draft.serverId = createdDraft.id;
 	draft.updatedAt = new Date(createdDraft.updatedAt);
@@ -391,25 +391,25 @@ export function serverDraftToLocalDraft(draft: Misskey.entities.NoteDraft, local
 }
 
 function isObject(value: unknown): boolean {
-	return value !== null && !Array.isArray(value) && typeof value === 'object'
+	return value !== null && !Array.isArray(value) && typeof value === 'object';
 }
 
 function getRawData<T>(data: T): T {
-	return isReactive(data) ? toRaw(data) : data
+	return isReactive(data) ? toRaw(data) : data;
 }
 
 function toDeepRaw<T>(data: T): T {
-	const rawData = getRawData<T>(data)
+	const rawData = getRawData<T>(data);
 
 	for (const key in rawData) {
-		const value = rawData[key]
+		const value = rawData[key];
 
 		if (!isObject(value) && !Array.isArray(value)) {
-			continue
+			continue;
 		}
 
-		rawData[key] = toDeepRaw<typeof value>(value)
+		rawData[key] = toDeepRaw<typeof value>(value);
 	}
 
-	return rawData
+	return rawData;
 }

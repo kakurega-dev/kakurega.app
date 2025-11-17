@@ -1,6 +1,6 @@
 <template>
 <div class="_gaps_m">
-	<MkPagination :pagination="noteNotificationPagination">
+	<MkPagination :paginator="paginator">
 		<template #empty>
 			<div class="_fullinfo">
 				<img src="/static-assets/aira/info.png" class="_ghost"/>
@@ -32,22 +32,22 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, markRaw } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { userPage } from '@/filters/user.js';
+import { Paginator } from '@/utility/paginator.js';
 import * as os from '@/os.js';
 
-const noteNotificationPagination = {
-	endpoint: 'note-notification/list' as const,
+const paginator = markRaw(new Paginator('note-notification/list', {
 	limit: 10,
-};
+}));
 
-const expandedNoteNotificationItems = ref([]);
+const expandedNoteNotificationItems = ref<string[]>([]);
 
-async function noteUnsubscribe(userId, ev) {
+async function noteUnsubscribe(userId: string, ev: MouseEvent) {
 	os.popupMenu([{
 		text: i18n.ts.noteUnsubscribe,
 		icon: 'ti ti-x',
@@ -57,7 +57,7 @@ async function noteUnsubscribe(userId, ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function toggleNoteNotificationItem(item) {
+async function toggleNoteNotificationItem(item: { id: string }) {
 	if (expandedNoteNotificationItems.value.includes(item.id)) {
 		expandedNoteNotificationItems.value = expandedNoteNotificationItems.value.filter(x => x !== item.id);
 	} else {
@@ -66,7 +66,6 @@ async function toggleNoteNotificationItem(item) {
 }
 
 const headerActions = computed(() => []);
-
 const headerTabs = computed(() => []);
 
 definePage({
