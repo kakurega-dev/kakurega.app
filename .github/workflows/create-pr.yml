@@ -74,12 +74,12 @@ jobs:
           fi
 
           if [ "${{ github.repository_owner }}" == "kakurega-dev" ]; then
-            COMMAND_ARGS+=(--reviewer "kakurega-dev/maintainers")
+            COMMAND_ARGS+=(--assignee "hideki0403")
           fi
 
           gh pr create "${COMMAND_ARGS[@]}"
 
           echo "PR created"
         env:
-          GH_TOKEN: ${{secrets.PR_CREATE_TOKEN || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN }}
           TAG: ${{ inputs.tags }}
