@@ -81,5 +81,5 @@ jobs:
 
           echo "PR created"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{secrets.PR_CREATE_TOKEN || secrets.GITHUB_TOKEN }}
           TAG: ${{ inputs.tags }}
