@@ -73,6 +73,10 @@ jobs:
             COMMAND_ARGS+=(--draft)
           fi
 
+          if [ "${{ github.repository_owner }}" == "kakurega-dev" ]; then
+            COMMAND_ARGS+=(--reviewer "kakurega-dev/maintainers")
+          fi
+
           gh pr create "${COMMAND_ARGS[@]}"
 
           echo "PR created"
