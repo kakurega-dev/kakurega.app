@@ -539,7 +539,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region scheduled note delete
 		{
 			this.scheduledNoteDeleteQueueWorker = new Bull.Worker(QUEUE.SCHEDULED_NOTE_DELETE, (job) => {
-				if (this.config.sentryForBackend) {
+				if (Sentry != null) {
 					return Sentry.startSpan({ name: 'Queue: ScheduledNoteDelete' }, () => this.scheduledNoteDeleteProcessorService.process(job));
 				} else {
 					return this.scheduledNoteDeleteProcessorService.process(job);
@@ -554,7 +554,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region clean remote notes
 		{
 			this.cleanRemoteNotesQueueWorker = new Bull.Worker(QUEUE.CLEAN_REMOTE_NOTES, (job) => {
-				if (this.config.sentryForBackend) {
+				if (Sentry != null) {
 					return Sentry.startSpan({ name: 'Queue: CleanRemoteNotes' }, () => this.cleanRemoteNotesProcessorService.process(job));
 				} else {
 					return this.cleanRemoteNotesProcessorService.process(job);
