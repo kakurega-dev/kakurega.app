@@ -38,7 +38,7 @@ services:
 
   db:
     restart: always
-    image: groonga/pgroonga:latest-alpine-15
+    image: groonga/pgroonga:latest-alpine-18
     networks:
       - internal_network
     env_file:
