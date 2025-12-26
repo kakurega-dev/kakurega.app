@@ -126,8 +126,8 @@ import EmTime from '@/components/EmTime.vue';
 import { userPage } from '@/utils.js';
 import { i18n } from '@/i18n.js';
 
-function getAppearNote(note: Misskey.entities.Note) {
-	return Misskey.note.isPureRenote(note) ? note.renote : note;
+function getAppearNote(note: Misskey.entities.Note): Misskey.entities.Note {
+	return Misskey.note.isPureRenote(note) && note.renote ? note.renote : note;
 }
 
 const props = withDefaults(defineProps<{
