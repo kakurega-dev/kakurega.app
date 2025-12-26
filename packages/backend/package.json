@@ -199,6 +199,7 @@
 		"@types/ms": "2.1.0",
 		"@types/node": "24.10.2",
 		"@types/nodemailer": "7.0.4",
+		"@types/oauth": "0.9.6",
 		"@types/oauth2orize": "1.11.5",
 		"@types/oauth2orize-pkce": "0.1.2",
 		"@types/pg": "8.15.6",

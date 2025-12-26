@@ -466,6 +466,9 @@ importers:
       '@types/nodemailer':
         specifier: 7.0.4
         version: 7.0.4
+      '@types/oauth':
+        specifier: 0.9.6
+        version: 0.9.6
       '@types/oauth2orize':
         specifier: 1.11.5
         version: 1.11.5
@@ -4956,6 +4959,9 @@ packages:
 
   '@types/oauth2orize@1.11.5':
     resolution: {integrity: sha512-C6hrRoh9hCnqis39OpeUZSwgw+TIzcV0CsxwJMGfQjTx4I1r+CLmuEPzoDJr5NRTfc7OMwHNLkQwrGFLKrJjMQ==}
+
+  '@types/oauth@0.9.6':
+    resolution: {integrity: sha512-H9TRCVKBNOhZZmyHLqFt9drPM9l+ShWiqqJijU1B8P3DX3ub84NjxDuy+Hjrz+fEca5Kwip3qPMKNyiLgNJtIA==}
 
   '@types/offscreencanvas@2019.3.0':
     resolution: {integrity: sha512-esIJx9bQg+QYF0ra8GnvfianIY8qWB0GBx54PK5Eps6m+xTj86KLavHv6qDhzKcu5UUOgNfJ2pWaIIV7TRUd9Q==}
@@ -16091,6 +16097,10 @@ snapshots:
   '@types/oauth2orize@1.11.5':
     dependencies:
       '@types/express': 5.0.0
+      '@types/node': 24.10.2
+
+  '@types/oauth@0.9.6':
+    dependencies:
       '@types/node': 24.10.2
 
   '@types/offscreencanvas@2019.3.0': {}
