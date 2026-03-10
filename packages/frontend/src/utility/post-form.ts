@@ -58,3 +58,5 @@ export const bottomItemDef = {
 		icon: 'ti-calendar-time',
 	}
 };
+
+export type BottomItemKeys = keyof typeof bottomItemDef;

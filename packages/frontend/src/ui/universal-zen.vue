@@ -124,9 +124,10 @@ onMounted(() => {
 	}
 });
 
-const onContextmenu = (ev) => {
-	if (isLink(ev.target)) return;
-	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
+const onContextmenu = (ev: PointerEvent) => {
+	const el = ev.target as HTMLElement;
+	if (isLink(el)) return;
+	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(el.tagName) || el.attributes.getNamedItem('contenteditable')) return;
 	if (window.getSelection()?.toString() !== '') return;
 	const path = mainRouter.getCurrentFullPath();
 	os.contextMenu([{

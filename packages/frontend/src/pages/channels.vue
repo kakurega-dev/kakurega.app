@@ -81,15 +81,12 @@ import { Paginator } from '@/utility/paginator.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import type { entities } from 'misskey-js';
 
-const router = useRouter();
-
 const props = defineProps<{
 	query?: string;
 	type?: string;
 }>();
 
 const tab = ref('featured');
-const searchType = ref('');
 const searchQuery = ref('');
 const excludeNonActiveChannels = ref(false);
 const includeDescription = ref(false);

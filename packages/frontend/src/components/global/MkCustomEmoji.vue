@@ -103,7 +103,7 @@ const url = computed(() => {
 const alt = computed(() => `:${customEmojiName.value}:`);
 const errored = ref(url.value == null);
 
-function onClick(ev: MouseEvent) {
+function onClick(ev: PointerEvent) {
 	if (props.menu && canReact.value) {
 		const menuItems: MenuItem[] = [];
 

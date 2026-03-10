@@ -88,7 +88,7 @@ export type SuperMenuDef = {
 		text: string;
 		danger?: boolean;
 		active?: boolean;
-		action: (ev: MouseEvent) => Awaitable<void>;
+		action: (ev: PointerEvent) => Awaitable<void>;
 	} | {
 		type: 'switch';
 		ref: Ref<boolean>;

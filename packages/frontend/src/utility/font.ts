@@ -29,6 +29,16 @@ export const fontList = {
 		fontFamily: 'BIZ UDMincho',
 		importUrl: 'https://fonts.googleapis.com/css2?family=BIZ+UDMincho&display=swap',
 	},
+	'ibm-plex-sans-jp': {
+		name: 'IBM Plex Sans JP',
+		fontFamily: 'IBM Plex Sans JP',
+		importUrl: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP&display=swap',
+	},
+	'line-seed-jp': {
+		name: 'LINE Seed JP',
+		fontFamily: 'LINE Seed JP',
+		importUrl: 'https://fonts.googleapis.com/css2?family=LINE+Seed+JP&display=swap',
+	},
 	'klee-one': {
 		name: 'Klee One',
 		fontFamily: 'Klee One',
@@ -76,7 +86,7 @@ export const fontList = {
 	},
 };
 
-export function applyFont(fontname: null | string) {
+export function applyFont(fontname: null | keyof typeof fontList) {
 	let style = window.document.getElementById('custom-font');
 
 	if (!fontname) {

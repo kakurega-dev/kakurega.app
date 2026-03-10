@@ -21,7 +21,7 @@ export class MiMeta {
 	})
 	public rootUserId: MiUser['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'SET NULL',
 		nullable: true,
 	})
@@ -833,7 +833,11 @@ export class MiMeta {
 	@Column('jsonb', {
 		default: { },
 	})
-	public clientOptions: Record<string, any>;
+	public clientOptions: {
+		entrancePageStyle: 'classic' | 'simple';
+		showTimelineForVisitor: boolean;
+		showActivitiesForVisitor: boolean;
+	};
 }
 
 export type SoftwareSuspension = {

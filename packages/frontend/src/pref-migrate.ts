@@ -5,7 +5,7 @@
 
 import type { DeckProfile } from '@/deck.js';
 import { genId } from '@/utility/id.js';
-import { ColdDeviceStorage, store } from '@/store.js';
+import { store } from '@/store.js';
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
@@ -13,6 +13,7 @@ import { zenStore } from '@/ui/universal-zen/zen-store.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import type { SoundStore } from '@/preferences/def.js';
 
 // TODO: そのうち消す
 export function migrateOldSettings() {
@@ -24,16 +25,6 @@ export function migrateOldSettings() {
 				prefer.commit('themes', themes);
 			}
 		});
-
-		const plugins = ColdDeviceStorage.get('plugins');
-		prefer.commit('plugins', plugins.map(p => {
-			const { id, ...rest } = p;
-			return {
-				...rest,
-				config: rest.config ?? {},
-				installId: id,
-			};
-		}));
 
 		prefer.commit('deck.profile', deckStore.s.profile);
 		misskeyApi('i/registry/keys', {
@@ -55,8 +46,6 @@ export function migrateOldSettings() {
 			prefer.commit('deck.profiles', profiles);
 		});
 
-		prefer.commit('lightTheme', ColdDeviceStorage.get('lightTheme'));
-		prefer.commit('darkTheme', ColdDeviceStorage.get('darkTheme'));
 		prefer.commit('emojiPalettes', [{
 			id: 'reactions',
 			name: '',
@@ -139,10 +128,10 @@ export function migrateOldSettings() {
 		prefer.commit('sound.masterVolume', store.s.sound_masterVolume);
 		prefer.commit('sound.notUseSound', store.s.sound_notUseSound);
 		prefer.commit('sound.useSoundOnlyWhenActive', store.s.sound_useSoundOnlyWhenActive);
-		prefer.commit('sound.on.note', store.s.sound_note as any);
-		prefer.commit('sound.on.noteMy', store.s.sound_noteMy as any);
-		prefer.commit('sound.on.notification', store.s.sound_notification as any);
-		prefer.commit('sound.on.reaction', store.s.sound_reaction as any);
+		prefer.commit('sound.on.note', store.s.sound_note as SoundStore);
+		prefer.commit('sound.on.noteMy', store.s.sound_noteMy as SoundStore);
+		prefer.commit('sound.on.notification', store.s.sound_notification as SoundStore);
+		prefer.commit('sound.on.reaction', store.s.sound_reaction as SoundStore);
 		prefer.commit('defaultNoteVisibility', store.s.defaultNoteVisibility);
 		prefer.commit('defaultNoteLocalOnly', store.s.defaultNoteLocalOnly);
 

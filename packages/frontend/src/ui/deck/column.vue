@@ -301,15 +301,15 @@ function getMenu() {
 	return menuItems;
 }
 
-function showSettingsMenu(ev: MouseEvent) {
+function showSettingsMenu(ev: PointerEvent) {
 	os.popupMenu(getMenu(), ev.currentTarget ?? ev.target);
 }
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	os.contextMenu(getMenu(), ev);
 }
 
-function goTop(ev: MouseEvent) {
+function goTop(ev: PointerEvent) {
 	emit('headerClick', ev);
 	if (!props.handleScrollToTop) return;
 
@@ -321,7 +321,9 @@ function goTop(ev: MouseEvent) {
 	}
 }
 
-function onDragstart(ev) {
+function onDragstart(ev: DragEvent) {
+	if (ev.dataTransfer == null) return;
+
 	ev.dataTransfer.effectAllowed = 'move';
 	setDragData(ev, 'deckColumn', props.column.id);
 
@@ -332,11 +334,13 @@ function onDragstart(ev) {
 	}, 10);
 }
 
-function onDragend(ev) {
+function onDragend(ev: DragEvent) {
 	dragging.value = false;
 }
 
-function onDragover(ev) {
+function onDragover(ev: DragEvent) {
+	if (ev.dataTransfer == null) return;
+
 	// 自分自身がドラッグされている場合
 	if (dragging.value) {
 		// 自分自身にはドロップさせない
@@ -354,7 +358,7 @@ function onDragleave() {
 	draghover.value = false;
 }
 
-function onDrop(ev) {
+function onDrop(ev: DragEvent) {
 	draghover.value = false;
 	os.deckGlobalEvents.emit('column.dragEnd');
 

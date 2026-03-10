@@ -137,6 +137,27 @@ export const packedRoleCondFormulaFollowersOrFollowingOrNotesSchema = {
 	},
 } as const;
 
+export const packedRoleCondFormulaPatreonAmountsSchema = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string', optional: false,
+		},
+		type: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: [
+				'patreonAmountsLessThanOrEq',
+				'patreonAmountsMoreThanOrEq',
+			],
+		},
+		value: {
+			type: 'number',
+			nullable: false, optional: false,
+		},
+	},
+} as const;
+
 export const packedRoleCondFormulaValueSchema = {
 	type: 'object',
 	oneOf: [
@@ -160,6 +181,9 @@ export const packedRoleCondFormulaValueSchema = {
 		},
 		{
 			ref: 'RoleCondFormulaFollowersOrFollowingOrNotes',
+		},
+		{
+			ref: 'RoleCondFormulaPatreonAmounts',
 		},
 	],
 } as const;
