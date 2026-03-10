@@ -172,7 +172,7 @@ async function toggleReaction() {
 	}
 }
 
-async function menu(ev) {
+async function menu(ev: PointerEvent) {
 	const reactionEmojiPalette = prefer.s.emojiPaletteForReaction == null ? prefer.s.emojiPalettes[0] : prefer.s.emojiPalettes.find(palette => palette.id === prefer.s.emojiPaletteForReaction);
 	let menuItems: MenuItem[] = [];
 

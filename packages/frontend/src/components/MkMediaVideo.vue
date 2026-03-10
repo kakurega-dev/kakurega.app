@@ -125,6 +125,7 @@ import hasAudio from '@/utility/media-has-audio.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
 
 const props = defineProps<{
 	video: Misskey.entities.DriveFile;
@@ -177,15 +178,11 @@ function hasFocus() {
 }
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const hide = ref((prefer.s.nsfw === 'force' || getDataSaverState('media')) ? true : (props.video.isSensitive && prefer.s.nsfw !== 'ignore'));
+const hide = ref(shouldHideFileByDefault(props.video));
 
 async function reveal() {
-	if (props.video.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
-		const { canceled } = await os.confirm({
-			type: 'question',
-			text: i18n.ts.sensitiveMediaRevealConfirm,
-		});
-		if (canceled) return;
+	if (!(await canRevealFile(props.video))) {
+		return;
 	}
 
 	hide.value = false;
@@ -194,7 +191,7 @@ async function reveal() {
 // Menu
 const menuShowing = ref(false);
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	const menu: MenuItem[] = [
 		// TODO: 再生キューに追加
 		{
@@ -709,7 +706,7 @@ onDeactivated(() => {
 	.controlButton {
 		padding: 6px;
 		border-radius: calc(var(--MI-radius) / 2);
-		transition: background-color .2s ease-in-out;
+		transition: background-color .15s ease;
 		font-size: 1.05rem;
 
 		&:hover {
@@ -762,6 +759,23 @@ onDeactivated(() => {
 			display: block;
 			flex-grow: 1;
 		}
+	}
+}
+
+@container (max-width: 300px) {
+	.videoControls {
+		grid-template-areas:
+			"left . right"
+			"seekbar seekbar seekbar";
+		grid-template-columns: auto 1fr auto;
+	}
+
+	.controlsTime {
+		display: none;
+	}
+
+	.controlsVolume {
+		display: none;
 	}
 }
 </style>

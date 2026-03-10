@@ -104,7 +104,7 @@ export class MiUser {
 	})
 	public avatarId: MiDriveFile['id'] | null;
 
-	@OneToOne(type => MiDriveFile, {
+	@OneToOne(() => MiDriveFile, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
@@ -117,7 +117,7 @@ export class MiUser {
 	})
 	public bannerId: MiDriveFile['id'] | null;
 
-	@OneToOne(type => MiDriveFile, {
+	@OneToOne(() => MiDriveFile, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()

@@ -305,10 +305,8 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 }
 
 export async function createEmptyNotification(type?: string): Promise<void> {
-	return new Promise<void>(async res => {
-		const i18n = await (swLang.i18n ?? swLang.fetchLocale());
-
-		await globalThis.registration.showNotification(
+	const i18n = await (swLang.i18n ?? swLang.fetchLocale());
+	await globalThis.registration.showNotification(
 			(new URL(origin)).host,
 			{
 				body: `${i18n.ts._notification.youHaveNewNotification} (${type != null ? `${type}/` : ''}v${_VERSION_})`,
@@ -329,6 +327,7 @@ export async function createEmptyNotification(type?: string): Promise<void> {
 			},
 		);
 
+	return new Promise<void>(async res => {
 		setTimeout(async () => {
 			try {
 				await closeNotificationsByTags(['user_visible_auto_notification']);
