@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModalWindow ref="dialog" :width="400" :height="450" :withOkButton="false" :okButtonDisabled="true" @close="dialog?.close()">
+<MkModalWindow ref="dialog" :width="400" :height="450" :withOkButton="false" :okButtonDisabled="true" @close="dialog?.close()" @closed="emit('closed')">
 	<template #header>{{ i18n.ts.memo }}</template>
 	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 		<div class="_gaps">
@@ -67,6 +67,9 @@ const deleteMemo = async (key: string) => {
 	store.set('memo', memoList.value);
 };
 
+const emit = defineEmits<{
+	(ev: 'closed'): void;
+}>();
 </script>
 
 <style lang="scss" module>

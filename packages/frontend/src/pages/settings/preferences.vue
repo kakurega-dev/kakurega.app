@@ -415,13 +415,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<FormSlot>
 									<template #label>{{ i18n.ts.postForm }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
 									<MkContainer :showHeader="false">
-										<Sortable v-model="postFormItems" :class="$style.items" :itemKey="items => items" :animation="100" :delay="50" :delayOnTouchOnly="true">
-											<template #item="{element}">
-												<button v-tooltip="postformBottomItemDef[element.type].title" class="_button" :class="$style.item" @click="removeItemPostform(element.type, $event)">
-													<i class="ti ti-fw" :class="[$style.itemIcon, postformBottomItemDef[element.type].icon]"></i>
+										<MkDraggable v-model="postFormItems" :class="$style.items" direction="horizontal">
+											<template #default="{item}">
+												<button v-tooltip="postformBottomItemDef[item.type].title" class="_button" :class="$style.item" @click="removeItemPostform(item.type, $event)">
+													<i class="ti ti-fw" :class="[$style.itemIcon, postformBottomItemDef[item.type].icon]"></i>
 												</button>
 											</template>
-										</Sortable>
+										</MkDraggable>
 									</MkContainer>
 								</FormSlot>
 
@@ -1070,11 +1070,12 @@ import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkDeleteScheduleEditor from '@/components/MkDeleteScheduleEditor.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import { store } from '@/store.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { isSupportNavigatorConnection } from '@/utility/datasaver.js';
-import { bottomItemDef as postformBottomItemDef } from '@/utility/post-form.js';
+import { bottomItemDef as postformBottomItemDef, type BottomItemKeys } from '@/utility/post-form.js';
 import { fontList } from '@/utility/font.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
@@ -1239,8 +1240,6 @@ watch(scheduledNoteDelete, () => {
 	prefer.commit('defaultScheduledNoteDeleteTime', scheduledNoteDelete.value.deleteAfter);
 });
 
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
-
 const postFormItems = ref(prefer.s.postFormActions.map(x => ({
 	id: Math.random().toString(),
 	type: x,
@@ -1248,7 +1247,7 @@ const postFormItems = ref(prefer.s.postFormActions.map(x => ({
 
 async function addItemPostform() {
 	const currentItems = postFormItems.value.map(x => x.type);
-	const bottomItem = Object.keys(postformBottomItemDef).filter(k => !currentItems.includes(k));
+	const bottomItem = (Object.keys(postformBottomItemDef) as BottomItemKeys[]).filter(k => !currentItems.includes(k));
 	const { canceled, result: item } = await os.select({
 		title: i18n.ts.addItem,
 		items: bottomItem.map(k => ({

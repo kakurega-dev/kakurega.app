@@ -11,6 +11,7 @@ import type { DeviceKind } from '@/utility/device-kind.js';
 import type { TIPS } from '@/tips.js';
 import { Pizzax } from '@/lib/pizzax.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
+import type { BottomItemKeys } from './utility/post-form';
 
 /**
  * 「状態」を管理するストア(not「設定」)
@@ -232,7 +233,7 @@ export const store = markRaw(new Pizzax('base', {
 			'plugins',
 			'emoji',
 			'addMfmFunction',
-		],
+		] as BottomItemKeys[],
 	},
 	statusbars: {
 		where: 'deviceAccount',

@@ -17,6 +17,7 @@ import type { ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrame
 import { genId } from '@/utility/id.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 import { deepEqual } from '@/utility/deep-equal.js';
+import type { BottomItemKeys } from '@/utility/post-form.js';
 
 /** サウンド設定 */
 export type SoundStore = {
@@ -237,7 +238,7 @@ export const PREF_DEF = definePreferences({
 			'plugins',
 			'emoji',
 			'addMfmFunction',
-		],
+		] as BottomItemKeys[],
 	},
 	statusbars: {
 		default: [] as StatusbarStore[],
