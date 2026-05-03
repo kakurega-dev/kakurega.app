@@ -171,15 +171,18 @@ function getMenu() {
 				});
 				if (canceled) return;
 
-				for (const k in result) {
-					if (result[k] === null) result[k] = undefined;
+				const unknownResult = result as Record<string, string | null | undefined>;
+				const filterResult = {} as Record<string, string[] | undefined>;
+
+				for (const k in unknownResult) {
+					if (unknownResult[k] === null) filterResult[k] = undefined;
 					if (['includeKeywords', 'includeKeywordsAll', 'excludeKeywords', 'includeInstances', 'excludeInstances'].includes(k)) {
-						result[k] = result[k]?.split(' ').filter(x => x);
-						if (result[k] && !result[k].length) result[k] = undefined;
+						filterResult[k] = unknownResult[k]?.split(' ').filter(x => x);
+						if (filterResult[k] && !filterResult[k].length) filterResult[k] = undefined;
 					}
 				}
 
-				updateColumn(props.column.id, { filter: result as unknown as NoteFilter });
+				updateColumn(props.column.id, { filter: filterResult as NoteFilter });
 			},
 		});
 	}
