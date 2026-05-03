@@ -47,11 +47,10 @@ import { onBeforeUnmount, onMounted, provide, watch, useTemplateRef, ref, comput
 import type { Column } from '@/deck.js';
 import type { NoteFilter } from '@/components/MkStreamingNotesTimeline.vue';
 import type { MenuItem } from '@/types/menu.js';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from '@/deck.js';
+import { deckGlobalEvents, updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from '@/deck.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
-import { DI } from '@/di.js';
 import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
 
 provide('shouldHeaderThin', true);
@@ -81,7 +80,7 @@ const emit = defineEmits<{
 const body = useTemplateRef('body');
 
 const dragging = ref(false);
-watch(dragging, v => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));
+watch(dragging, v => deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));
 
 const draghover = ref(false);
 const dropready = ref(false);
@@ -90,13 +89,13 @@ const isMainColumn = computed(() => props.column.type === 'main');
 const active = computed(() => props.column.active !== false);
 
 onMounted(() => {
-	os.deckGlobalEvents.on('column.dragStart', onOtherDragStart);
-	os.deckGlobalEvents.on('column.dragEnd', onOtherDragEnd);
+	deckGlobalEvents.on('column.dragStart', onOtherDragStart);
+	deckGlobalEvents.on('column.dragEnd', onOtherDragEnd);
 });
 
 onBeforeUnmount(() => {
-	os.deckGlobalEvents.off('column.dragStart', onOtherDragStart);
-	os.deckGlobalEvents.off('column.dragEnd', onOtherDragEnd);
+	deckGlobalEvents.off('column.dragStart', onOtherDragStart);
+	deckGlobalEvents.off('column.dragEnd', onOtherDragEnd);
 });
 
 function onOtherDragStart() {
@@ -172,15 +171,18 @@ function getMenu() {
 				});
 				if (canceled) return;
 
-				for (const k in result) {
-					if (result[k] === null) result[k] = undefined;
+				const unknownResult = result as Record<string, string | null | undefined>;
+				const filterResult = {} as Record<string, string[] | undefined>;
+
+				for (const k in unknownResult) {
+					if (unknownResult[k] === null) filterResult[k] = undefined;
 					if (['includeKeywords', 'includeKeywordsAll', 'excludeKeywords', 'includeInstances', 'excludeInstances'].includes(k)) {
-						result[k] = result[k]?.split(' ').filter(x => x);
-						if (result[k] && !result[k].length) result[k] = undefined;
+						filterResult[k] = unknownResult[k]?.split(' ').filter(x => x);
+						if (filterResult[k] && !filterResult[k].length) filterResult[k] = undefined;
 					}
 				}
 
-				updateColumn(props.column.id, { filter: result as unknown as NoteFilter });
+				updateColumn(props.column.id, { filter: filterResult as NoteFilter });
 			},
 		});
 	}
@@ -360,7 +362,7 @@ function onDragleave() {
 
 function onDrop(ev: DragEvent) {
 	draghover.value = false;
-	os.deckGlobalEvents.emit('column.dragEnd');
+	deckGlobalEvents.emit('column.dragEnd');
 
 	const id = getDragData(ev, 'deckColumn');
 	if (id != null) {

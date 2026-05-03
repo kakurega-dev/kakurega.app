@@ -19,6 +19,7 @@ import { genId } from '@/utility/id.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 import { deepEqual } from '@/utility/deep-equal.js';
 import type { BottomItemKeys } from '@/utility/post-form.js';
+import type { fontList } from '@/utility/font.js';
 
 /** サウンド設定 */
 export type SoundStore = {
@@ -171,7 +172,7 @@ export const PREF_DEF = definePreferences({
 		default: null as null | 'device' | 'time',
 	},
 	customFont: {
-		default: null as null | string,
+		default: null as null | keyof typeof fontList,
 	},
 	defaultNoteVisibility: {
 		default: 'home' as (typeof Misskey.noteVisibilities)[number],

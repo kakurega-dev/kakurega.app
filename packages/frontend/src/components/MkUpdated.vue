@@ -44,7 +44,11 @@ function closePanel() {
 }
 
 function whatIsNew() {
-	window.open(`https://misskey-hub.net/docs/releases/#_${misskeyVersion.replaceAll('.', '')}`, '_blank');
+		if (isBeta) {
+		window.open(`https://github.com/misskey-dev/misskey/releases/tag/${misskeyVersion}`, '_blank');
+	} else {
+		window.open(`https://misskey-hub.net/docs/releases/#_${misskeyVersion.replaceAll('.', '')}`, '_blank');
+	}
 }
 
 function whatIsNewKakurega() {

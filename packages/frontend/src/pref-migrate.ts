@@ -14,6 +14,7 @@ import { unisonReload } from '@/utility/unison-reload.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import type { SoundStore } from '@/preferences/def.js';
+import { fontList } from './utility/font';
 
 // TODO: そのうち消す
 export function migrateOldSettings() {
@@ -149,7 +150,7 @@ export function migrateOldSettings() {
 		prefer.commit('hideNsfwNote', store.s.hideNsfwNote);
 		prefer.commit('enableDataSaverMode', store.s.enableDataSaverMode);
 		prefer.commit('autoDataSaver', store.s.autoDataSaver);
-		prefer.commit('customFont', store.s.customFont);
+		prefer.commit('customFont', store.s.customFont as keyof typeof fontList);
 		prefer.commit('instanceTickerStyle', store.s.instanceTickerStyle);
 		prefer.commit('hideReactionCount', store.s.hideReactionCount);
 		prefer.commit('hideReactionUsers', store.s.hideReactionUsers);
