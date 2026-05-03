@@ -1522,7 +1522,36 @@ onMounted(() => {
 				renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : undefined,
 				channelId: targetChannel.value ? targetChannel.value.id : undefined,
 			});
-			if (draftData) applyDraft(draftData.localId, draftData.data, false);
+			if (draftData && (draftData.data.text || draftData.data.files?.length || draftData.data.poll)) {
+				if (files.value.length !== 0) {
+					const {result, canceled} = await os.actions({
+						type: 'question',
+						title: i18n.ts.draftExists,
+						text: i18n.ts.draftExistsDescription,
+						actions: [{
+							value: 'apply',
+							text: i18n.ts.draftExistsAdd,
+							primary: true,
+						}, {
+							value: 'discard',
+							text: i18n.ts.draftExistsReplace,
+							danger: true,
+						}, {
+							value: 'cancel',
+							text: i18n.ts.cancel,
+						}],
+					});
+
+					if (canceled || result === 'cancel') emit('cancel');
+					if (result === 'discard') {
+						return;
+					} else if (result === 'apply') {
+						draftData.data.files = [...files.value, ...(draftData.data.files ?? [])];
+						nextTick(() => saveDraft());
+					}
+				}
+				applyDraft(draftData.localId, draftData.data, false)
+			};
 		}
 
 		// 削除して編集

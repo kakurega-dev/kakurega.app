@@ -1519,6 +1519,11 @@ presets: "プリセット"
 zeroPadding: "ゼロ埋め"
 nothingToConfigure: "設定項目はありません"
 viewRenotedChannel: "リノート先のチャンネルを見る"
+draftExists: "下書きが存在します"
+draftExistsDescription: "選択したファイルを現在の下書きに追加するか、現在の下書きを破棄して新たなノートを作成するか選択してください。"
+draftExistsAdd: "下書きに追加"
+draftExistsReplace: "下書きを破棄して新たに作成"
+
 
 _imageEditing:
   _vars:

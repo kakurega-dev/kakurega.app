@@ -6091,6 +6091,22 @@ export interface Locale extends ILocale {
      * リノート先のチャンネルを見る
      */
     "viewRenotedChannel": string;
+    /**
+     * 下書きが存在します
+     */
+    "draftExists": string;
+    /**
+     * 選択したファイルを現在の下書きに追加するか、現在の下書きを破棄して新たなノートを作成するか選択してください。
+     */
+    "draftExistsDescription": string;
+    /**
+     * 下書きに追加
+     */
+    "draftExistsAdd": string;
+    /**
+     * 下書きを破棄して新たに作成
+     */
+    "draftExistsReplace": string;
     "_imageEditing": {
         "_vars": {
             /**
