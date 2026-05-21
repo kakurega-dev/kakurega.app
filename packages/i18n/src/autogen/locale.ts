@@ -10271,6 +10271,14 @@ export interface Locale extends ILocale {
          */
         "write:report-abuse": string;
         /**
+         * 連携アプリを操作する
+         */
+        "write:integrations": string;
+        /**
+         * 連携アプリを取得する
+         */
+        "read:integrations": string;
+        /**
          * ダイレクトメッセージを操作する
          */
         "write:chat": string;

@@ -2699,6 +2699,8 @@ _permissions:
   "read:clip-favorite": "クリップのいいねを見る"
   "read:federation": "連合に関する情報を取得する"
   "write:report-abuse": "違反を報告する"
+  "write:integrations": "連携アプリを操作する"
+  "read:integrations": "連携アプリを取得する"
   "write:chat": "ダイレクトメッセージを操作する"
   "read:chat": "ダイレクトメッセージを閲覧する"
 
