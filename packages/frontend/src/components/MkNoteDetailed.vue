@@ -57,11 +57,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkA>
 						<span v-if="appearNote.user.isBot" :class="$style.isBot">bot</span>
 						<div :class="$style.noteHeaderInfo">
-							<span v-if="appearNote.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[appearNote.visibility]">
-								<i v-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
-								<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
-								<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
-							</span>
 							<span v-if="appearNote.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 						</div>
 					</div>
@@ -132,10 +127,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<footer>
 				<div :class="$style.noteFooterInfo">
-					<MkA :to="notePage(appearNote)">
-						<MkTime :time="appearNote.createdAt" mode="detail" colored/>
-					</MkA>
-					<span v-if="appearNote.deleteAt"><i class="ti ti-bomb"></i>{{ i18n.ts.scheduledNoteDelete }}: <MkTime :time="appearNote.deleteAt" mode="detail" colored/></span>
+					<div :class="$style.noteFooterInfoInner">
+						<MkA :to="notePage(appearNote)">
+							<MkTime :time="appearNote.createdAt" mode="detail" colored/>
+						</MkA>
+						<span style="margin-left: 0.5em;">
+							<span style="border: 1px solid var(--MI_THEME-divider); margin-right: 0.5em;"></span>
+							<i v-if="appearNote.visibility === 'public'" class="ti ti-world"></i>
+							<i v-else-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
+							<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
+							<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+							<span style="margin-left: 0.3em;">{{ i18n.ts._visibility[appearNote.visibility] }}</span>
+						</span>
+					</div>
+					<span v-if="appearNote.deleteAt">
+						<i class="ti ti-bomb"></i>
+						<I18n :src="i18n.ts.noteDeletationAt" tag="span">
+							<template #time>
+								<MkTime :time="appearNote.deleteAt" mode="detail" colored/>
+							</template>
+						</I18n>
+					</span>
 				</div>
 				<MkReactionsViewer
 					v-if="appearNote.reactionAcceptance !== 'likeOnly'"
@@ -872,6 +884,12 @@ function loadConversation() {
 	font-size: 0.9em;
 	display: flex;
 	flex-direction: column;
+	gap: 12px;
+}
+
+.noteFooterInfoInner {
+	display: flex;
+	flex-direction: row;
 	gap: 6px;
 }
 
