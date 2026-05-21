@@ -166,7 +166,8 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
 import { mfmFunctionPicker } from '@/utility/mfm-function-picker.js';
-import { bottomItemDef, type BottomItemKeys } from '@/utility/post-form.js';
+import { bottomItemDef } from '@/utility/post-form.js';
+import type { BottomItemKeys } from '@/utility/post-form.js';
 import { genId } from '@/utility/id.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
@@ -1524,7 +1525,7 @@ onMounted(() => {
 			});
 			if (draftData && (draftData.data.text || draftData.data.files?.length || draftData.data.poll)) {
 				if (files.value.length !== 0) {
-					const {result, canceled} = await os.actions({
+					const { result, canceled } = await os.actions({
 						type: 'question',
 						title: i18n.ts.draftExists,
 						text: i18n.ts.draftExistsDescription,
@@ -1550,7 +1551,7 @@ onMounted(() => {
 						nextTick(() => saveDraft());
 					}
 				}
-				applyDraft(draftData.localId, draftData.data, false)
+				applyDraft(draftData.localId, draftData.data, false);
 			};
 		}
 

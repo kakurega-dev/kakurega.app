@@ -327,7 +327,7 @@ export async function createEmptyNotification(type?: string): Promise<void> {
 			},
 		);
 
-	return new Promise<void>(async res => {
+	return new Promise<void>(res => {
 		setTimeout(async () => {
 			try {
 				await closeNotificationsByTags(['user_visible_auto_notification']);
