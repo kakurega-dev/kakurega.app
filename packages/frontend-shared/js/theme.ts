@@ -94,7 +94,7 @@ export function compile(theme: Theme): CompiledTheme {
 		props[k] = v.startsWith('"') ? v.replace(/^"\s*/, '') : genValue(getColor(v));
 	}
 
-		// MkReactionViewerのfallback reaction用
+	// MkReactionViewerのfallback reaction用
 	if ('buttonBg' in props) {
 		props['buttonBgSub'] = getColor(props['buttonBg'] as string).setAlpha(0.3).toString();
 	}

@@ -6111,7 +6111,7 @@ export interface Locale extends ILocale {
      * 下書きを破棄して新たに作成
      */
     "draftExistsReplace": string;
-		/**
+    /**
      * テーマのプレビュー中
      */
     "previewingTheme": string;
