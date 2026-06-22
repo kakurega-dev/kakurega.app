@@ -386,14 +386,16 @@ export async function mainBoot() {
 		},
 		'd': async () => {
 			const value = !store.s.darkMode;
-			if (prefer.s.syncDeviceDarkMode) {
+			if (prefer.s.syncDarkMode != null) {
 				const { canceled } = await confirm({
 					type: 'question',
-					text: i18n.tsx.switchDarkModeManuallyWhenSyncEnabledConfirm({ x: i18n.ts.syncDeviceDarkMode }),
+					text: i18n.tsx.switchDarkModeManuallyWhenSyncEnabledConfirm({
+						x: prefer.s.syncDarkMode === 'device' ? i18n.ts.syncDeviceDarkMode : i18n.ts.syncTimeDarkMode
+					}),
 				});
 				if (canceled) return;
 
-				prefer.commit('syncDeviceDarkMode', false);
+				prefer.commit('syncDarkMode', null);
 				store.set('darkMode', value);
 			} else {
 				store.set('darkMode', value);
