@@ -232,7 +232,7 @@ export class UserEntityService implements OnModuleInit {
 					muteeId: target,
 				},
 			}),
-			this.noteNotificationsRepository.exist({
+			this.noteNotificationsRepository.exists({
 				where: {
 					userId: me,
 					targetUserId: target,
