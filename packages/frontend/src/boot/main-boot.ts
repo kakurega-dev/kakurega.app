@@ -384,8 +384,22 @@ export async function mainBoot() {
 			if ($i == null) return;
 			post();
 		},
-		'd': () => {
-			store.set('darkMode', !store.s.darkMode);
+		'd': async () => {
+			const value = !store.s.darkMode;
+			if (prefer.s.syncDarkMode != null) {
+				const { canceled } = await confirm({
+					type: 'question',
+					text: i18n.tsx.switchDarkModeManuallyWhenSyncEnabledConfirm({
+						x: prefer.s.syncDarkMode === 'device' ? i18n.ts.syncDeviceDarkMode : i18n.ts.syncTimeDarkMode
+					}),
+				});
+				if (canceled) return;
+
+				prefer.commit('syncDarkMode', null);
+				store.set('darkMode', value);
+			} else {
+				store.set('darkMode', value);
+			}
 		},
 		's': () => {
 			mainRouter.push('/search');

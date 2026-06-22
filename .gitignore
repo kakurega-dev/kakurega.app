@@ -84,3 +84,6 @@ vite.config.local-dev.ts.timestamp-*
 
 # todos
 todos/
+
+# Affinity
+*.af~lock~
