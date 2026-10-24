@@ -13,6 +13,7 @@ import type { Keymap } from '@/utility/hotkey.js';
 import { i18n } from '@/i18n.js';
 import { alert, confirm, popup, post } from '@/os.js';
 import { useStream } from '@/stream.js';
+import { globalEvents } from '@/events.js';
 import * as sound from '@/utility/sound.js';
 import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
@@ -299,22 +300,42 @@ export async function mainBoot() {
 			const stream = useStream();
 
 			let reloadDialogShowing = false;
-			stream.on('_disconnected_', async () => {
-				if (prefer.s.serverDisconnectedBehavior === 'reload') {
-					window.location.reload();
-				} else if (prefer.s.serverDisconnectedBehavior === 'dialog') {
-					if (reloadDialogShowing) return;
-					reloadDialogShowing = true;
-					const { canceled } = await confirm({
-						type: 'warning',
-						title: i18n.ts.disconnectedFromServer,
-						text: i18n.ts.reloadConfirm,
-					});
-					reloadDialogShowing = false;
-					if (!canceled) {
-						window.location.reload();
-					}
+			let streamDisconnectedWaitingTimer: number | null = null;
+
+			stream.on('_disconnected_', () => {
+				if (prefer.s.serverDisconnectedBehavior === 'none') return;
+				if (streamDisconnectedWaitingTimer != null) {
+					window.clearTimeout(streamDisconnectedWaitingTimer);
 				}
+
+				streamDisconnectedWaitingTimer = window.setTimeout(async () => {
+					streamDisconnectedWaitingTimer = null;
+					globalEvents.emit('serverDisconnected');
+
+					if (prefer.s.serverDisconnectedBehavior === 'reload') {
+						window.location.reload();
+					} else if (prefer.s.serverDisconnectedBehavior === 'dialog') {
+						if (reloadDialogShowing) return;
+						reloadDialogShowing = true;
+						const { canceled } = await confirm({
+							type: 'warning',
+							title: i18n.ts.disconnectedFromServer,
+							text: i18n.ts.reloadConfirm,
+						});
+						reloadDialogShowing = false;
+						if (!canceled) {
+							window.location.reload();
+						}
+					}
+				}, 1000 * prefer.s.serverDisconnectedWaitingSeconds);
+			});
+
+			stream.on('_connected_', () => {
+				if (streamDisconnectedWaitingTimer != null) {
+					window.clearTimeout(streamDisconnectedWaitingTimer);
+					streamDisconnectedWaitingTimer = null;
+				}
+				globalEvents.emit('serverReconnected');
 			});
 
 			stream.on('emojiAdded', emojiData => {

@@ -1513,6 +1513,14 @@ export interface Locale extends ILocale {
      */
     "doNothing": string;
     /**
+     * 接続が失われてからアクションを実行するまでの待機時間
+     */
+    "serverDisconnectedWaitingSeconds": string;
+    /**
+     * サーバーとの接続が失われてから、自動リロードなどのアクションを実行するまでの待機時間を秒単位で指定します。
+     */
+    "serverDisconnectedWaitingSecondsDescription": string;
+    /**
      * リロードしますか？
      */
     "reloadConfirm": string;

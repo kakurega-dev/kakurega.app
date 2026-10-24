@@ -17,6 +17,8 @@ type Events = {
 	driveFilesDeleted: (files: Misskey.entities.DriveFile[]) => void;
 	driveFoldersUpdated: (folders: Misskey.entities.DriveFolder[]) => void;
 	driveFoldersDeleted: (folders: Misskey.entities.DriveFolder[]) => void;
+	serverDisconnected: () => void;
+	serverReconnected: () => void;
 };
 
 export const globalEvents = new EventEmitter<Events>();

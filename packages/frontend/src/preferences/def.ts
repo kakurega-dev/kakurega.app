@@ -248,6 +248,9 @@ export const PREF_DEF = definePreferences({
 	serverDisconnectedBehavior: {
 		default: 'quiet' as 'none' | 'quiet' | 'reload' | 'dialog',
 	},
+	serverDisconnectedWaitingSeconds: {
+		default: 5,
+	},
 	showConnectionStatus: {
 		default: false,
 	},

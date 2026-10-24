@@ -995,6 +995,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkPreferenceContainer>
 						</SearchMarker>
 
+						<MkDisableSection :disabled="serverDisconnectedBehavior === 'none'">
+							<SearchMarker :keywords="['server', 'disconnect', 'reconnect', 'reload', 'streaming']">
+								<MkPreferenceContainer k="serverDisconnectedWaitingSeconds">
+									<MkRange v-model="serverDisconnectedWaitingSeconds" :min="0" :max="60" :step="1" :textConverter="(v) => `${v}${i18n.ts._time.second}`" easing>
+										<template #label><SearchLabel>{{ i18n.ts.serverDisconnectedWaitingSeconds }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+										<template #caption><SearchKeyword>{{ i18n.ts.serverDisconnectedWaitingSecondsDescription }}</SearchKeyword></template>
+									</MkRange>
+								</MkPreferenceContainer>
+							</SearchMarker>
+						</MkDisableSection>
+
 						<SearchMarker :keywords="['cache', 'page']">
 							<MkPreferenceContainer k="numberOfPageCache">
 								<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
@@ -1104,6 +1115,7 @@ const pollingInterval = prefer.model('pollingInterval');
 const showTitlebar = prefer.model('showTitlebar');
 const keepCw = prefer.model('keepCw');
 const serverDisconnectedBehavior = prefer.model('serverDisconnectedBehavior');
+const serverDisconnectedWaitingSeconds = prefer.model('serverDisconnectedWaitingSeconds');
 const hemisphere = prefer.model('hemisphere');
 const showNoteActionsOnlyHover = prefer.model('showNoteActionsOnlyHover');
 const showClipButtonInNoteFooter = prefer.model('showClipButtonInNoteFooter');
