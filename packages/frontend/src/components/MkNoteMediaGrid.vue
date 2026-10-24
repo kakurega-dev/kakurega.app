@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getDataSaverState } from '@/utility/datasaver.js';
-import { notePage } from '@/filters/note.js';
+import { notePage } from '@@/js/note.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
