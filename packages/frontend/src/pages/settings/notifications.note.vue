@@ -37,7 +37,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import { userPage } from '@/filters/user.js';
+import { userPage } from '@@/js/user.js';
 import { Paginator } from '@/utility/paginator.js';
 import * as os from '@/os.js';
 

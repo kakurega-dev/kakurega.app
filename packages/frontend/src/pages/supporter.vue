@@ -34,7 +34,7 @@ import FormSection from '@/components/form/section.vue';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { instance } from '@/instance.js';
-import { userPage } from '@/filters/user.js';
+import { userPage } from '@@/js/user.js';
 import { definePage } from '@/page.js';
 
 type SupporterUser = {

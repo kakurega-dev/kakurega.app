@@ -619,6 +619,8 @@ export class UserEntityService implements OnModuleInit {
 				carefulBot: profile!.carefulBot,
 				autoAcceptFollowed: profile!.autoAcceptFollowed,
 				autoRejectFollowRequest: profile!.autoRejectFollowRequest,
+				followApprovalLocalSeconds: profile!.followApprovalLocalSeconds,
+				followApprovalRemoteSeconds: profile!.followApprovalRemoteSeconds,
 				noCrawle: profile!.noCrawle,
 				preventAiLearning: profile!.preventAiLearning,
 				isExplorable: user.isExplorable,
