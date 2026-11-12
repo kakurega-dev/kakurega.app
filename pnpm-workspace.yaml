@@ -56,6 +56,10 @@ minimumReleaseAgeExclude:
   - '@nestjs/common@12.4.2'
   - '@nestjs/core@12.4.2'
   - '@nestjs/testing@12.4.2'
+  # FIXME: 2026/11/18以降に`@babel/*`をexcludeから外す
+  - '@babel/parser@7.29.14'
+  - '@babel/types@7.29.14'
+  - '@babel/helper-string-parser@7.29.14'
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
